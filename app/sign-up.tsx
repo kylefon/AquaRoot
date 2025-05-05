@@ -103,8 +103,8 @@ export default function SignIn() {
                         </View>
                     </View>
                     <View style={styles.button}>
-                        {/* <Button title="Next" onPress={() => router.push("/plant-type")}/> */}
-                        <Button title="Next" disabled={loading} onPress={() => signUpWithEmail()}/>
+                        <Button title="Next" onPress={() => router.push("/plant-type")}/>
+                        {/* <Button title="Next" disabled={loading} onPress={() => signUpWithEmail()}/> */}
                     </View>
                 </View>
             </View>

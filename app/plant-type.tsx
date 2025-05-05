@@ -10,6 +10,39 @@ import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
 
+    async function addPlantType({plant, index}) {
+
+        const checks = 168/plant.checks;
+
+        const now = Date.now();
+        const addHour = now + (checks*60*60*1000);
+        const futureDate = new Date(addHour);
+
+        const { data, error } = await supabase
+            .from('plant')
+            .insert({
+                plantName: plant.name,
+                image: null
+            }).select()
+        if (error) {
+            Alert.alert(`Error adding plant ${plant.name}`)
+        }
+
+        const { data: plantData, error: plantError } = await supabase
+            .from('plantType')
+            .insert({
+                potNumber: index + 1,
+                frequency: checks,
+                duration: plant.duration,
+                plantId: data?.[0]?.id,
+                time: futureDate.toISOString()
+            })
+        
+        if (plantError) {
+            Alert.alert(`Error adding plant info for ${plant.name}`)
+        }
+    }
+    
     const handlePlants = () => {
         setPlantTypes(prev => [...prev, { name: "", checks: "", duration: "" }]);
     }
@@ -26,16 +59,17 @@ export default function PlantTypes() {
         setPlantTypes(newPlantTypes);
     }
 
-    const submitForm = () => {
-        plantTypes.map((data, index) => {
-            if (!data.name || !data.checks || !data.duration) {
-                Alert.alert("Kulang tangina mo")
+    const submitForm = async () => {
+        for ( let i = 0; i< plantTypes.length; i++ ){
+            const plant = plantTypes[i]
+            if (!plant.name || !plant.checks || !plant.duration) {
+                Alert.alert("Please fill up all values")
             }
+            await addPlantType({plant, index: i})
+        }
 
-            console.log(data)
-
-            // const { data, error } = await supabase.from('')
-        })
+        Alert.alert("Successfully added plants");
+        router.push("/my-home")
     }
 
 
