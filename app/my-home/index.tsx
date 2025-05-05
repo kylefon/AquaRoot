@@ -1,4 +1,4 @@
-import EditPots from "@/components/home tabs/EditPots";
+import EditPots from "@/components/home-tabs/EditPots";
 import HomeTabs from "@/components/HomeTabs";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";

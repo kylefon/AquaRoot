@@ -1,9 +1,10 @@
 import { Collapsible } from "@/components/Collapsible";
 import CreateLayout from "@/components/CreateLayout";
+import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
 import { Trash2 } from "lucide-react-native";
 import { useState } from "react";
-import { ScrollView } from "react-native";
+import { Alert, ScrollView } from "react-native";
 import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function PlantTypes() {
@@ -24,7 +25,20 @@ export default function PlantTypes() {
         newPlantTypes[index][field] = value;
         setPlantTypes(newPlantTypes);
     }
-    
+
+    const submitForm = () => {
+        plantTypes.map((data, index) => {
+            if (!data.name || !data.checks || !data.duration) {
+                Alert.alert("Kulang tangina mo")
+            }
+
+            console.log(data)
+
+            // const { data, error } = await supabase.from('')
+        })
+    }
+
+
     return (
         <CreateLayout>
             <View style={{ gap: 15 }}>
@@ -79,8 +93,8 @@ export default function PlantTypes() {
                         </Pressable>
                     )}
                     <Pressable style={styles.button}>
-                        <Button title="Sign Up" onPress={() => router.push("/my-home/")}/>
-                    </Pressable>
+                        <Button title="Sign Up" onPress={() => submitForm()}/>
+                    </Pressable>npnpx expo
                 </View>
                 </ScrollView>
             </View>

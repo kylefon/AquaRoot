@@ -1,7 +1,7 @@
 import { Droplets, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function EditPlant({data, index}) {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -10,7 +10,6 @@ export default function EditPlant({data, index}) {
 
     return (
         <View style={{ flex: 1 }}>
-            <SafeAreaProvider>
                 <SafeAreaView>
                         <Modal 
                             animationType="slide" 
@@ -61,7 +60,6 @@ export default function EditPlant({data, index}) {
                             </View>
                         </Modal>
                 </SafeAreaView>
-            </SafeAreaProvider>
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
                 <Text style={styles.plantEdit}>{data.name}</Text>
             </Pressable>
