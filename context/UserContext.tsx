@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuthenticatedUser } from "../utils/actions";
+import { User } from "@supabase/supabase-js";
 
 const UserContext = createContext(null);
 
@@ -8,7 +9,7 @@ export const useUserContext = () => {
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<User | null>(null);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -19,15 +20,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                     setUser(null);
                     return;
                 }
-
-                console.log( "USER", user);
                 setUser(user);
             } catch (err) {
                 console.error("Unexpected error:", err);
                 setUser(null);
             }
         }
-
+        
         fetchUser();
     }, []);
 

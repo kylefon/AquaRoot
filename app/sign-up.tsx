@@ -13,7 +13,6 @@ export default function SignIn() {
 
     async function signUpWithEmail() {
         setLoading(true)
-        console.log("I am being pressed")
 
         if (!email || !password || !confirmPassword || !username) {
             Alert.alert("Please fill in all fields");
@@ -24,9 +23,6 @@ export default function SignIn() {
             Alert.alert("Password and confirm password do not match");
             return;
         }
-
-        console.log("email:", email);
-        console.log("password:", password);
 
         const {
             data: signUpData,
@@ -40,9 +36,6 @@ export default function SignIn() {
                 },
             },
         })
-
-        console.log("signUpData:", signUpData);
-        console.log("signUpError:", signUpError);
 
         if (signUpError) {
             Alert.alert(signUpError.message);

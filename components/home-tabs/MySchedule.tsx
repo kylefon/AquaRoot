@@ -51,7 +51,7 @@ export default function MySchedule() {
                                                     <Text style={styles.potText}>Pot {data.potNumber}</Text>
                                                 </View>
                                                 <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>{data.time}</Text>
+                                                    <Text style={styles.subHeader}>{data.date} : {new Date(data.time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</Text>
                                                 </View>
                                             </View>
                                         ))}

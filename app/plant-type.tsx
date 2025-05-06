@@ -35,6 +35,7 @@ export default function PlantTypes() {
                 frequency: checks,
                 duration: plant.duration,
                 plantId: data?.[0]?.id,
+                date: futureDate.toISOString().split("T")[0],
                 time: futureDate.toISOString()
             })
         
