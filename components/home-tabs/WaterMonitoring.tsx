@@ -1,33 +1,40 @@
 import { Droplets, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { getPlants } from "@/utils/actions";
 
 export default function WaterMonitoring() {
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [ plants, setPlants ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
-    const data = [{
-        name: "Basil",
-        checks: 2,
-        duration: 3
-    }, {
-        name: "Rosemary",
-        checks: 3,
-        duration: 5
-    }]
+    useEffect(() => {
+        const getPlant = async () => {
+            setLoading(true);
+            const allPlants = await getPlants(id);
+            setPlants(allPlants);
+            setLoading(false);
+        }
+        
+        if (modalVisible) {
+            getPlant();
+        }
+    }, [modalVisible])
 
     return (
         <View>
             <SafeAreaProvider>
                 <SafeAreaView>
+                    {!loading ? (
                         <Modal 
-                            animationType="slide" 
-                            visible={modalVisible} 
-                            transparent={true}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed");
-                                setModalVisible(!modalVisible);
+                        animationType="slide" 
+                        visible={modalVisible} 
+                        transparent={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed");
+                            setModalVisible(!modalVisible);
                         }}>
                             <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -35,16 +42,15 @@ export default function WaterMonitoring() {
                                         <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                     </Pressable>
                                     <Text style={styles.mainHeader}>Water Monitoring</Text>
-                                    {data.map((data, index) => {
-                                        const waterUsage = (data.checks * data.duration * 0.001149).toFixed(2);
-                                        const checks = 168/data.checks
+                                    {plants.map((data, index) => {
+                                        const waterUsage = (data.frequency * data.duration * 0.001149).toFixed(2);
                                         return (
                                             <View style={styles.plantView} key={index}>
                                                 <View style={styles.plantHeader}>
-                                                    <Text style={styles.plantName}>Pot {index+1}: {data.name}</Text>
+                                                    <Text style={styles.plantName}>Pot {index+1}: {data.plantName}</Text>
                                                 </View>
                                                 <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>Every {checks} hours</Text>
+                                                    <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
                                                     <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
                                                     <Text style={styles.subHeader}>Water Usage: {waterUsage}L/day</Text>
                                                 </View>
@@ -54,6 +60,9 @@ export default function WaterMonitoring() {
                                 </View>
                             </View>
                         </Modal>
+                    ) : (
+                        <></>
+                    )}
                 </SafeAreaView>
             </SafeAreaProvider>
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>

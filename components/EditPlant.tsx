@@ -3,10 +3,8 @@ import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "reac
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function EditPlant({data, index}) {
+export default function EditPlant({data}) {
     const [ modalVisible, setModalVisible ] = useState(false);
-
-    const frequencyCheck = 168/data.checks;
 
     return (
         <View style={{ flex: 1 }}>
@@ -24,11 +22,11 @@ export default function EditPlant({data, index}) {
                                     <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
                                         <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                     </Pressable>
-                                    <Text style={styles.mainHeader}>Edit {data.name}</Text>
+                                    <Text style={styles.mainHeader}>Edit {data.plantName}</Text>
                                         <View>
                                             <View style={styles.plantHeader}>
                                                 <Text style={styles.plantName}>Plant Name</Text>
-                                                <TextInput placeholder={data.name} placeholderTextColor="gray" style={styles.input}/>
+                                                <TextInput placeholder={data.plantName} placeholderTextColor="gray" style={styles.input}/>
                                             </View>
                                             <View style={styles.plantHeader}>
                                                 <Text style={styles.plantName}>Date</Text>
@@ -48,7 +46,7 @@ export default function EditPlant({data, index}) {
                                             </View>
                                             <View style={styles.plantHeader}>
                                                 <Text style={styles.plantName}>Frequency</Text>
-                                                <TextInput placeholder={`Every ${frequencyCheck.toString()} hours`} placeholderTextColor="gray" style={styles.input} keyboardType="numeric"/>
+                                                <TextInput placeholder={`Every ${data.frequency} hours`} placeholderTextColor="gray" style={styles.input} keyboardType="numeric"/>
                                             </View>
                                         </View>
                                         <View style={{ alignItems: "center" }}> 
@@ -61,7 +59,7 @@ export default function EditPlant({data, index}) {
                         </Modal>
                 </SafeAreaView>
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.plantEdit}>{data.name}</Text>
+                <Text style={styles.plantEdit}>{data.plantName}</Text>
             </Pressable>
         </View>
     )

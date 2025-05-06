@@ -127,8 +127,9 @@ export default function PlantTypes() {
                         </Pressable>
                     )}
                     <Pressable style={styles.button}>
-                        <Button title="Sign Up" onPress={() => submitForm()}/>
-                    </Pressable>npnpx expo
+                        {/* <Button title="Sign Up" onPress={() => submitForm()}/> */}
+                        <Button title="Sign Up" onPress={() => router.push("/my-home")}/>
+                    </Pressable>
                 </View>
                 </ScrollView>
             </View>

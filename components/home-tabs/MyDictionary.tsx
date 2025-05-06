@@ -1,33 +1,40 @@
 import { BookOpenText, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { getPlants } from "@/utils/actions";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [ plants, setPlants ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
-    const data = [{
-        name: "Basil",
-        checks: 2,
-        duration: 3
-    }, {
-        name: "Rosemary",
-        checks: 3,
-        duration: 5
-    }]
+    useEffect(() => {
+        const getPlant = async () => {
+            setLoading(true);
+            const allPlants = await getPlants(id);
+            setPlants(allPlants);
+            setLoading(false);
+        }
+        
+        if (modalVisible) {
+            getPlant();
+        }
+    }, [modalVisible])
 
     return (
         <View>
             <SafeAreaProvider>
                 <SafeAreaView>
+                    {!loading ? (
                         <Modal 
-                            animationType="slide" 
-                            visible={modalVisible} 
-                            transparent={true}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed");
-                                setModalVisible(!modalVisible);
+                        animationType="slide" 
+                        visible={modalVisible} 
+                        transparent={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed");
+                            setModalVisible(!modalVisible);
                             }}>
                                 <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
@@ -35,27 +42,27 @@ export default function MyDictionary() {
                                         <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                     </Pressable>
                                     <Text style={styles.mainHeader}>My Dictionary</Text>
-                                    {data.map((data, index) => {
-                                        const checks = 168/data.checks
-                                        return(
-                                            <View style={styles.plantView} key={index}>
-                                                <View style={styles.plantHeader}>
-                                                    <Text style={styles.plantName}>{data.name}</Text>
-                                                    <View style={styles.icons}>
-                                                        <Pencil color="#557153"/>
-                                                        <Trash2 color="#560216"/>
-                                                    </View>
-                                                </View>
-                                                <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>Every {checks} hours</Text>
-                                                    <Text style={styles.subHeader}>Valve: {data.duration}s</Text>
+                                    {plants.map((data, index) => (
+                                        <View style={styles.plantView} key={index}>
+                                            <View style={styles.plantHeader}>
+                                                <Text style={styles.plantName}>{data.plantName}</Text>
+                                                <View style={styles.icons}>
+                                                    <Pencil color="#557153"/>
+                                                    <Trash2 color="#560216"/>
                                                 </View>
                                             </View>
-                                        )
-                                    })}
+                                            <View style={styles.plantSubText}>
+                                                <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
+                                                <Text style={styles.subHeader}>Valve: {data.duration}s</Text>
+                                            </View>
+                                        </View>
+                                    ))}
                                 </View>
                             </View>
                         </Modal>
+                        ) : (
+                            <></>
+                        )}
                 </SafeAreaView>
             </SafeAreaProvider>
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
@@ -67,7 +74,7 @@ export default function MyDictionary() {
             </Pressable>
         </View>
     )
-}
+} 
 
 const styles = StyleSheet.create({
     mainHeader: {

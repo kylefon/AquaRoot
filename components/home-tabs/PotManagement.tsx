@@ -1,17 +1,33 @@
 import { Leaf, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Collapsible } from "../Collapsible";
 import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
+import { getPlants } from "@/utils/actions";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [ plants, setPlants ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
-    const data = [ "Basil", "Rosemary", "Mint" ];
+    useEffect(() => {
+        const getPlant = async () => {
+            setLoading(true);
+            const allPlants = await getPlants(id);
+            setPlants(allPlants);
+            setLoading(false);
+        }
+        
+        if (modalVisible) {
+            getPlant();
+        }
+    }, [modalVisible])
+
+
     const handleSelect = (item: string) => {
         // console.log(item);
     }
@@ -20,61 +36,49 @@ export default function PotManagement() {
         <View>
             <SafeAreaProvider>
                 <SafeAreaView>
+                    {!loading ? (
                         <Modal 
                             animationType="slide" 
                             visible={modalVisible} 
-                            transparent={true}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed");
-                                setModalVisible(!modalVisible);
-                            }}>
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                        <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
-                                    </Pressable>
-                                    <Text style={styles.mainHeader}>Pot Management</Text>
-                                    {/* <ScrollView
-                                        contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
-                                        showsVerticalScrollIndicator={false}
-                                    > */}
-                                        <View>
-                                        <View style={styles.plantView}>
-                                            <View style={styles.dropdownContainer}>
-                                                <Text style={styles.potText}>Pot 1</Text>
-                                                <View style={{ flex: 1 }}>
-                                                    <InlineDropdown data={data} onSelect={handleSelect}/>
+                                transparent={true}
+                                onRequestClose={() => {
+                                    Alert.alert("Modal has been closed");
+                                    setModalVisible(!modalVisible);
+                                }}>
+                                <View style={styles.centeredView}>
+                                    <View style={styles.modalView}>
+                                        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                            <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                        </Pressable>
+                                        <Text style={styles.mainHeader}>Pot Management</Text>
+                                        {/* <ScrollView
+                                            contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
+                                            showsVerticalScrollIndicator={false}
+                                        > */}
+                                            <View>
+                                                <View style={styles.plantView}>
+                                                    { plants.map((data, index) => (
+                                                        <View style={styles.dropdownContainer} key={index}>
+                                                            <Text style={styles.potText}>Pot {data.potNumber}</Text>
+                                                            <View style={{ flex: 1 }}>
+                                                                <InlineDropdown data={data.plantName} onSelect={handleSelect}/>
+                                                            </View>
+                                                        </View>
+                                                    ))}
+                                                </View>
+                                                <View style={{ alignItems: "center" }}> 
+                                                    <Pressable style={styles.saveButton}>
+                                                        <Text style={{ color: "white"}}>Save</Text>
+                                                    </Pressable>
                                                 </View>
                                             </View>
-                                            <View style={styles.dropdownContainer}>
-                                                <Text style={styles.potText}>Pot 2</Text>
-                                                <View style={{ flex: 1 }}>
-                                                    <InlineDropdown data={data} onSelect={handleSelect}/>
-                                                </View>                                        
-                                            </View>
-                                            <View style={styles.dropdownContainer}>
-                                                <Text style={styles.potText}>Pot 3</Text>
-                                                <View style={{ flex: 1 }}>
-                                                    <InlineDropdown data={data} onSelect={handleSelect}/>
-                                                </View>                                        
-                                            </View>
-                                            <View style={styles.dropdownContainer}>
-                                                <Text style={styles.potText}>Pot 4</Text>
-                                                <View style={{ flex: 1 }}>
-                                                    <InlineDropdown data={data} onSelect={handleSelect}/>
-                                                </View>                                        
-                                            </View>
-                                        </View>
-                                        <View style={{ alignItems: "center" }}> 
-                                            <Pressable style={styles.saveButton}>
-                                                <Text style={{ color: "white"}}>Save</Text>
-                                            </Pressable>
-                                        </View>
-                                        </View>
-                                    {/* </ScrollView> */}
+                                        {/* </ScrollView> */}
+                                    </View>
                                 </View>
-                            </View>
-                        </Modal>
+                            </Modal>
+                        ) : (
+                            <></>
+                        )}
                 </SafeAreaView>
             </SafeAreaProvider>
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>

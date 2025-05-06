@@ -1,37 +1,44 @@
 import { Leaf, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Button, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { Collapsible } from "../Collapsible";
 import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import EditPlant from "../EditPlant";
+import { getPlants } from "@/utils/actions";
 
 export default function EditPots() {
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [ plants, setPlants ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
-    const data = [{
-        name: "Basil",
-        checks: 2,
-        duration: 3
-    }, {
-        name: "Rosemary",
-        checks: 3,
-        duration: 5
-    }]
+    useEffect(() => {
+        const getPlant = async () => {
+            setLoading(true);
+            const allPlants = await getPlants(id);
+            setPlants(allPlants);
+            setLoading(false);
+        }
+        
+        if (modalVisible) {
+            getPlant();
+        }
+    }, [modalVisible])
 
     return (
         <View style={{ flex: 1 }}>
             <SafeAreaProvider>
                 <SafeAreaView style={{ flex: 1 }}>
+                    {!loading ? (
                         <Modal 
-                            animationType="slide" 
-                            visible={modalVisible} 
-                            transparent={true}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed");
+                        animationType="slide" 
+                        visible={modalVisible} 
+                        transparent={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed");
                                 setModalVisible(!modalVisible);
                             }}>
                             <View style={styles.centeredView}>
@@ -42,10 +49,10 @@ export default function EditPots() {
                                     <Text style={styles.mainHeader}>Edit Plants</Text>
                                     <View>
                                         <View style={styles.plantView}>
-                                            {data.map(( data, index ) => (
+                                            {plants.map(( data, index ) => (
                                                 <View style={styles.dropdownContainer} key={index}>
                                                     <Text style={styles.potText}>Pot {index + 1 }</Text>
-                                                    <EditPlant data={data} index={index + 1 }/>
+                                                    <EditPlant data={data}/>
                                                 </View>
                                             ))}
                                         </View>
@@ -53,6 +60,9 @@ export default function EditPots() {
                                 </View>
                             </View>
                         </Modal>
+                        ):(
+                            <></>
+                        )}
                 </SafeAreaView>
             </SafeAreaProvider>
             <Pressable 

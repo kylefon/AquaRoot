@@ -1,28 +1,39 @@
 import { CalendarDays, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { getPlants } from "@/utils/actions";
 
 export default function MySchedule() {
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [ plants, setPlants ] = useState([]);
+    const [ loading, setLoading ] = useState(false);
 
-    const data = [{
-        name: "Basil"
-    }, {
-        name: "Rosemary"
-    }]
+    useEffect(() => {
+        const getPlant = async () => {
+            setLoading(true);
+            const allPlants = await getPlants(id);
+            setPlants(allPlants);
+            setLoading(false);
+        }
+        
+        if (modalVisible) {
+            getPlant();
+        }
+    }, [modalVisible])
 
     return (
         <View>
             <SafeAreaProvider>
                 <SafeAreaView>
+                    {!loading ? (
                         <Modal 
-                            animationType="slide" 
-                            visible={modalVisible} 
-                            transparent={true}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed");
+                        animationType="slide" 
+                        visible={modalVisible} 
+                        transparent={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed");
                                 setModalVisible(!modalVisible);
                             }}>
                                 <View style={styles.centeredView}>
@@ -31,20 +42,23 @@ export default function MySchedule() {
                                             <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                         </Pressable>
                                         <Text style={styles.mainHeader}>My Schedule</Text>
-                                        { data.map((data, index) => (
+                                        { plants.map((data, index) => (
                                             <View style={styles.plantView} key={index}>
                                                 <View style={styles.plantHeader}>
-                                                    <Text style={styles.plantName}>{data.name}</Text>
-                                                    <Text style={styles.potText}>Pot {index + 1 }</Text>
+                                                    <Text style={styles.plantName}>{data.plantName}</Text>
+                                                    <Text style={styles.potText}>Pot {data.potNumber}</Text>
                                                 </View>
                                                 <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>Today: 12:30 pm</Text>
+                                                    <Text style={styles.subHeader}>{data.time}</Text>
                                                 </View>
                                             </View>
                                         ))}
                                     </View>
                             </View>
                         </Modal>
+                        ) : (
+                            <></>
+                        )}
                 </SafeAreaView>
             </SafeAreaProvider>
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
