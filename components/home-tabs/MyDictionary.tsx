@@ -1,15 +1,17 @@
-import { BookOpenText, Pencil, Trash2 } from "lucide-react-native";
-import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { BookOpenText, Check, Pencil, Trash2 } from "lucide-react-native";
+import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { getPlants } from "@/utils/actions";
+import { deletePlant, editPlantName, getPlants } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
+    const [ plantName, setPlantName ] = useState('');
+    const [ toEditId, setToEditId ] = useState(null);
 
     const user = useUserContext()
 
@@ -26,6 +28,35 @@ export default function MyDictionary() {
         }
     }, [modalVisible])
 
+    const handleEditPlant = async (name: string, id: string) => {
+        await editPlantName(name, id);
+        const allPlants = await getPlants(user.id);
+        setPlants(allPlants);
+        setPlantName('');
+    }
+
+    const handleDeletePlant = (id: string) => {
+        Alert.alert(
+          "Delete Plant",
+          "Are you sure you want to delete this plant?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+            },
+            {
+              text: "Delete",
+              style: "destructive",
+              onPress:  () => {
+                await deletePlant(id);
+                const allPlants = await getPlants(user.id);
+                setPlants(allPlants); 
+              },
+            },
+          ]
+        );
+      };
+      
     return (
         <View>
                 {/* <SafeAreaView> */}
@@ -47,10 +78,35 @@ export default function MyDictionary() {
                                     {plants.map((data, index) => (
                                         <View style={styles.plantView} key={index}>
                                             <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>{data.plantName}</Text>
+                                                {toEditId === data.id ? (
+                                                    <TextInput style={styles.input} value={plantName} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
+                                                ):(
+                                                    <Text style={styles.plantName}>{data.plantName}</Text>
+                                                )}
                                                 <View style={styles.icons}>
-                                                    <Pencil color="#557153"/>
-                                                    <Trash2 color="#560216"/>
+                                                    <Pressable onPress={() => {
+                                                        if (toEditId === data.id) {
+                                                            setToEditId(null);
+                                                        } else {
+                                                            setToEditId(data.id);
+                                                        }
+                                                    }}>
+                                                        <Pencil color="#557153"/>
+                                                    </Pressable>
+                                                    {toEditId === data.id ? (
+                                                        <Pressable onPress={() => {
+                                                            setToEditId(null);
+                                                            handleEditPlant(plantName, data.plantId)
+                                                        }}>
+                                                            <Check color="#557153"/>
+                                                        </Pressable>
+                                                    ):(
+                                                        <Pressable onPress={() => {
+                                                            handleDeletePlant(data.plantId)
+                                                        }}>
+                                                            <Trash2 color="#560216"/>
+                                                        </Pressable>
+                                                    )}
                                                 </View>
                                             </View>
                                             <View style={styles.plantSubText}>
@@ -76,6 +132,14 @@ export default function MyDictionary() {
 } 
 
 const styles = StyleSheet.create({
+    input: {
+        backgroundColor: '#8f8e8e',
+        color: '#000000',
+        borderRadius: 20,
+        padding: 2,
+        width: 100,
+        flex: 1
+    },
     mainHeader: {
         fontSize: 30,
         color: "#ffffff",
@@ -139,5 +203,6 @@ const styles = StyleSheet.create({
     },
     icons: {
         flexDirection: 'row',
+        gap: 5
     }
 })

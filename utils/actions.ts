@@ -8,7 +8,7 @@ export async function getPlants(id: string) {
 
     const { data, error } = await supabase
         .from('plantType')
-        .select("userId, plantId, duration, frequency, potNumber, time, date" )
+        .select("id, userId, plantId, duration, frequency, potNumber, time, date" )
         .eq("userId",id);
 
     if (error) {
@@ -46,4 +46,57 @@ export async function getAuthenticatedUser() {
     }
     
     return user
+}
+
+export async function editPlantName(name: string, id: string) {
+    const { error } = await supabase
+        .from('plant')
+        .update({
+            plantName: name
+        })
+        .eq('id', id)
+    
+    if (error) {
+        Alert.alert("Unable to edit plant");
+    }
+}
+
+export async function deletePlant(id: string) {
+    const response = await supabase
+        .from('plant')
+        .delete()
+        .eq('id', id)
+    
+    if (!response) {
+        Alert.alert("Unable to delete plant");
+    }
+}
+
+export async function editPlantType(data){
+    const { error } = await supabase
+        .from('plant')
+        .update({
+            plantName: data.plantName,
+        })
+    if (error) {
+        Alert.alert("Unable to edit plant name");
+    }
+
+    const { error: plantError } = await supabase
+        .from('plant')
+        .update({
+            potNumber: data.potNumber,
+            duration: data.duration,
+            frequency: data.frequency,
+            date: data.date,
+            time: data.time
+        })
+    
+    if (plantError) {
+        Alert.alert("Unable to edit plant types");
+    }
+
+    if (!error && !plantError) {
+        Alert.alert("Successfully edited plant");
+    }
 }
