@@ -1,10 +1,20 @@
+import { supabase } from "@/lib/supabase";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
 import { UserCircle } from "lucide-react-native";
-import { StyleSheet, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 export default function CustomDrawer(props: any) {
     const router = useRouter();
+
+    const signOutUser = async () => {
+        const { error } = await supabase.auth.signOut();
+
+        if ( error ) {
+            Alert.alert("Error signing out user");
+        } 
+    }
+     
     return (
         <View style={{ flex: 1 }}>
             <DrawerContentScrollView {...props} contentContainerStyle={{backgroundColor: '#3c4b2b', height: '100%'}} scrollEnabled={false}>
@@ -22,7 +32,7 @@ export default function CustomDrawer(props: any) {
                     </View>
                     <View> 
                         <DrawerItem label={'About Us'} onPress={() => router.replace('/')}/>
-                        <DrawerItem label={'Logout'} onPress={() => router.replace('/')}/>
+                        <DrawerItem label={'Logout'} onPress={() => signOutUser()}/>
                     </View>
                 </View>
             </DrawerContentScrollView>

@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Alert } from "react-native";
+import { useRouter } from 'expo-router'
 
 export async function getPlants(id: string) {
     let allPlants: any[] = []
@@ -32,4 +33,17 @@ export async function getPlants(id: string) {
     }
 
     return allPlants;
+}
+
+export async function getAuthenticatedUser() {
+    const router = useRouter()
+    const { data: { user }, error } = await supabase.auth.getUser();
+
+    if (error || !user) {
+        Alert.alert("The user is not logged in");
+        router.replace("/sign-in");
+        return;
+    }
+    
+    return user
 }

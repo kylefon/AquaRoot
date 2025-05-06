@@ -9,16 +9,19 @@ import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import EditPlant from "../EditPlant";
 import { getPlants } from "@/utils/actions";
+import { useUserContext } from "../../context/UserContext";
 
 export default function EditPots() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
 
+    const user = useUserContext();
+
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(id);
+            const allPlants = await getPlants(user.id);
             setPlants(allPlants);
             setLoading(false);
         }
@@ -30,41 +33,37 @@ export default function EditPots() {
 
     return (
         <View style={{ flex: 1 }}>
-            <SafeAreaProvider>
-                <SafeAreaView style={{ flex: 1 }}>
-                    {!loading ? (
-                        <Modal 
-                        animationType="slide" 
-                        visible={modalVisible} 
-                        transparent={true}
-                        onRequestClose={() => {
-                            Alert.alert("Modal has been closed");
-                                setModalVisible(!modalVisible);
-                            }}>
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                        <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
-                                    </Pressable>
-                                    <Text style={styles.mainHeader}>Edit Plants</Text>
-                                    <View>
-                                        <View style={styles.plantView}>
-                                            {plants.map(( data, index ) => (
-                                                <View style={styles.dropdownContainer} key={index}>
-                                                    <Text style={styles.potText}>Pot {index + 1 }</Text>
-                                                    <EditPlant data={data}/>
-                                                </View>
-                                            ))}
-                                        </View>
+                {/* <SafeAreaView style={{ flex: 1 }}> */}
+                {!loading && (
+                    <Modal 
+                    animationType="slide" 
+                    visible={modalVisible} 
+                    transparent={true}
+                    onRequestClose={() => {
+                        Alert.alert("Modal has been closed");
+                            setModalVisible(!modalVisible);
+                        }}>
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                    <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                </Pressable>
+                                <Text style={styles.mainHeader}>Edit Plants</Text>
+                                <View>
+                                    <View style={styles.plantView}>
+                                        {plants.map(( data, index ) => (
+                                            <View style={styles.dropdownContainer} key={index}>
+                                                <Text style={styles.potText}>Pot {index + 1 }</Text>
+                                                <EditPlant data={data}/>
+                                            </View>
+                                        ))}
                                     </View>
                                 </View>
                             </View>
-                        </Modal>
-                        ):(
-                            <></>
-                        )}
-                </SafeAreaView>
-            </SafeAreaProvider>
+                        </View>
+                    </Modal>
+                )}
+                {/* </SafeAreaView> */}
             <Pressable 
                 style={({ pressed }) => [
                     styles.wateringCanButton,

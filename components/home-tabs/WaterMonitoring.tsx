@@ -4,16 +4,19 @@ import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { getPlants } from "@/utils/actions";
+import { useUserContext } from "@/context/UserContext";
 
 export default function WaterMonitoring() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
-    const [ loading, setLoading ] = useState(false);
+    const [ loading, setLoading ] = useState(true);
+
+    const user = useUserContext();
 
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(id);
+            const allPlants = await getPlants(user.id);
             setPlants(allPlants);
             setLoading(false);
         }
@@ -25,46 +28,40 @@ export default function WaterMonitoring() {
 
     return (
         <View>
-            <SafeAreaProvider>
-                <SafeAreaView>
-                    {!loading ? (
-                        <Modal 
-                        animationType="slide" 
-                        visible={modalVisible} 
-                        transparent={true}
-                        onRequestClose={() => {
-                            Alert.alert("Modal has been closed");
-                            setModalVisible(!modalVisible);
-                        }}>
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                        <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
-                                    </Pressable>
-                                    <Text style={styles.mainHeader}>Water Monitoring</Text>
-                                    {plants.map((data, index) => {
-                                        const waterUsage = (data.frequency * data.duration * 0.001149).toFixed(2);
-                                        return (
-                                            <View style={styles.plantView} key={index}>
-                                                <View style={styles.plantHeader}>
-                                                    <Text style={styles.plantName}>Pot {index+1}: {data.plantName}</Text>
-                                                </View>
-                                                <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
-                                                    <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
-                                                    <Text style={styles.subHeader}>Water Usage: {waterUsage}L/day</Text>
-                                                </View>
-                                            </View>
-                                        )
-                                    })}
-                                </View>
-                            </View>
-                        </Modal>
-                    ) : (
-                        <></>
-                    )}
-                </SafeAreaView>
-            </SafeAreaProvider>
+            {!loading && (
+                <Modal 
+                animationType="slide" 
+                visible={modalVisible} 
+                transparent={true}
+                onRequestClose={() => {
+                    Alert.alert("Modal has been closed");
+                    setModalVisible(!modalVisible);
+                }}>
+                    <View style={styles.centeredView}>
+                        <View style={styles.modalView}>
+                            <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                            </Pressable>
+                            <Text style={styles.mainHeader}>Water Monitoring</Text>
+                            {plants.map((data, index) => {
+                                const waterUsage = (data.frequency * data.duration * 0.001149).toFixed(2);
+                                return (
+                                    <View style={styles.plantView} key={index}>
+                                        <View style={styles.plantHeader}>
+                                            <Text style={styles.plantName}>Pot {index+1}: {data.plantName}</Text>
+                                        </View>
+                                        <View style={styles.plantSubText}>
+                                            <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
+                                            <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
+                                            <Text style={styles.subHeader}>Water Usage: {waterUsage}L/day</Text>
+                                        </View>
+                                    </View>
+                                )
+                            })}
+                        </View>
+                    </View>
+                </Modal>
+            )}
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
                 <Droplets color="#557153" size={40} />
                 <View style={styles.text}>

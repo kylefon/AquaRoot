@@ -56,21 +56,7 @@ export default function SignIn() {
             setLoading(false);
             return;
         }
-
-        // console.log("username:", username);
-
-        // const { data, error } = await supabase.from('user').update([
-        //     {
-        //         username: username.trim()
-        //     }
-        // ]).eq('id', signUpData?.user?.id)
-
-        // if (error) Alert.alert('Error saving username: ' + error.message)
-        // if (data) {
-        //     Alert.alert('Account created!');
-        //     router.push("/my-home")
-        // };
-
+        
         setLoading(false);
     }
     

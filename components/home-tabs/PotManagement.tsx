@@ -8,16 +8,19 @@ import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import { getPlants } from "@/utils/actions";
+import { useUserContext } from "@/context/UserContext";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
 
+    const user = useUserContext();
+
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(id);
+            const allPlants = await getPlants(user.id);
             setPlants(allPlants);
             setLoading(false);
         }
@@ -34,53 +37,47 @@ export default function PotManagement() {
 
     return (
         <View>
-            <SafeAreaProvider>
-                <SafeAreaView>
-                    {!loading ? (
-                        <Modal 
-                            animationType="slide" 
-                            visible={modalVisible} 
-                                transparent={true}
-                                onRequestClose={() => {
-                                    Alert.alert("Modal has been closed");
-                                    setModalVisible(!modalVisible);
-                                }}>
-                                <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
-                                        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                            <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
-                                        </Pressable>
-                                        <Text style={styles.mainHeader}>Pot Management</Text>
-                                        {/* <ScrollView
-                                            contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
-                                            showsVerticalScrollIndicator={false}
-                                        > */}
-                                            <View>
-                                                <View style={styles.plantView}>
-                                                    { plants.map((data, index) => (
-                                                        <View style={styles.dropdownContainer} key={index}>
-                                                            <Text style={styles.potText}>Pot {data.potNumber}</Text>
-                                                            <View style={{ flex: 1 }}>
-                                                                <InlineDropdown data={data.plantName} onSelect={handleSelect}/>
-                                                            </View>
-                                                        </View>
-                                                    ))}
+            {!loading && (
+                <Modal 
+                    animationType="slide" 
+                    visible={modalVisible} 
+                        transparent={true}
+                        onRequestClose={() => {
+                            Alert.alert("Modal has been closed");
+                            setModalVisible(!modalVisible);
+                        }}>
+                        <View style={styles.centeredView}>
+                            <View style={styles.modalView}>
+                                <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                    <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                </Pressable>
+                                <Text style={styles.mainHeader}>Pot Management</Text>
+                                {/* <ScrollView
+                                    contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
+                                    showsVerticalScrollIndicator={false}
+                                > */}
+                                    <View>
+                                        <View style={styles.plantView}>
+                                            { plants.map((data, index) => (
+                                                <View style={styles.dropdownContainer} key={index}>
+                                                    <Text style={styles.potText}>Pot {data.potNumber}</Text>
+                                                    <View style={{ flex: 1 }}>
+                                                        <InlineDropdown data={data.plantName} onSelect={handleSelect}/>
+                                                    </View>
                                                 </View>
-                                                <View style={{ alignItems: "center" }}> 
-                                                    <Pressable style={styles.saveButton}>
-                                                        <Text style={{ color: "white"}}>Save</Text>
-                                                    </Pressable>
-                                                </View>
-                                            </View>
-                                        {/* </ScrollView> */}
+                                            ))}
+                                        </View>
+                                        <View style={{ alignItems: "center" }}> 
+                                            <Pressable style={styles.saveButton}>
+                                                <Text style={{ color: "white"}}>Save</Text>
+                                            </Pressable>
+                                        </View>
                                     </View>
-                                </View>
-                            </Modal>
-                        ) : (
-                            <></>
-                        )}
-                </SafeAreaView>
-            </SafeAreaProvider>
+                                {/* </ScrollView> */}
+                            </View>
+                        </View>
+                    </Modal>
+                )}
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
                 <Leaf color="#557153" size={40} />
                 <View style={styles.text}>

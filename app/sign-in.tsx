@@ -1,16 +1,8 @@
 import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { Alert, AppState, Button, Dimensions, Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Dimensions, Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import 'react-native-gesture-handler';
-
-AppState.addEventListener('change', (state) => {
-    if (state === "active") {
-        supabase.auth.startAutoRefresh()
-    } else {
-        supabase.auth.stopAutoRefresh()
-    }
-})
 
 export default function SignIn() {
     const [ email, setEmail ] = useState('')

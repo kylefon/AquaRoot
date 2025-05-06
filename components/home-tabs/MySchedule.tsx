@@ -4,16 +4,19 @@ import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { getPlants } from "@/utils/actions";
+import { useUserContext } from "@/context/UserContext";
 
 export default function MySchedule() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
 
+    const user = useUserContext();
+
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(id);
+            const allPlants = await getPlants(user.id);
             setPlants(allPlants);
             setLoading(false);
         }
@@ -25,9 +28,8 @@ export default function MySchedule() {
 
     return (
         <View>
-            <SafeAreaProvider>
-                <SafeAreaView>
-                    {!loading ? (
+                {/* <SafeAreaView> */}
+                    {!loading && (
                         <Modal 
                         animationType="slide" 
                         visible={modalVisible} 
@@ -56,11 +58,8 @@ export default function MySchedule() {
                                     </View>
                             </View>
                         </Modal>
-                        ) : (
-                            <></>
-                        )}
-                </SafeAreaView>
-            </SafeAreaProvider>
+                    )} 
+            {/* </SafeAreaView> */}
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
                 <CalendarDays color="#557153" size={40} />
                 <View style={styles.text}>
