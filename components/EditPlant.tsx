@@ -2,9 +2,23 @@ import { Droplets, Pencil, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
 
-export default function EditPlant({data}) {
+export default function EditPlant({ data }) {
     const [ modalVisible, setModalVisible ] = useState(false);
+    const [dateValue, setDateValue] = useState(null);
+    const [timeValue, setTimeValue] = useState(null);
+    const [plantName, setPlantName] = useState(data.plantName);
+    const [potNumber, setPotNumber] = useState(data.potNumber);
+    const [duration, setDuration] = useState(data.duration);
+    const [frequency, setFrequency] = useState(data.frequency);
+
+    const submitForm = () => {
+        console.log("DATE VALUE", dateValue);
+        
+        console.log("TIME VALUE", timeValue);
+    }
 
     return (
         <View style={{ flex: 1 }}>
@@ -30,11 +44,12 @@ export default function EditPlant({data}) {
                                             </View>
                                             <View style={styles.plantHeader}>
                                                 <Text style={styles.plantName}>Date</Text>
-                                                <TextInput placeholder="Date" placeholderTextColor="gray" style={styles.input}/>
+                                                <DatePicker setDateValue={setDateValue}/>
                                             </View>
                                             <View style={styles.plantHeader}>
                                                 <Text style={styles.plantName}>Time</Text>
-                                                <TextInput placeholder="Time" placeholderTextColor="gray" style={styles.input}/>
+                                                {/* <TextInput placeholder="Time" placeholderTextColor="gray" style={styles.input}/> */}
+                                                <TimePicker setTimeValue={setTimeValue}/>
                                             </View>
                                             <View style={styles.plantHeader}>
                                                 <Text style={styles.plantName}>Pot Number</Text>
@@ -50,7 +65,7 @@ export default function EditPlant({data}) {
                                             </View>
                                         </View>
                                         <View style={{ alignItems: "center" }}> 
-                                            <Pressable style={styles.saveButton}>
+                                            <Pressable style={styles.saveButton} onPress={() => submitForm()}>
                                                 <Text style={{ color: "white"}}>Set</Text>
                                             </Pressable>
                                         </View>
