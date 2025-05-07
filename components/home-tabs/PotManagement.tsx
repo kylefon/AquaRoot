@@ -7,13 +7,14 @@ import { Collapsible } from "../Collapsible";
 import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
-import { getPlants } from "@/utils/actions";
+import { editPotNumber, getPlants } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
+    const [ selectedPlants, setSelectedPlants] = useState([]);
+    const [ newPlants, setNewPlants ] = useState([]);
 
     const user = useUserContext();
 
@@ -21,7 +22,18 @@ export default function PotManagement() {
         const getPlant = async () => {
             setLoading(true);
             const allPlants = await getPlants(user.id);
-            setPlants(allPlants);
+            const name = allPlants.filter(plant => plant.plantName && plant.potNumber).map(plant => ({ plantName: plant.plantName, potNumber: plant.potNumber}))
+            const plantArray = Array(4).fill(null);
+
+            name.forEach(plant => {
+                const index = plant.potNumber - 1;
+                if ( index >= 0 && index < 4) {
+                    plantArray[index] = plant.plantName;
+                }
+            })
+            setSelectedPlants(plantArray)
+            setNewPlants(plantArray);
+            
             setLoading(false);
         }
         
@@ -30,9 +42,32 @@ export default function PotManagement() {
         }
     }, [modalVisible])
 
+    const handleSelect = (item, i) => {
+        setNewPlants(prev => {
+            const updated = [...prev];
+            updated[i] = item === "None" ? null : item; 
+            return updated; 
+          });
+    }
 
-    const handleSelect = (item: string) => {
-        // console.log(item);
+
+    const onSave = async () => {
+        const sortedNewPlants = [...newPlants].sort();
+        const sortedSelectedPlants = [...selectedPlants].sort();
+
+        if (sortedNewPlants.join(",") !== sortedSelectedPlants.join(",")) {
+            Alert.alert("Please include all plants and prevent duplicates");
+            return;
+        }
+
+        const result = newPlants.map((item, index) => item !== null ? { plantName: item, potNumber: index + 1}: null).filter(item => item !== null);
+
+        for (let i = 0; i < result.length; i++ ) {
+            await editPotNumber(result[i].plantName, result[i].potNumber);
+        }
+
+        Alert.alert("Successfully edited pot numbers");
+        setModalVisible(false);
     }
 
     return (
@@ -58,17 +93,17 @@ export default function PotManagement() {
                                 > */}
                                     <View>
                                         <View style={styles.plantView}>
-                                            { plants.map((data, index) => (
-                                                <View style={styles.dropdownContainer} key={index}>
-                                                    <Text style={styles.potText}>Pot {data.potNumber}</Text>
-                                                    <View style={{ flex: 1 }}>
-                                                        <InlineDropdown data={data.plantName} onSelect={handleSelect}/>
+                                            {selectedPlants.map((_, index) => (
+                                                    <View style={styles.dropdownContainer} key={index}>
+                                                        <Text style={styles.potText}>Pot {index + 1}</Text>
+                                                        <View style={{ flex: 1 }}>
+                                                            <InlineDropdown data={selectedPlants} onSelect={handleSelect} i={index} />
+                                                        </View>
                                                     </View>
-                                                </View>
                                             ))}
                                         </View>
                                         <View style={{ alignItems: "center" }}> 
-                                            <Pressable style={styles.saveButton}>
+                                            <Pressable style={styles.saveButton} onPress={() => onSave()}>
                                                 <Text style={{ color: "white"}}>Save</Text>
                                             </Pressable>
                                         </View>
@@ -96,17 +131,17 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: "bold"
     },
+    dropdownContainer: {
+        flexDirection: "row",
+        alignItems: 'flex-start',
+        gap: 10
+    },
     saveButton: {
         backgroundColor: "#557153",
         borderRadius: 25,
         padding: 16,
         alignItems: "center",
         width: 100
-    },
-    dropdownContainer: {
-        flexDirection: "row",
-        alignItems: 'flex-start',
-        gap: 10
     },
     centeredView: {
         flex: 1,

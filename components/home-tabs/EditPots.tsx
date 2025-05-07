@@ -53,7 +53,7 @@ export default function EditPots() {
                                     <View style={styles.plantView}>
                                         {plants.map(( data, index ) => (
                                             <View style={styles.dropdownContainer} key={index}>
-                                                <Text style={styles.potText}>Pot {index + 1 }</Text>
+                                                <Text style={styles.potText}>Pot {data.potNumber}</Text>
                                                 <EditPlant data={data}/>
                                             </View>
                                         ))}

@@ -48,7 +48,7 @@ export default function WaterMonitoring() {
                                 return (
                                     <View style={styles.plantView} key={index}>
                                         <View style={styles.plantHeader}>
-                                            <Text style={styles.plantName}>Pot {index+1}: {data.plantName}</Text>
+                                            <Text style={styles.plantName}>Pot {data.potNumber}: {data.plantName}</Text>
                                         </View>
                                         <View style={styles.plantSubText}>
                                             <Text style={styles.subHeader}>Every {data.frequency} hours</Text>

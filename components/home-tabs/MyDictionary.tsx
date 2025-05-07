@@ -33,6 +33,8 @@ export default function MyDictionary() {
         const allPlants = await getPlants(user.id);
         setPlants(allPlants);
         setPlantName('');
+
+        Alert.alert("Successfully edited plant name");
     }
 
     const handleDeletePlant = (id: string) => {
@@ -47,7 +49,7 @@ export default function MyDictionary() {
             {
               text: "Delete",
               style: "destructive",
-              onPress:  () => {
+              onPress:  async () => {
                 await deletePlant(id);
                 const allPlants = await getPlants(user.id);
                 setPlants(allPlants); 

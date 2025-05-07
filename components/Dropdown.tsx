@@ -1,22 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Pressable,
 } from "react-native";
 import { IconSymbol } from "./ui/IconSymbol";
 
 // from https://dev.to/aneeqakhan/how-to-create-a-dropdown-from-scratch-in-react-native-1379
 
-const InlineDropdown = ({ data, onSelect }) => {
+const InlineDropdown = ({ data, onSelect, i }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [selectedValue, setSelectedValue] = useState(null);
+  const [ savedPots, setSavedPots ] = useState([]);
+
   const toggleDropdown = () => setDropdownVisible(!isDropdownVisible);
+
   const handleSelect = (item) => {
     setSelectedValue(item);
-    onSelect(item);
+    onSelect(item, i);
     setDropdownVisible(false);
   };
   return (
@@ -24,7 +28,7 @@ const InlineDropdown = ({ data, onSelect }) => {
       <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
         <View style={styles.textContainer}>
             <Text style={styles.buttonText}>
-                {selectedValue || "Select an option"}
+              {selectedValue || data[i] || "None"}
             </Text>
             <IconSymbol
                 name="chevron.right"
@@ -38,7 +42,7 @@ const InlineDropdown = ({ data, onSelect }) => {
       {isDropdownVisible && (
         <View style={styles.dropdown}>
           <FlatList
-            data={data}
+            data={["None", ...data.filter(item => item)]} 
             keyExtractor={(item, index) => index.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity

@@ -100,3 +100,21 @@ export async function editPlantType(data){
         Alert.alert("Successfully edited plant");
     }
 }
+
+export async function editPotNumber(plantName: string, potNumber: number){
+    const { data, error } = await supabase
+        .from('plant').select().eq('plantName', plantName)
+    
+    if (error) {
+        Alert.alert("Unable to get plant name");
+        return;
+    }
+
+    const { error: plantTypeError } = await supabase
+        .from('plantType').update({potNumber: potNumber}).eq("plantId", data[0].id)
+
+    if (plantTypeError) {
+        Alert.alert("Unable to edit pot number");
+        return;
+    }
+}
