@@ -19,7 +19,7 @@ export default function SignIn() {
         if (error) Alert.alert(error.message)
         if ( data ) {
             Alert.alert("Successfully logged in");
-            router.push("/my-home");
+            router.replace("/my-home");
             return;
         }
         setLoading(false);

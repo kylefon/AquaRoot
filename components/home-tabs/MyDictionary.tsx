@@ -19,6 +19,12 @@ export default function MyDictionary() {
         const getPlant = async () => {
             setLoading(true);
             const allPlants = await getPlants(user.id);
+
+            if (allPlants.length === 0) {
+                setModalVisible(false);
+                return;
+            }
+
             setPlants(allPlants);
             setLoading(false);
         }
@@ -26,7 +32,7 @@ export default function MyDictionary() {
         if (modalVisible) {
             getPlant();
         }
-    }, [modalVisible])
+    }, [user, modalVisible])
 
     const handleEditPlant = async (name: string, id: string) => {
         await editPlantName(name, id);
@@ -81,7 +87,7 @@ export default function MyDictionary() {
                                         <View style={styles.plantView} key={index}>
                                             <View style={styles.plantHeader}>
                                                 {toEditId === data.id ? (
-                                                    <TextInput style={styles.input} value={plantName} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
+                                                    <TextInput style={styles.input} value={plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
                                                 ):(
                                                     <Text style={styles.plantName}>{data.plantName}</Text>
                                                 )}

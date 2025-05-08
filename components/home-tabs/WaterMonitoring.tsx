@@ -17,6 +17,10 @@ export default function WaterMonitoring() {
         const getPlant = async () => {
             setLoading(true);
             const allPlants = await getPlants(user.id);
+            if (allPlants.length === 0) {
+                setModalVisible(false);
+                return;
+            }
             setPlants(allPlants);
             setLoading(false);
         }
@@ -24,7 +28,7 @@ export default function WaterMonitoring() {
         if (modalVisible) {
             getPlant();
         }
-    }, [modalVisible])
+    }, [user, modalVisible])
 
     return (
         <View>

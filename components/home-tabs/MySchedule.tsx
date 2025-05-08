@@ -17,6 +17,12 @@ export default function MySchedule() {
         const getPlant = async () => {
             setLoading(true);
             const allPlants = await getPlants(user.id);
+
+            if (allPlants.length === 0) {
+                setModalVisible(false);
+                return;
+            }
+            
             setPlants(allPlants);
             setLoading(false);
         }
@@ -24,7 +30,7 @@ export default function MySchedule() {
         if (modalVisible) {
             getPlant();
         }
-    }, [modalVisible])
+    }, [user, modalVisible])
 
     return (
         <View>

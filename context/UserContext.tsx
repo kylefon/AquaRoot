@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuthenticatedUser } from "../utils/actions";
 import { User } from "@supabase/supabase-js";
+import { ActivityIndicator, Text, View } from "react-native";
 
 const UserContext = createContext(null);
 
@@ -10,6 +11,7 @@ export const useUserContext = () => {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchUser = async () => {

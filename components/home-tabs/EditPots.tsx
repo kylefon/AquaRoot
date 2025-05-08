@@ -38,7 +38,7 @@ export default function EditPots() {
         if (modalVisible) {
             getPlant();
         }
-    }, [modalVisible])
+    }, [user, modalVisible])
 
     return (
         <View style={{ flex: 1 }}>

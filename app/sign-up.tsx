@@ -14,6 +14,11 @@ export default function SignIn() {
     async function signUpWithEmail() {
         setLoading(true)
 
+        if (username.length > 3) {
+            Alert.alert("Username should be more than 2 characters");
+            return;
+        }
+
         if (!email || !password || !confirmPassword || !username) {
             Alert.alert("Please fill in all fields");
             return;
@@ -44,7 +49,7 @@ export default function SignIn() {
         }
 
         Alert.alert("Successfully signed in your account");
-        router.push("/plant-type")
+        router.replace("/plant-type")
         
         setLoading(false);
     }
@@ -62,7 +67,7 @@ export default function SignIn() {
                     <View style={{ gap: 10 }}>
                         <View>
                             <Text style={styles.subHeading}>USERNAME</Text>
-                            <TextInput placeholder="username" value={username} onChangeText={(text) => setUsername(text)} style={styles.input}/>
+                            <TextInput placeholder="username" value={username} maxLength={15} onChangeText={(text) => setUsername(text)} style={styles.input}/>
                         </View>
                         <View>
                             <Text style={styles.subHeading}>EMAIL</Text>

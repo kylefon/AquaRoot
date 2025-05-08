@@ -61,6 +61,16 @@ export default function EditPlant({ data, onRefresh }) {
             Alert.alert("Error getting pot numbers");
         }
 
+        if (potNumber < 1 || potNumber > 4) {
+            Alert.alert("Pot number should be from 1 - 4");
+            return;
+        };
+
+        if (typeof frequency !== "number" && typeof duration !== "number") {
+            Alert.alert("Frequency or duration should be numerical");
+            return;
+        }
+
         const potNumbers = potNumData?.map(item => item.potNumber);
         if (potNumbers?.includes(Number(potNumber))) {
             Alert.alert(`There is already a plant at pot ${potNumber}`);
@@ -113,7 +123,7 @@ export default function EditPlant({ data, onRefresh }) {
                                             <View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Plant Name</Text>
-                                                    <TextInput placeholder={data?.plantName || "Plant name"} placeholderTextColor="gray" style={styles.input} value={plantName} onChangeText={(text) => setPlantName(text)}/>
+                                                    <TextInput placeholder={data?.plantName || "Plant name"} placeholderTextColor="gray" style={styles.input} value={plantName} maxLength={15} onChangeText={(text) => setPlantName(text)}/>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Date</Text>
@@ -125,15 +135,15 @@ export default function EditPlant({ data, onRefresh }) {
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Pot Number</Text>
-                                                    <TextInput placeholder={data?.potNumber?.toString() || "Pot number"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" value={potNumber} onChangeText={(text) => setPotNumber(text)}/>
+                                                    <TextInput placeholder={data?.potNumber?.toString() || "Pot number"} placeholderTextColor="gray" style={styles.input} maxLength={1} keyboardType="numeric" value={potNumber} onChangeText={(text) => setPotNumber(text)}/>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Valve Duration</Text>
-                                                    <TextInput placeholder={data?.duration?.toString() || "Duration"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" value={duration} onChangeText={(text) => setDuration(text)} />
+                                                    <TextInput placeholder={data?.duration?.toString() || "Duration"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={duration} onChangeText={(text) => setDuration(text)} />
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Frequency</Text>
-                                                    <TextInput placeholder={`Every ${data?.frequency || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                    <TextInput placeholder={`Every ${data?.frequency || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
                                                 </View>
                                             </View>
                                             <View style={{ alignItems: "center" }}> 

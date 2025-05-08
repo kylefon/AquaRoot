@@ -22,6 +22,12 @@ export default function PotManagement() {
         const getPlant = async () => {
             setLoading(true);
             const allPlants = await getPlants(user.id);
+
+            if (allPlants.length === 0) {
+                setModalVisible(false);
+                return;
+            }
+            
             const name = allPlants.filter(plant => plant.plantName && plant.potNumber).map(plant => ({ plantName: plant.plantName, potNumber: plant.potNumber}))
             const plantArray = Array(4).fill(null);
 
@@ -40,7 +46,7 @@ export default function PotManagement() {
         if (modalVisible) {
             getPlant();
         }
-    }, [modalVisible])
+    }, [user, modalVisible])
 
     const handleSelect = (item, i) => {
         setNewPlants(prev => {

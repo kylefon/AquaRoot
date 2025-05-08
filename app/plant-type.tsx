@@ -74,7 +74,7 @@ export default function PlantTypes() {
         }
 
         Alert.alert("Successfully added plants");
-        router.push("/my-home")
+        router.replace("/my-home")
     }
 
 
@@ -109,15 +109,15 @@ export default function PlantTypes() {
                                             <View style={{ gap: 5 }}>
                                                 <View style={{ width: "100%"}}>
                                                     <Text style={styles.subHeading}>Plant Name</Text>
-                                                    <TextInput value={input.name} placeholder={`Plant Name`} style={styles.input} onChangeText={text => handleInputChange('name', text, index)}/>
+                                                    <TextInput value={input.name} placeholder={`Plant Name`} style={styles.input} maxLength={25} onChangeText={text => handleInputChange('name', text, index)}/>
                                                 </View>
                                                 <View>
                                                     <Text style={styles.subHeading}>Frequency of Checks (per week)</Text>
-                                                    <TextInput value={input.checks} placeholder="Checks" style={styles.input} onChangeText={text => handleInputChange('checks', text, index)}/>
+                                                    <TextInput value={input.checks} placeholder="Checks" style={styles.input} keyboardType="numeric" maxLength={5} onChangeText={text => handleInputChange('checks', text, index)}/>
                                                 </View>
                                                 <View>
                                                     <Text style={styles.subHeading}>Duration (in seconds)</Text>
-                                                    <TextInput value={input.duration} placeholder="Duration" style={styles.input} onChangeText={text => handleInputChange('duration', text, index)}/>
+                                                    <TextInput value={input.duration} placeholder="Duration" style={styles.input} keyboardType="numeric" maxLength={15} onChangeText={text => handleInputChange('duration', text, index)}/>
                                                 </View>
                                             </View>
                                         </Collapsible>
