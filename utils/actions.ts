@@ -9,7 +9,8 @@ export async function getPlants(id: string) {
     const { data, error } = await supabase
         .from('plantType')
         .select("id, userId, plantId, duration, frequency, potNumber, time, date" )
-        .eq("userId",id);
+        .eq("userId",id)
+        .order('potNumber');
 
     if (error) {
         Alert.alert("Error getting plant types");
@@ -22,7 +23,9 @@ export async function getPlants(id: string) {
     }
 
     for ( let i = 0; i < data?.length; i++ ) {
-        const { data: plantData, error: plantError } = await supabase.from('plant').select("plantName").eq("id", data?.[i].plantId);
+        const { data: plantData, error: plantError } = await supabase
+            .from('plant')
+            .select("plantName").eq("id", data?.[i].plantId);
 
         if (plantData === null || data === null) {
             Alert.alert("No plants available");
@@ -108,4 +111,34 @@ export async function editPotNumber(plantName: string, potNumber: number){
         Alert.alert("Unable to edit pot number");
         return;
     }
+}
+
+export async function addPlantData(data) {
+    const { data: plantData, error } = await supabase
+        .from('plant')
+        .insert({ plantName: data.plantName })
+        .select()
+    
+    const { error: plantTypeError } = await supabase
+        .from('plantType')
+        .insert({
+            potNumber: data.potNumber,
+            frequency: data.frequency,
+            duration: data.duration,
+            plantId: plantData?.[0]?.id,
+            userId: data.userId,
+            date: data.date,
+            time: data.time
+        })
+    
+    return { error, plantTypeError }
+}
+
+export async function getPotNumbers(userId) {
+    const { data, error } = await supabase
+        .from('plantType')
+        .select("potNumber")
+        .eq("userId", userId)
+
+    return { data, error }
 }

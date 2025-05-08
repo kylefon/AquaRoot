@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, TextInput, Button, Pressable } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker'
 
-export default function TimePicker({ setTimeValue }) {
+export default function TimePicker({ setTimeValue, timeValue }) {
     const [ time, setTime ] = useState(null);
     const [ showPicker, setShowPicker ] = useState(false);
 
@@ -17,6 +17,15 @@ export default function TimePicker({ setTimeValue }) {
             setTimeValue(`${datePart}T${formatted}.000`);        
         }
     }
+    
+    useEffect(() => {
+        if (timeValue === "") {
+            const currentTime = new Date();
+            const formatted = currentTime.toLocaleTimeString("sv-SE", { hour12: false }); // "HH:mm:ss"
+            const datePart = currentTime.toISOString().split("T")[0]; // Local date fallback if needed
+            setTimeValue(`${datePart}T${formatted}.000`);
+        }
+    }, []);
 
     return (
         <View>

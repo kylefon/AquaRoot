@@ -1,4 +1,4 @@
-import { Leaf, Pencil, Trash2 } from "lucide-react-native";
+import { Leaf, Pencil, TestTube, Trash2 } from "lucide-react-native";
 import { Alert, Button, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
@@ -13,19 +13,28 @@ import { useUserContext } from "../../context/UserContext";
 
 export default function EditPots() {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ plants, setPlants ] = useState([]);
+    const [ plantArray, setPlantArray ] = useState([])
     const [ loading, setLoading ] = useState(false);
 
     const user = useUserContext();
 
-    useEffect(() => {
-        const getPlant = async () => {
-            setLoading(true);
-            const allPlants = await getPlants(user.id);
-            setPlants(allPlants);
-            setLoading(false);
-        }
-        
+    const getPlant = async () => {
+        setLoading(true);
+        const allPlants = await getPlants(user.id);
+
+        const emptyPlants = Array(4).fill(null);
+        allPlants.forEach(plant => {
+            const index = plant.potNumber - 1;
+            if ( index >= 0 && index < 4) {
+                emptyPlants[index] = plant;
+            }
+        })
+    
+        setPlantArray(emptyPlants);
+        setLoading(false);
+    }
+
+    useEffect(() => {        
         if (modalVisible) {
             getPlant();
         }
@@ -51,10 +60,14 @@ export default function EditPots() {
                                 <Text style={styles.mainHeader}>Edit Plants</Text>
                                 <View>
                                     <View style={styles.plantView}>
-                                        {plants.map(( data, index ) => (
+                                        {plantArray.map(( data, index ) => (
                                             <View style={styles.dropdownContainer} key={index}>
-                                                <Text style={styles.potText}>Pot {data.potNumber}</Text>
-                                                <EditPlant data={data}/>
+                                                <Text style={styles.potText}>Pot {index + 1}</Text>
+                                                {/* { data === null ? (
+                                                    <Text>No Plants Assigned</Text>
+                                                ): ( */}
+                                                    <EditPlant data={data} onRefresh={getPlant}/>
+                                                {/* )} */}
                                             </View>
                                         ))}
                                     </View>
@@ -71,7 +84,8 @@ export default function EditPots() {
                 ]}
                 onPress={() => setModalVisible(!modalVisible)} 
                 >
-                <Image source={require('@/assets/images/watering-can.png')} style={styles.wateringCan}/>
+                    <Image source={require('@/assets/images/watering-can.png')} style={styles.wateringCan}/>
+                    <Text style={{ fontWeight: "bold", fontSize: 20, color: "#557153" }}>Edit Plants</Text>
             </Pressable>
         </View>
     )
@@ -106,7 +120,7 @@ const styles = StyleSheet.create({
     wateringCanButton: {
         backgroundColor: '#a9af7e',
         width: 150,
-        height: 100,
+        height: 130,
         borderRadius: 25,
         alignItems: 'center',
         justifyContent: "center",

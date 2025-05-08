@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, View, TouchableOpacity, StyleSheet, TextInput, Button, Pressable } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker'
 
-export default function DatePicker({ setDateValue }) {
+export default function DatePicker({ setDateValue, dateValue }) {
     const [ date, setDate ] = useState(null);
     const [ showPicker, setShowPicker ] = useState(false);
 
@@ -13,6 +13,13 @@ export default function DatePicker({ setDateValue }) {
             setDateValue(currentDate.toLocaleDateString('en-ca'))
         }
     }
+
+    useEffect(() => {
+        if (dateValue === "") {
+            const now = new Date();
+            setDateValue(now.toLocaleDateString("en-ca"));
+        }
+    }, [])
 
     return (
         <View>
