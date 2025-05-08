@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#8f8e8e',
         color: '#000000',
         borderRadius: 20,
-        padding: 2,
+        padding: 5,
         width: 100,
         flex: 1
     },
@@ -193,7 +193,8 @@ const styles = StyleSheet.create({
         borderBottomColor: '#ffffff',
         borderBottomWidth: 1,
         justifyContent: 'space-between',
-        padding: 10
+        padding: 10,
+        gap: 5
     },
     subHeader: {
         color: "#557153",

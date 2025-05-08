@@ -20,12 +20,24 @@ export default function EditPlant({ data, onRefresh }) {
 
     const user = useUserContext();
 
+    const dateWithFrequency = (date) => {
+        const toAdd = frequency * 60 * 60 * 1000;
+        const localDate = new Date(date);
+
+        const updatedTime = new Date(localDate.getTime() + toAdd);
+        const localISOString = new Date(updatedTime.getTime() - updatedTime.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+
+        return localISOString;
+    }
+
     const submitForm = async () => {
 
-        const formattedDate = `${dateValue}T${timeValue}.000`
+        const formattedDate = `${dateValue}T${timeValue}.000`;
+        const localISOString = dateWithFrequency(formattedDate);
+
         const newData = {
             ...data,
-            date: formattedDate,
+            date: localISOString,
             plantName: plantName,
             potNumber: potNumber,
             duration: duration,
@@ -48,7 +60,10 @@ export default function EditPlant({ data, onRefresh }) {
     }
     
     const addForm = async () => {
+
         const formattedDate = `${dateValue}T${timeValue}.000`
+        const localISOString = dateWithFrequency(formattedDate);
+
 
         if (!plantName || !potNumber || !frequency || !duration || !user || !dateValue || !timeValue) {
             Alert.alert("Please fill in all values");
@@ -66,11 +81,6 @@ export default function EditPlant({ data, onRefresh }) {
             return;
         };
 
-        if (typeof frequency !== "number" && typeof duration !== "number") {
-            Alert.alert("Frequency or duration should be numerical");
-            return;
-        }
-
         const potNumbers = potNumData?.map(item => item.potNumber);
         if (potNumbers?.includes(Number(potNumber))) {
             Alert.alert(`There is already a plant at pot ${potNumber}`);
@@ -83,7 +93,7 @@ export default function EditPlant({ data, onRefresh }) {
             frequency: frequency,
             duration: duration,
             userId: user?.id,
-            date: formattedDate,
+            date: localISOString,
         }
         
         const { error: plantError, plantTypeError } = await addPlantData(newData);

@@ -9,7 +9,6 @@ export default function TimePicker({ setTimeValue, timeValue }) {
     const handleDateChange = (event, selectedDate) => {
         if (event.type === 'set') {
             const currentTime = selectedDate || time;
-            // console.log(currentDate);
             setTime(currentTime);
 
             const formatted = currentTime.toLocaleTimeString("sv-SE", { hour12: false }); // "HH:mm:ss"
@@ -21,7 +20,6 @@ export default function TimePicker({ setTimeValue, timeValue }) {
         if (timeValue === "") {
             const currentTime = new Date();
             const formatted = currentTime.toLocaleTimeString("sv-SE", { hour12: false }); // "HH:mm:ss"
-            // setTimeValue(`${datePart}T${formatted}.000`);
             setTimeValue(formatted);        
         }
     }, []);
