@@ -1,24 +1,44 @@
 import { Droplets, Pencil, Trash2 } from "lucide-react-native";
-import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { useState } from "react";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
+import { editPlantType } from "@/utils/actions";
 
 export default function EditPlant({ data }) {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [dateValue, setDateValue] = useState(null);
-    const [timeValue, setTimeValue] = useState(null);
+    const [dateValue, setDateValue] = useState(data.date);
+    const [timeValue, setTimeValue] = useState(data.time);
     const [plantName, setPlantName] = useState(data.plantName);
     const [potNumber, setPotNumber] = useState(data.potNumber);
     const [duration, setDuration] = useState(data.duration);
     const [frequency, setFrequency] = useState(data.frequency);
 
-    const submitForm = () => {
-        console.log("DATE VALUE", dateValue);
-        
-        console.log("TIME VALUE", timeValue);
-    }
+    const submitForm = async () => {
+        const newData = {
+            ...data,
+            date: dateValue,
+            time: timeValue,
+            plantName: plantName,
+            potNumber: potNumber,
+            duration: duration,
+            frequency: frequency
+        }
+
+        try {
+            const { error, plantError } = await editPlantType(newData);
+
+            if ( error || plantError ) {
+                Alert.alert("Error", "Unable to edit plant. Please try again")
+            } else {
+                Alert.alert("Successfully edited plant");
+                setModalVisible(false);
+            }
+        } catch (err) {
+            Alert.alert(`Unexpected Error: ${err}`);
+        }
+    } 
 
     return (
         <View style={{ flex: 1 }}>
@@ -32,44 +52,49 @@ export default function EditPlant({ data }) {
                                 setModalVisible(!modalVisible);
                         }}>
                             <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                        <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
-                                    </Pressable>
-                                    <Text style={styles.mainHeader}>Edit {data.plantName}</Text>
-                                        <View>
-                                            <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>Plant Name</Text>
-                                                <TextInput placeholder={data.plantName} placeholderTextColor="gray" style={styles.input}/>
+                            <KeyboardAvoidingView
+                                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                                style={{ width: "93%" }}
+                                >
+                                    <ScrollView contentContainerStyle={styles.modalView} keyboardShouldPersistTaps="handled">
+
+                                        <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                            <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                        </Pressable>
+                                        <Text style={styles.mainHeader}>Edit {data.plantName}</Text>
+                                            <View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Plant Name</Text>
+                                                    <TextInput placeholder={data.plantName} placeholderTextColor="gray" style={styles.input} value={plantName} onChangeText={(text) => setPlantName(text)}/>
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Date</Text>
+                                                    <DatePicker setDateValue={setDateValue} />
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Time</Text>
+                                                    <TimePicker setTimeValue={setTimeValue}/>
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Pot Number</Text>
+                                                    <TextInput placeholder="Enter pot number" placeholderTextColor="gray" style={styles.input} keyboardType="numeric" value={potNumber} onChangeText={(text) => setPotNumber(text)}/>
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Valve Duration</Text>
+                                                    <TextInput placeholder="Enter valve duration" placeholderTextColor="gray" style={styles.input} keyboardType="numeric" value={duration} onChangeText={(text) => setDuration(text)} />
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Frequency</Text>
+                                                    <TextInput placeholder={`Every ${data.frequency} hours`} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                </View>
                                             </View>
-                                            <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>Date</Text>
-                                                <DatePicker setDateValue={setDateValue}/>
+                                            <View style={{ alignItems: "center" }}> 
+                                                <Pressable style={styles.saveButton} onPress={() => submitForm()}>
+                                                    <Text style={{ color: "white"}}>Set</Text>
+                                                </Pressable>
                                             </View>
-                                            <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>Time</Text>
-                                                {/* <TextInput placeholder="Time" placeholderTextColor="gray" style={styles.input}/> */}
-                                                <TimePicker setTimeValue={setTimeValue}/>
-                                            </View>
-                                            <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>Pot Number</Text>
-                                                <TextInput placeholder="Enter pot number" placeholderTextColor="gray" style={styles.input} keyboardType="numeric"/>
-                                            </View>
-                                            <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>Valve Duration</Text>
-                                                <TextInput placeholder="Enter valve duration" placeholderTextColor="gray" style={styles.input} keyboardType="numeric"/>
-                                            </View>
-                                            <View style={styles.plantHeader}>
-                                                <Text style={styles.plantName}>Frequency</Text>
-                                                <TextInput placeholder={`Every ${data.frequency} hours`} placeholderTextColor="gray" style={styles.input} keyboardType="numeric"/>
-                                            </View>
-                                        </View>
-                                        <View style={{ alignItems: "center" }}> 
-                                            <Pressable style={styles.saveButton} onPress={() => submitForm()}>
-                                                <Text style={{ color: "white"}}>Set</Text>
-                                            </Pressable>
-                                        </View>
-                                </View>
+                                    </ScrollView>
+                                </KeyboardAvoidingView>
                             </View>
                         </Modal>
                 </SafeAreaView>

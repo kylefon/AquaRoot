@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, TextInput, Button } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, TextInput, Button, Pressable } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker'
 
 export default function DatePicker({ setDateValue }) {
@@ -9,25 +9,24 @@ export default function DatePicker({ setDateValue }) {
     const handleDateChange = (event, selectedDate) => {
         if (event.type === 'set') {
             const currentDate = selectedDate || date;
-            // console.log(currentDate);
             setDate(currentDate);
-            setDateValue(currentDate);
+            setDateValue(currentDate.toLocaleDateString('en-ca'))
         }
     }
 
     return (
         <View>
-            <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.input}>
-                {/* <Button title="Date" disabled={true}/> */}
-                {/* { showPicker && (  */}
+            <TouchableOpacity onPress={() => setShowPicker(!showPicker)} style={[styles.input, showPicker && styles.inputActive]}>
+                { showPicker ? ( 
                     <DateTimePicker 
                         mode="date"
                         minimumDate={new Date()}
-                        value={date || new Date() }
+                        value={ date || new Date() }
                         onChange={handleDateChange}
-                        style={styles.input}
                     />
-                {/* )}  */}
+                ):(
+                    <Text style={{ color: "gray"}}>Date</Text>
+                )}
             </TouchableOpacity>
         </View>
     )
@@ -38,6 +37,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         color: '#000000',
         borderRadius: 20,
-        // padding: 8
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 8
+    }, 
+    inputActive: {
+        alignItems: 'center',
+        padding: 0
     }
 })

@@ -77,28 +77,19 @@ export async function editPlantType(data){
         .from('plant')
         .update({
             plantName: data.plantName,
-        })
-    if (error) {
-        Alert.alert("Unable to edit plant name");
-    }
-
+        }).eq('id', data.plantId)
+    
     const { error: plantError } = await supabase
-        .from('plant')
+        .from('plantType')
         .update({
             potNumber: data.potNumber,
             duration: data.duration,
             frequency: data.frequency,
             date: data.date,
-            time: data.time
-        })
+            time: data.time,
+        }).eq('plantId', data.plantId)
     
-    if (plantError) {
-        Alert.alert("Unable to edit plant types");
-    }
-
-    if (!error && !plantError) {
-        Alert.alert("Successfully edited plant");
-    }
+    return { error, plantError };
 }
 
 export async function editPotNumber(plantName: string, potNumber: number){
