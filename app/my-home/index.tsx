@@ -2,7 +2,6 @@ import EditPots from "@/components/home-tabs/EditPots";
 import HomeTabs from "@/components/HomeTabs";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
 import { CircleUser, Scale } from "lucide-react-native";
 import { Image, Pressable, SafeAreaView, StyleSheet } from "react-native";
 import { Button, Text, View } from "react-native";
@@ -11,12 +10,6 @@ export default function MyHome() {
     const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.background}>
-            {/* <LinearGradient
-                colors={['#3c4b2b', '#7caa95']}
-                start={{ x: 0, y: 0 }}
-                end={{ x:1, y:1 }}
-                style={styles.gradientCircle}
-            > */}
             <View style={{ padding: 15 }}>
                 <CircleUser style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
                 <View style={styles.pageContainer}>
@@ -34,7 +27,6 @@ export default function MyHome() {
                     </View>
                 </View>
             </View>
-            {/* </LinearGradient> */}
         </SafeAreaView>
     )
 }

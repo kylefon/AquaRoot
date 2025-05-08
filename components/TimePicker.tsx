@@ -13,8 +13,7 @@ export default function TimePicker({ setTimeValue, timeValue }) {
             setTime(currentTime);
 
             const formatted = currentTime.toLocaleTimeString("sv-SE", { hour12: false }); // "HH:mm:ss"
-            const datePart = currentTime.toISOString().split("T")[0]; // Local date fallback if needed
-            setTimeValue(`${datePart}T${formatted}.000`);        
+            setTimeValue(formatted);        
         }
     }
     
@@ -22,8 +21,8 @@ export default function TimePicker({ setTimeValue, timeValue }) {
         if (timeValue === "") {
             const currentTime = new Date();
             const formatted = currentTime.toLocaleTimeString("sv-SE", { hour12: false }); // "HH:mm:ss"
-            const datePart = currentTime.toISOString().split("T")[0]; // Local date fallback if needed
-            setTimeValue(`${datePart}T${formatted}.000`);
+            // setTimeValue(`${datePart}T${formatted}.000`);
+            setTimeValue(formatted);        
         }
     }, []);
 

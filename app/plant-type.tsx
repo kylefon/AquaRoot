@@ -1,5 +1,6 @@
 import { Collapsible } from "@/components/Collapsible";
 import CreateLayout from "@/components/CreateLayout";
+import { useUserContext } from "@/context/UserContext";
 import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
 import { Trash2 } from "lucide-react-native";
@@ -10,40 +11,43 @@ import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
 
-    async function addPlantType({plant, index}) {
+    const user = useUserContext();
 
-        const checks = 168/plant.checks;
-
-        const now = Date.now();
-        const addHour = now + (checks*60*60*1000);
-        const futureDate = new Date(addHour);
-
-        const { data, error } = await supabase
-            .from('plant')
-            .insert({
-                plantName: plant.name,
-                image: null
-            }).select()
-        if (error) {
-            Alert.alert(`Error adding plant ${plant.name}`)
-        }
-
-        const { data: plantData, error: plantError } = await supabase
-            .from('plantType')
-            .insert({
-                potNumber: index + 1,
-                frequency: checks,
-                duration: plant.duration,
-                plantId: data?.[0]?.id,
-                date: futureDate.toISOString().split("T")[0],
-                time: futureDate.toISOString()
-            })
-        
-        if (plantError) {
-            Alert.alert(`Error adding plant info for ${plant.name}`)
-        }
-    }
+    async function addPlantType({plant, index, userId}) {
+            // input is based on the number of check per week
+            // there are 168 hours in a week 
+            const checks = 168/plant.checks;
     
+            const currDate = new Date();
+            const toAdd = checks * 60 * 60 * 1000;
+            const updatedDate = new Date(currDate.getTime()  + toAdd)
+            const localISOString = new Date(updatedDate.getTime() - updatedDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+            
+            const { data, error } = await supabase
+                .from('plant')
+                .insert({
+                    plantName: plant.name,
+                    image: null
+                }).select()
+    
+            const { data: plantData , error: plantError } = await supabase
+                .from('plantType')
+                .insert({
+                    potNumber: index + 1,
+                    // number of checks per hour
+                    frequency: checks,
+                    duration: plant.duration,
+                    plantId: data?.[0]?.id,
+                    userId: userId,
+                    date: localISOString
+                })
+
+            if (error || plantError ) {
+                Alert.alert(`Error adding plant ${data?.plantName}`)
+            }
+                
+        }
+
     const handlePlants = () => {
         setPlantTypes(prev => [...prev, { name: "", checks: "", duration: "" }]);
     }
@@ -128,8 +132,8 @@ export default function PlantTypes() {
                         </Pressable>
                     )}
                     <Pressable style={styles.button}>
-                        {/* <Button title="Sign Up" onPress={() => submitForm()}/> */}
-                        <Button title="Sign Up" onPress={() => router.push("/my-home")}/>
+                        <Button title="Sign Up" onPress={() => submitForm()}/>
+                        {/* <Button title="Sign Up" onPress={() => router.push("/my-home")}/> */}
                     </Pressable>
                 </View>
                 </ScrollView>

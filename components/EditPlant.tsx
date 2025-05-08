@@ -21,10 +21,11 @@ export default function EditPlant({ data, onRefresh }) {
     const user = useUserContext();
 
     const submitForm = async () => {
+
+        const formattedDate = `${dateValue}T${timeValue}.000`
         const newData = {
             ...data,
-            date: dateValue,
-            time: timeValue,
+            date: formattedDate,
             plantName: plantName,
             potNumber: potNumber,
             duration: duration,
@@ -47,6 +48,8 @@ export default function EditPlant({ data, onRefresh }) {
     }
     
     const addForm = async () => {
+        const formattedDate = `${dateValue}T${timeValue}.000`
+
         if (!plantName || !potNumber || !frequency || !duration || !user || !dateValue || !timeValue) {
             Alert.alert("Please fill in all values");
             return;
@@ -70,8 +73,7 @@ export default function EditPlant({ data, onRefresh }) {
             frequency: frequency,
             duration: duration,
             userId: user?.id,
-            date: dateValue,
-            time: timeValue
+            date: formattedDate,
         }
         
         const { error: plantError, plantTypeError } = await addPlantData(newData);

@@ -43,12 +43,8 @@ export default function SignIn() {
             return;
         }
 
-        if (!signUpData?.session) {
-            Alert.alert("Please check your inbox for email verification");
-            router.push("/plant-type")
-            setLoading(false);
-            return;
-        }
+        Alert.alert("Successfully signed in your account");
+        router.push("/plant-type")
         
         setLoading(false);
     }
@@ -58,7 +54,7 @@ export default function SignIn() {
             <View style={{ gap: 15 }}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.header}>Create New Account</Text>
-                    <Link href="/" asChild>
+                    <Link href="/sign-in" asChild>
                         <Text style={styles.subHeading}>Already Registered? Log in here</Text>
                     </Link>
                 </View>
@@ -82,8 +78,8 @@ export default function SignIn() {
                         </View>
                     </View>
                     <View style={styles.button}>
-                        <Button title="Next" onPress={() => router.push("/plant-type")}/>
-                        {/* <Button title="Next" disabled={loading} onPress={() => signUpWithEmail()}/> */}
+                        {/* <Button title="Next" onPress={() => router.push("/plant-type")}/> */}
+                        <Button title="Next" disabled={loading} onPress={() => signUpWithEmail()}/>
                     </View>
                 </View>
             </View>

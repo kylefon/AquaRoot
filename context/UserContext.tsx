@@ -16,7 +16,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             try {
                 const user = await getAuthenticatedUser();
                 if (!user) {
-                    console.error("Error fetching user");
                     setUser(null);
                     return;
                 }

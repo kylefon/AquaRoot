@@ -44,17 +44,30 @@ export default function MySchedule() {
                                             <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                         </Pressable>
                                         <Text style={styles.mainHeader}>My Schedule</Text>
-                                        { plants.map((data, index) => (
-                                            <View style={styles.plantView} key={index}>
-                                                <View style={styles.plantHeader}>
-                                                    <Text style={styles.plantName}>{data.plantName}</Text>
-                                                    <Text style={styles.potText}>Pot {data.potNumber}</Text>
+                                        { plants.map((data, index) => {
+                                            const rawDate = data.date; 
+                                            const [datePart, timePart] = rawDate.split("T");
+                                            const [year, month, day] = datePart.split("-");
+                                            let [hour, minute] = timePart.split(":");
+
+                                            hour = parseInt(hour);
+                                            const ampm = hour >= 12 ? "PM" : "AM";
+                                            hour = hour % 12 || 12; 
+
+                                            const formatted = `${new Date(`${year}-${month}-01`).toLocaleString('en-US', { month: 'short' })} ${day}, ${year} at ${hour}:${minute} ${ampm}`;
+
+                                            return(
+                                                <View style={styles.plantView} key={index}>
+                                                    <View style={styles.plantHeader}>
+                                                        <Text style={styles.plantName}>{data.plantName}</Text>
+                                                        <Text style={styles.potText}>Pot {data.potNumber}</Text>
+                                                    </View>
+                                                    <View style={styles.plantSubText}>
+                                                        <Text style={styles.subHeader}>{formatted}</Text>
+                                                    </View>
                                                 </View>
-                                                <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>{data.date} : {new Date(data.time).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</Text>
-                                                </View>
-                                            </View>
-                                        ))}
+                                            )
+                                        })}
                                     </View>
                             </View>
                         </Modal>

@@ -8,7 +8,7 @@ export async function getPlants(id: string) {
 
     const { data, error } = await supabase
         .from('plantType')
-        .select("id, userId, plantId, duration, frequency, potNumber, time, date" )
+        .select("id, userId, plantId, duration, frequency, potNumber, date" )
         .eq("userId",id)
         .order('potNumber');
 
@@ -89,7 +89,6 @@ export async function editPlantType(data){
             duration: data.duration,
             frequency: data.frequency,
             date: data.date,
-            time: data.time,
         }).eq('plantId', data.plantId)
     
     return { error, plantError };
@@ -128,7 +127,6 @@ export async function addPlantData(data) {
             plantId: plantData?.[0]?.id,
             userId: data.userId,
             date: data.date,
-            time: data.time
         })
     
     return { error, plantTypeError }
