@@ -16,11 +16,10 @@ export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
     const [files, setFiles] = useState<FileObject[]>([]);
 
-    const user = useUserContext();
+    const {user} = useUserContext();
     
     useEffect(() => {
         if (!user) return;
-
     }, [user])
 
     async function addPlantType({plant, index, userId}) {

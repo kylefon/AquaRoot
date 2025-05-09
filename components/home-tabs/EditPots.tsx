@@ -16,7 +16,7 @@ export default function EditPots() {
     const [ plantArray, setPlantArray ] = useState([])
     const [ loading, setLoading ] = useState(false);
 
-    const user = useUserContext();
+    const {user} = useUserContext();
 
     const getPlant = async () => {
         setLoading(true);

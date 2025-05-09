@@ -13,15 +13,8 @@ import ImageItem from "./ImageItem";
 
 
 export default function UploadImage({ setImage }) {
-    const user = useUserContext();
+    const {user} = useUserContext();
     const [ files, setFiles ] = useState<string>("");
-
-    const loadImages = async () => {
-        const { data } = await supabase.storage.from('plantimage').list(user!.id);
-        if (data) {
-            setFiles(data);
-        }
-    }
 
     const onSelectImage = async () => {
         const result = await ImagePicker.launchImageLibraryAsync({

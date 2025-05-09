@@ -1,5 +1,5 @@
-import { Leaf, Pencil, Trash2 } from "lucide-react-native";
-import { Alert, Button, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Leaf, Pencil, Scroll, Trash2 } from "lucide-react-native";
+import { Alert, Button, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +16,7 @@ export default function PotManagement() {
     const [ selectedPlants, setSelectedPlants] = useState([]);
     const [ newPlants, setNewPlants ] = useState([]);
 
-    const user = useUserContext();
+    const {user} = useUserContext();
 
     useEffect(() => {
         const getPlant = async () => {
@@ -93,28 +93,23 @@ export default function PotManagement() {
                                     <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                 </Pressable>
                                 <Text style={styles.mainHeader}>Pot Management</Text>
-                                {/* <ScrollView
-                                    contentContainerStyle={{ gap: 20, paddingBottom: 100 }}
-                                    showsVerticalScrollIndicator={false}
-                                > */}
-                                    <View>
-                                        <View style={styles.plantView}>
-                                            {selectedPlants.map((_, index) => (
-                                                    <View style={styles.dropdownContainer} key={index}>
-                                                        <Text style={styles.potText}>Pot {index + 1}</Text>
-                                                        <View style={{ flex: 1 }}>
-                                                            <InlineDropdown data={selectedPlants} onSelect={handleSelect} i={index} />
-                                                        </View>
+                                <View>
+                                    <View style={styles.plantView}>
+                                        {selectedPlants.map((_, index) => (
+                                                <View style={styles.dropdownContainer} key={index}>
+                                                    <Text style={styles.potText}>Pot {index + 1}</Text>
+                                                    <View style={{ flex: 1 }}>
+                                                        <InlineDropdown data={selectedPlants} onSelect={handleSelect} i={index} />
                                                     </View>
-                                            ))}
-                                        </View>
-                                        <View style={{ alignItems: "center" }}> 
-                                            <Pressable style={styles.saveButton} onPress={() => onSave()}>
-                                                <Text style={{ color: "white"}}>Save</Text>
-                                            </Pressable>
-                                        </View>
+                                                </View>
+                                        ))}
                                     </View>
-                                {/* </ScrollView> */}
+                                    <View style={{ alignItems: "center" }}> 
+                                        <Pressable style={styles.saveButton} onPress={() => onSave()}>
+                                            <Text style={{ color: "white"}}>Save</Text>
+                                        </Pressable>
+                                    </View>
+                                </View>
                             </View>
                         </View>
                     </Modal>

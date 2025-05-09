@@ -20,7 +20,7 @@ export default function EditPlant({ data, onRefresh }) {
 
     const isEdit = data === null;
 
-    const user = useUserContext();
+    const {user} = useUserContext();
 
     const dateWithFrequency = (date) => {
         const toAdd = frequency * 60 * 60 * 1000;
@@ -79,7 +79,7 @@ export default function EditPlant({ data, onRefresh }) {
         }
 
         if (potNumber < 1 || potNumber > 4) {
-            Alert.alert("Pot number should be from 1 - 4");
+            Alert.alert("Pot number should be from 1-4");
             return;
         };
 

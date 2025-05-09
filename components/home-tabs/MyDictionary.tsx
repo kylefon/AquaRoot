@@ -1,4 +1,4 @@
-import { BookOpenText, Check, Pencil, Trash2 } from "lucide-react-native";
+import { BookOpenText, Check, Pencil, Sprout, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ export default function MyDictionary() {
     const [ plantName, setPlantName ] = useState('');
     const [ toEditId, setToEditId ] = useState(null);
 
-    const user = useUserContext()
+    const {user} = useUserContext()
 
     useEffect(() => {
         const getPlant = async () => {
@@ -85,12 +85,18 @@ export default function MyDictionary() {
                                     </Pressable>
                                     <Text style={styles.mainHeader}>My Dictionary</Text>
                                     {plants.map((data, index) => (
-                                        <View style={{ flexDirection: 'row', gap: 5}} key={index}>
-                                            <Image source={{ uri: data.image}} style={styles.image}/>
+                                        <View style={{ flexDirection: 'row', gap: 20 }} key={index}>
+                                            { data.image ? (
+                                                <Image source={{ uri: data.image}} style={styles.image}/>
+                                            ):(
+                                                <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153"}}>
+                                                    <Sprout size={80} color="#557153"/>
+                                                </View>
+                                            )}
                                             <View style={styles.plantView}>
                                                 <View style={styles.plantHeader} >
                                                     {toEditId === data.id ? (
-                                                        <TextInput style={styles.input} value={plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
+                                                        <TextInput style={styles.input} value={data.plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
                                                     ):(
                                                         <Text style={styles.plantName}>{data.plantName}</Text>
                                                     )}

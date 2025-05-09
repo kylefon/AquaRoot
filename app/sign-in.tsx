@@ -1,8 +1,9 @@
 import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { Alert, Button, Dimensions, Image, ImageBackground, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, Button, Dimensions, Image, ImageBackground, KeyboardAvoidingView, Platform, Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
 import 'react-native-gesture-handler';
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function SignIn() {
     const [ email, setEmail ] = useState('')
@@ -16,17 +17,20 @@ export default function SignIn() {
             password: password
         })
 
-        if (error) Alert.alert(error.message)
-        if ( data ) {
-            Alert.alert("Successfully logged in");
-            router.replace("/my-home");
+        if (error){ 
+            Alert.alert(error.message);
+            setLoading(false);
             return;
         }
+        Alert.alert("Successfully logged in");
+        router.replace("/my-home");
         setLoading(false);
     }
     
     return (
-        <View style={{ flex: 1, backgroundColor: '#7caa95' }}>
+        <KeyboardAvoidingView 
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+            style={{ flex: 1, backgroundColor: '#7caa95' }}>
             <ImageBackground source={require('@/assets/images/leaf-bg.png')} style={styles.background}>
                 <View style={{ flex: 1 }}>
                     <View style={styles.logo}>
@@ -38,7 +42,11 @@ export default function SignIn() {
                                 <Text style={styles.header}>Welcome!</Text>
                                 <Text style={styles.subHeading}>Sign in to continue</Text>
                             </View>
-                            <View style={{ gap: 20}}>
+                            <View
+                                style={{ gap: 20}}>
+                                <ScrollView         
+                                    contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', gap: 20 }}   
+                                    keyboardShouldPersistTaps="handled">
                                 <View style={{ gap: 10 }}>
                                     <View>
                                         <Text style={styles.subHeading}>EMAIL</Text>
@@ -53,6 +61,7 @@ export default function SignIn() {
                                     {/* <Button title="Log in" onPress={() => router.push("/my-home/")}/> */}
                                     <Button title="Log in" disabled={loading} onPress={() => signInWithEmail()}/>
                                 </View>
+                                </ScrollView>
                             </View>
                         </View>
                         <View style={styles.headerContainer}>
@@ -64,7 +73,7 @@ export default function SignIn() {
                     </View>
                 </View>
             </ImageBackground>
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

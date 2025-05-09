@@ -1,4 +1,4 @@
-import { CalendarDays, Pencil, Trash2 } from "lucide-react-native";
+import { CalendarDays, Pencil, Sprout, Trash2 } from "lucide-react-native";
 import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
@@ -11,7 +11,7 @@ export default function MySchedule() {
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
 
-    const user = useUserContext();
+    const {user} = useUserContext();
 
     useEffect(() => {
         const getPlant = async () => {
@@ -63,8 +63,14 @@ export default function MySchedule() {
                                             const formatted = `${new Date(`${year}-${month}-01`).toLocaleString('en-US', { month: 'short' })} ${day}, ${year} at ${hour}:${minute} ${ampm}`;
                                             
                                             return(
-                                                <View key={index} style={{ flexDirection: 'row', gap: 10, alignItems: 'center'}}>
-                                                    <Image source={{ uri: data.image}} style={styles.image}/>
+                                                <View key={index} style={{ flexDirection: 'row', gap: 10, alignItems: 'center', borderBottomColor: "#557153", borderBottomWidth: 1 }}>
+                                                    { data.image ? (
+                                                        <Image source={{ uri: data.image}} style={styles.image}/>
+                                                    ):(
+                                                        <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153"}}>
+                                                            <Sprout size={80} color="#557153"/>
+                                                        </View>
+                                                    )}
                                                     <View style={styles.plantView} >
                                                         <View style={styles.plantHeader}>
                                                             <Text style={styles.plantName}>{data.plantName}</Text>
@@ -128,8 +134,6 @@ const styles = StyleSheet.create({
     },
     plantView: {
         gap: 13,
-        borderBottomColor: "#557153",
-        borderBottomWidth: 1,
         paddingVertical: 16,
         flex: 1
     },

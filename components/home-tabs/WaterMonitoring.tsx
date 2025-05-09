@@ -11,7 +11,7 @@ export default function WaterMonitoring() {
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(true);
 
-    const user = useUserContext();
+    const {user} = useUserContext();
 
     useEffect(() => {
         const getPlant = async () => {

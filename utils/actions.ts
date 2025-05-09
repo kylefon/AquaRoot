@@ -141,3 +141,10 @@ export async function getPotNumbers(userId) {
 
     return { data, error }
 }
+
+export async function getUsername(userId) {
+    const { data, error } = await supabase
+        .from('user').select('username').eq('id', userId)
+    
+    return { data, error }
+}

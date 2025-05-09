@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getAuthenticatedUser } from "../utils/actions";
+import { getAuthenticatedUser, getUsername } from "../utils/actions";
 import { User } from "@supabase/supabase-js";
-import { ActivityIndicator, Text, View } from "react-native";
+import { ActivityIndicator, Alert, Text, View } from "react-native";
 
 const UserContext = createContext(null);
 
@@ -11,6 +11,7 @@ export const useUserContext = () => {
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
+    const [username, setUsername] = useState<string>('');
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -21,7 +22,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
                     setUser(null);
                     return;
                 }
+
+                const { data, error } = await getUsername(user.id);
+                if (error) {
+                    console.error("Unable to get username:", error);
+                    return;
+                }
+
                 setUser(user);
+                setUsername(data?.[0]?.username);
             } catch (err) {
                 console.error("Unexpected error:", err);
                 setUser(null);
@@ -32,7 +41,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     return (
-        <UserContext.Provider value={ user }>
+        <UserContext.Provider value={{ user, username }}>
             { children }
         </UserContext.Provider>
     );

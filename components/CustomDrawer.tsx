@@ -1,14 +1,17 @@
 import { useUserContext } from "@/context/UserContext";
 import { supabase } from "@/lib/supabase";
+import { getUsername } from "@/utils/actions";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
 import { UserCircle } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
 export default function CustomDrawer(props: any) {
+
     const router = useRouter();
 
-    const user = useUserContext();
+    const { username } = useUserContext();
 
     const signOutUser = async () => {
         const { error } = await supabase.auth.signOut();
@@ -24,7 +27,7 @@ export default function CustomDrawer(props: any) {
                 <View style={styles.content}>
                     <View style={styles.profile}>
                         <DrawerItem 
-                            label={`Hi ${user?.email}!` || 'Profile'} 
+                            label={username ? `Hi ${username}!` : 'Profile'} 
                             onPress={() => router.replace('/my-home/profile')}
                             icon={({size,color})=> <UserCircle size={size} color={color} />}
                             labelStyle={{fontSize: 20}}
