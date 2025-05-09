@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { deletePlant, editPlantName, getPlants } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
+import { Image } from "react-native";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -84,42 +85,45 @@ export default function MyDictionary() {
                                     </Pressable>
                                     <Text style={styles.mainHeader}>My Dictionary</Text>
                                     {plants.map((data, index) => (
-                                        <View style={styles.plantView} key={index}>
-                                            <View style={styles.plantHeader}>
-                                                {toEditId === data.id ? (
-                                                    <TextInput style={styles.input} value={plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
-                                                ):(
-                                                    <Text style={styles.plantName}>{data.plantName}</Text>
-                                                )}
-                                                <View style={styles.icons}>
-                                                    <Pressable onPress={() => {
-                                                        if (toEditId === data.id) {
-                                                            setToEditId(null);
-                                                        } else {
-                                                            setToEditId(data.id);
-                                                        }
-                                                    }}>
-                                                        <Pencil color="#557153"/>
-                                                    </Pressable>
+                                        <View style={{ flexDirection: 'row', gap: 5}} key={index}>
+                                            <Image source={{ uri: data.image}} style={styles.image}/>
+                                            <View style={styles.plantView}>
+                                                <View style={styles.plantHeader} >
                                                     {toEditId === data.id ? (
-                                                        <Pressable onPress={() => {
-                                                            setToEditId(null);
-                                                            handleEditPlant(plantName, data.plantId)
-                                                        }}>
-                                                            <Check color="#557153"/>
-                                                        </Pressable>
+                                                        <TextInput style={styles.input} value={plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
                                                     ):(
-                                                        <Pressable onPress={() => {
-                                                            handleDeletePlant(data.plantId)
-                                                        }}>
-                                                            <Trash2 color="#560216"/>
-                                                        </Pressable>
+                                                        <Text style={styles.plantName}>{data.plantName}</Text>
                                                     )}
+                                                    <View style={styles.icons}>
+                                                        <Pressable onPress={() => {
+                                                            if (toEditId === data.id) {
+                                                                setToEditId(null);
+                                                            } else {
+                                                                setToEditId(data.id);
+                                                            }
+                                                        }}>
+                                                            <Pencil color="#557153"/>
+                                                        </Pressable>
+                                                        {toEditId === data.id ? (
+                                                            <Pressable onPress={() => {
+                                                                setToEditId(null);
+                                                                handleEditPlant(plantName, data.plantId)
+                                                            }}>
+                                                                <Check color="#557153"/>
+                                                            </Pressable>
+                                                        ):(
+                                                            <Pressable onPress={() => {
+                                                                handleDeletePlant(data.plantId)
+                                                            }}>
+                                                                <Trash2 color="#560216"/>
+                                                            </Pressable>
+                                                        )}
+                                                    </View>
                                                 </View>
-                                            </View>
-                                            <View style={styles.plantSubText}>
-                                                <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
-                                                <Text style={styles.subHeader}>Valve: {data.duration}s</Text>
+                                                <View style={styles.plantSubText}>
+                                                    <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
+                                                    <Text style={styles.subHeader}>Valve: {data.duration}s</Text>
+                                                </View>
                                             </View>
                                         </View>
                                     ))}
@@ -140,6 +144,11 @@ export default function MyDictionary() {
 } 
 
 const styles = StyleSheet.create({
+    image: {
+        width: 80,
+        height: 80,
+        borderRadius: 100
+    },
     input: {
         backgroundColor: '#8f8e8e',
         color: '#000000',
@@ -168,7 +177,8 @@ const styles = StyleSheet.create({
         width: '93%'
     },
     plantView: {
-        gap: 13
+        gap: 13,
+        flex: 1
     },
     tab: {
         display: 'flex',

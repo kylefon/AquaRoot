@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 20, 
         left: 20,
-        zIndex: 10
+        zIndex: 10, 
     },
     pageContainer: {
         display: 'flex',

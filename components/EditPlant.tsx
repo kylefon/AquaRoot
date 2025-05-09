@@ -6,6 +6,7 @@ import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
 import { addPlantData, editPlantType, getPotNumbers } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
+import UploadImage from "./UploadImage";
 
 export default function EditPlant({ data, onRefresh }) {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -15,6 +16,7 @@ export default function EditPlant({ data, onRefresh }) {
     const [potNumber, setPotNumber] = useState(data?.potNumber || "");
     const [duration, setDuration] = useState(data?.duration || "");
     const [frequency, setFrequency] = useState(data?.frequency || "");
+    const [ image, setImage ] = useState(data?.image || "");
 
     const isEdit = data === null;
 
@@ -31,8 +33,7 @@ export default function EditPlant({ data, onRefresh }) {
     }
 
     const submitForm = async () => {
-
-        const formattedDate = `${dateValue}T${timeValue}.000`;
+        const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`;        
         const localISOString = dateWithFrequency(formattedDate);
 
         const newData = {
@@ -41,9 +42,10 @@ export default function EditPlant({ data, onRefresh }) {
             plantName: plantName,
             potNumber: potNumber,
             duration: duration,
-            frequency: frequency
+            frequency: frequency,
+            image: image
         }
-
+        
         try {
             const { error, plantError } = await editPlantType(newData);
 
@@ -94,6 +96,7 @@ export default function EditPlant({ data, onRefresh }) {
             duration: duration,
             userId: user?.id,
             date: localISOString,
+            image: image
         }
         
         const { error: plantError, plantTypeError } = await addPlantData(newData);
@@ -154,6 +157,10 @@ export default function EditPlant({ data, onRefresh }) {
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Frequency</Text>
                                                     <TextInput placeholder={`Every ${data?.frequency || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Upload Image</Text>
+                                                    <UploadImage setImage={setImage}/>
                                                 </View>
                                             </View>
                                             <View style={{ alignItems: "center" }}> 

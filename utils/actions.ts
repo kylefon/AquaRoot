@@ -25,7 +25,7 @@ export async function getPlants(id: string) {
     for ( let i = 0; i < data?.length; i++ ) {
         const { data: plantData, error: plantError } = await supabase
             .from('plant')
-            .select("plantName").eq("id", data?.[i].plantId);
+            .select("plantName, image").eq("id", data?.[i].plantId);
 
         if (plantData === null || data === null) {
             Alert.alert("No plants available");
@@ -80,6 +80,7 @@ export async function editPlantType(data){
         .from('plant')
         .update({
             plantName: data.plantName,
+            image: data.image
         }).eq('id', data.plantId)
     
     const { error: plantError } = await supabase
@@ -115,7 +116,7 @@ export async function editPotNumber(plantName: string, potNumber: number){
 export async function addPlantData(data) {
     const { data: plantData, error } = await supabase
         .from('plant')
-        .insert({ plantName: data.plantName })
+        .insert({ plantName: data.plantName, image: data.image })
         .select()
     
     const { error: plantTypeError } = await supabase

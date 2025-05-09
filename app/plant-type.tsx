@@ -3,15 +3,25 @@ import CreateLayout from "@/components/CreateLayout";
 import { useUserContext } from "@/context/UserContext";
 import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
-import { Trash2 } from "lucide-react-native";
-import { useState } from "react";
-import { Alert, ScrollView } from "react-native";
+import { Camera, Trash2 } from "lucide-react-native";
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, TouchableOpacity } from "react-native";
 import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system'
+import { FileObject } from '@supabase/storage-js'
+import { decode } from 'base64-arraybuffer'
 
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
+    const [files, setFiles] = useState<FileObject[]>([]);
 
     const user = useUserContext();
+    
+    useEffect(() => {
+        if (!user) return;
+
+    }, [user])
 
     async function addPlantType({plant, index, userId}) {
             // input is based on the number of check per week
@@ -76,6 +86,7 @@ export default function PlantTypes() {
         Alert.alert("Successfully added plants");
         router.replace("/my-home")
     }
+
 
 
     return (

@@ -1,5 +1,5 @@
 import { CalendarDays, Pencil, Trash2 } from "lucide-react-native";
-import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
@@ -55,21 +55,24 @@ export default function MySchedule() {
                                             const [datePart, timePart] = rawDate.split("T");
                                             const [year, month, day] = datePart.split("-");
                                             let [hour, minute] = timePart.split(":");
-
+                                            
                                             hour = parseInt(hour);
                                             const ampm = hour >= 12 ? "PM" : "AM";
                                             hour = hour % 12 || 12; 
-
+                                            
                                             const formatted = `${new Date(`${year}-${month}-01`).toLocaleString('en-US', { month: 'short' })} ${day}, ${year} at ${hour}:${minute} ${ampm}`;
-
+                                            
                                             return(
-                                                <View style={styles.plantView} key={index}>
-                                                    <View style={styles.plantHeader}>
-                                                        <Text style={styles.plantName}>{data.plantName}</Text>
-                                                        <Text style={styles.potText}>Pot {data.potNumber}</Text>
-                                                    </View>
-                                                    <View style={styles.plantSubText}>
-                                                        <Text style={styles.subHeader}>{formatted}</Text>
+                                                <View key={index} style={{ flexDirection: 'row', gap: 10, alignItems: 'center'}}>
+                                                    <Image source={{ uri: data.image}} style={styles.image}/>
+                                                    <View style={styles.plantView} >
+                                                        <View style={styles.plantHeader}>
+                                                            <Text style={styles.plantName}>{data.plantName}</Text>
+                                                            <Text style={styles.potText}>Pot {data.potNumber}</Text>
+                                                        </View>
+                                                        <View style={styles.plantSubText}>
+                                                            <Text style={styles.subHeader}>{formatted}</Text>
+                                                        </View>
                                                     </View>
                                                 </View>
                                             )
@@ -91,6 +94,11 @@ export default function MySchedule() {
 }
 
 const styles = StyleSheet.create({
+    image: {
+        width: 80,
+        height: 80,
+        borderRadius: 100,
+    },
     mainHeader: {
         fontSize: 30,
         color: "#ffffff",
@@ -122,7 +130,8 @@ const styles = StyleSheet.create({
         gap: 13,
         borderBottomColor: "#557153",
         borderBottomWidth: 1,
-        paddingVertical: 16
+        paddingVertical: 16,
+        flex: 1
     },
     tab: {
         display: 'flex',
