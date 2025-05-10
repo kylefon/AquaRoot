@@ -5,14 +5,14 @@ import { StyleSheet } from "react-native";
 import { Button, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-export default function Notification() {
+export default function AboutUs() {
     const navigation = useNavigation();
     return(
         <SafeAreaView style={styles.background}>
             <View style={{ padding: 15 }}>
                 <CircleUser style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
                 <View style={{ alignItems: 'center', justifyContent: "center"}}>
-                    <Text style={styles.header}>Customize Notification</Text>
+                    <Text style={styles.header}>About Us</Text>
                 </View>
             </View>
         </SafeAreaView>

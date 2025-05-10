@@ -22,7 +22,7 @@ export default function DatePicker({ setDateValue, dateValue }) {
     }, [])
 
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <TouchableOpacity onPress={() => setShowPicker(!showPicker)} style={[styles.input, showPicker && styles.inputActive]}>
                 { showPicker ? ( 
                     <DateTimePicker 
@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 8
+        flex: 1,
+        width: "100%"
     }, 
     inputActive: {
         alignItems: 'center',

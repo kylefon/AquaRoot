@@ -8,7 +8,7 @@ export async function getPlants(id: string) {
 
     const { data, error } = await supabase
         .from('plantType')
-        .select("id, userId, plantId, duration, frequency, potNumber, date" )
+        .select("id, userId, plantId, duration, frequency, potNumber, date, waterUsage" )
         .eq("userId",id)
         .order('potNumber');
 

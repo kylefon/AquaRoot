@@ -7,14 +7,9 @@ import { Camera, Trash2 } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, TouchableOpacity } from "react-native";
 import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system'
-import { FileObject } from '@supabase/storage-js'
-import { decode } from 'base64-arraybuffer'
 
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
-    const [files, setFiles] = useState<FileObject[]>([]);
 
     const {user} = useUserContext();
     

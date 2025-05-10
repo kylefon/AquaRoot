@@ -48,7 +48,7 @@ export default function WaterMonitoring() {
                             </Pressable>
                             <Text style={styles.mainHeader}>Water Monitoring</Text>
                             {plants.map((data, index) => {
-                                const waterUsage = (data.frequency * data.duration * 0.001149).toFixed(2);
+                                const waterUsage = ((24/data.frequency)* data.duration * 0.001149).toFixed(2);
                                 return (
                                     <View style={styles.plantView} key={index}>
                                         <View style={styles.plantHeader}>
@@ -57,7 +57,8 @@ export default function WaterMonitoring() {
                                         <View style={styles.plantSubText}>
                                             <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
                                             <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
-                                            <Text style={styles.subHeader}>Water Usage: {waterUsage}L/day</Text>
+                                            <Text style={styles.subHeader}>Water Usage: {waterUsage}L/hour</Text>
+                                            <Text style={styles.subHeader}>Water Used: {data.waterUsage.toFixed(2)}L</Text>
                                         </View>
                                     </View>
                                 )

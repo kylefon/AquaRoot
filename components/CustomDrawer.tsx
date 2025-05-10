@@ -3,8 +3,7 @@ import { supabase } from "@/lib/supabase";
 import { getUsername } from "@/utils/actions";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { useRouter } from "expo-router";
-import { UserCircle } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { UserCircle, Users } from "lucide-react-native";
 import { Alert, StyleSheet, View } from "react-native";
 
 export default function CustomDrawer(props: any) {
@@ -37,7 +36,7 @@ export default function CustomDrawer(props: any) {
                         </View>
                     </View>
                     <View> 
-                        <DrawerItem label={'About Us'} onPress={() => router.replace('/')}/>
+                        <DrawerItem label={`About Us`} onPress={() => router.replace('/my-home/about-us')} icon={({ size, color }) => <Users size={size} color={color} />} />
                         <DrawerItem label={'Logout'} onPress={() => signOutUser()}/>
                     </View>
                 </View>

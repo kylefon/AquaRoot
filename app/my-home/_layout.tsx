@@ -17,6 +17,16 @@ export default function MyHomeLayout() {
         }}
     />
     <Drawer.Screen
+        name='about-us' 
+        options={{
+            drawerLabel: 'About Us',
+            drawerIcon: ({ size, color }) => (
+                <CircleUser size={size} color={color} />
+            ),
+            drawerItemStyle: { display: 'none' }
+        }}
+    />
+    <Drawer.Screen
         name='index' 
         options={{
             drawerLabel: 'Home',

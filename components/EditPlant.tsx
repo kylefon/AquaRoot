@@ -1,4 +1,4 @@
-import { Droplets, Pencil, Trash2 } from "lucide-react-native";
+import { Calendar, Droplets, Pencil, Timer, Trash, Trash2 } from "lucide-react-native";
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -136,27 +136,42 @@ export default function EditPlant({ data, onRefresh }) {
                                             <View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Plant Name</Text>
-                                                    <TextInput placeholder={data?.plantName || "Plant name"} placeholderTextColor="gray" style={styles.input} value={plantName} maxLength={15} onChangeText={(text) => setPlantName(text)}/>
+                                                    <View style={styles.inputWrapper}>
+                                                        <TextInput placeholder={data?.plantName || "Plant name"} placeholderTextColor="gray" style={styles.input} value={plantName} maxLength={15} onChangeText={(text) => setPlantName(text)}/>
+                                                    </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Date</Text>
-                                                    <DatePicker setDateValue={setDateValue} dateValue={dateValue}/>
+                                                    <View style={styles.inputWrapper}>
+                                                        <DatePicker setDateValue={setDateValue} dateValue={dateValue}/>
+                                                        <Calendar color="gray"/>
+                                                    </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Time</Text>
-                                                    <TimePicker setTimeValue={setTimeValue} timeValue={timeValue}/>
+                                                    <View style={styles.inputWrapper}>
+                                                        <TimePicker setTimeValue={setTimeValue} timeValue={timeValue}/>
+                                                        <Timer color="gray"/>
+                                                    </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Pot Number</Text>
-                                                    <TextInput placeholder={data?.potNumber?.toString() || "Pot number"} placeholderTextColor="gray" style={styles.input} maxLength={1} keyboardType="numeric" value={potNumber} onChangeText={(text) => setPotNumber(text)}/>
+                                                    <View style={styles.inputWrapper}>
+                                                        <TextInput placeholder={data?.potNumber?.toString() || "Pot number"} placeholderTextColor="gray" style={styles.input} maxLength={1} keyboardType="numeric" value={potNumber} onChangeText={(text) => setPotNumber(text)}/>
+                                                    </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Valve Duration</Text>
-                                                    <TextInput placeholder={data?.duration?.toString() || "Duration"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={duration} onChangeText={(text) => setDuration(text)} />
+                                                    <View style={styles.inputWrapper}>
+                                                        <TextInput placeholder={data?.duration?.toString() || "Duration"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={duration} onChangeText={(text) => setDuration(text)} />
+                                                        <Text style={{ color: "gray" }}>sec</Text>
+                                                    </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Frequency</Text>
-                                                    <TextInput placeholder={`Every ${data?.frequency || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                    <View style={styles.inputWrapper}>
+                                                        <TextInput placeholder={`Every ${data?.frequency || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                    </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Upload Image</Text>
@@ -203,11 +218,20 @@ const styles = StyleSheet.create({
         alignItems: "center",
         width: 100
     },
+    inputWrapper: { 
+        alignItems: 'center', 
+        justifyContent: 'space-between', 
+        padding: 8, 
+        flexDirection: 'row', 
+        flex: 1, 
+        backgroundColor: '#ffffff', 
+        borderRadius: 20,
+    },
     input: {
         backgroundColor: '#ffffff',
         color: '#000000',
         borderRadius: 20,
-        padding: 8,
+        flex: 1
     },
     mainHeader: {
         fontSize: 30,

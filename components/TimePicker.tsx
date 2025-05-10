@@ -25,10 +25,10 @@ export default function TimePicker({ setTimeValue, timeValue }) {
     }, []);
 
     return (
-        <View>
+        <View style={{ flex: 1 }}>
             <TouchableOpacity onPress={() => setShowPicker(!showPicker)} style={[styles.input, showPicker && styles.inputActive]}>
                 { showPicker ? ( 
-                    <View style={{ alignContent: 'center' }}>
+                    <View style={{ alignContent: 'center', flex: 1 }}>
                         <DateTimePicker 
                         mode="time"
                         value={time || new Date() }
@@ -51,7 +51,8 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 8
+        flex: 1,
+        width: "100%"
     },
     inputActive: {
         alignContent: 'center',
