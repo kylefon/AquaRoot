@@ -10,6 +10,7 @@ export default function MySchedule() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
+    const [ imageLoad, setImageLoad ] = useState<{ [key: string]: boolean }>({});
 
     const {user} = useUserContext();
 
@@ -65,9 +66,18 @@ export default function MySchedule() {
                                             return(
                                                 <View key={index} style={{ flexDirection: 'row', gap: 10, alignItems: 'center', borderBottomColor: "#557153", borderBottomWidth: 1 }}>
                                                     { data.image ? (
-                                                        <Image source={{ uri: data.image}} style={styles.image}/>
+                                                        <>
+                                                        { !imageLoad[data.plantId] && (
+                                                                <View style={styles.imageAbsolute}>
+                                                                    <Sprout size={80} color="#557153"/>
+                                                                </View>
+                                                            )}
+                                                            <Image source={{ uri: data.image}} style={styles.image} 
+                                                                onLoad={() => setImageLoad( prev => ({ ...prev, [data.plantId]: true}))}
+                                                            />
+                                                        </>
                                                     ):(
-                                                        <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153"}}>
+                                                        <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153", backgroundColor: "white" }}>
                                                             <Sprout size={80} color="#557153"/>
                                                         </View>
                                                     )}
@@ -100,6 +110,22 @@ export default function MySchedule() {
 }
 
 const styles = StyleSheet.create({
+    imageAbsolute: {
+       position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        borderWidth: 2,
+        width: 80,
+        height: 80,
+        backgroundColor: "white",
+        borderRadius: 100,
+        borderColor:"#557153",
+        zIndex: 1 
+    },
     image: {
         width: 80,
         height: 80,

@@ -11,6 +11,7 @@ export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
     const [ loading, setLoading ] = useState(false);
+    const [ imageLoad, setImageLoad ] = useState<{ [key: string]: boolean }>({});
     const [ plantName, setPlantName ] = useState('');
     const [ toEditId, setToEditId ] = useState(null);
 
@@ -87,16 +88,25 @@ export default function MyDictionary() {
                                     {plants.map((data, index) => (
                                         <View style={{ flexDirection: 'row', gap: 20 }} key={index}>
                                             { data.image ? (
-                                                <Image source={{ uri: data.image}} style={styles.image}/>
+                                                <View style={{ position: 'relative', width: 80, height: 80 }}>
+                                                    { !imageLoad[data.plantId] && (
+                                                        <View style={styles.imageAbsolute}>
+                                                            <Sprout size={80} color="#557153"/>
+                                                        </View>
+                                                    )}
+                                                    <Image source={{ uri: data.image}} style={styles.image} 
+                                                        onLoad={() => setImageLoad( prev => ({ ...prev, [data.plantId]: true}))}
+                                                    />
+                                                </View>
                                             ):(
-                                                <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153"}}>
+                                                <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153", backgroundColor: "white" }}>
                                                     <Sprout size={80} color="#557153"/>
                                                 </View>
                                             )}
                                             <View style={styles.plantView}>
                                                 <View style={styles.plantHeader} >
                                                     {toEditId === data.id ? (
-                                                        <TextInput style={styles.input} value={data.plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => setPlantName(text)}/>
+                                                        <TextInput style={styles.input} value={plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => {setPlantName(text)}} />
                                                     ):(
                                                         <Text style={styles.plantName}>{data.plantName}</Text>
                                                     )}
@@ -106,6 +116,7 @@ export default function MyDictionary() {
                                                                 setToEditId(null);
                                                             } else {
                                                                 setToEditId(data.id);
+                                                                setPlantName(data.plantName);
                                                             }
                                                         }}>
                                                             <Pencil color="#557153"/>
@@ -150,10 +161,28 @@ export default function MyDictionary() {
 } 
 
 const styles = StyleSheet.create({
+    imageAbsolute: {
+       position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        right: 0, 
+        bottom: 0, 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        borderWidth: 2,
+        width: 80,
+        height: 80,
+        backgroundColor: "white",
+        borderRadius: 100,
+        borderColor:"#557153",
+        zIndex: 2 
+    },
     image: {
         width: 80,
         height: 80,
-        borderRadius: 100
+        borderRadius: 100,
+        display: 'flex',
+        zIndex: 1 
     },
     input: {
         backgroundColor: '#8f8e8e',
