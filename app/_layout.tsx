@@ -38,7 +38,6 @@ export default function RootLayout() {
         <UserProvider>
           <Stack>
             <Stack.Screen name="index" options={{ headerShown: false }} />
-            <Stack.Screen name="sign-in" options={{ headerShown: false }} />
             <Stack.Screen name="sign-up" options={{ headerShown: false }} />
             <Stack.Screen name="plant-type" options={{ headerShown: false }} />
             <Stack.Screen name="my-home" options={{ headerShown: false }} />

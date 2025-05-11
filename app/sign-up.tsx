@@ -2,7 +2,7 @@ import CreateLayout from "@/components/CreateLayout";
 import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { Alert, Button, Dimensions, Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Button, Dimensions, Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
 
 export default function SignIn() {
     const [username, setUsername] = useState('')
@@ -14,18 +14,21 @@ export default function SignIn() {
     async function signUpWithEmail() {
         setLoading(true)
 
-        if (username.length > 3) {
+        if (username.length < 3) {
             Alert.alert("Username should be more than 2 characters");
+            setLoading(false);
             return;
         }
 
         if (!email || !password || !confirmPassword || !username) {
             Alert.alert("Please fill in all fields");
+            setLoading(false);
             return;
         }
 
         if (password !== confirmPassword) {
             Alert.alert("Password and confirm password do not match");
+            setLoading(false);
             return;
         }
 
@@ -48,10 +51,22 @@ export default function SignIn() {
             return;
         }
 
-        Alert.alert("Successfully signed in your account");
-        router.replace("/plant-type")
-        
-        setLoading(false);
+        if (signUpData?.user) {
+            Alert.alert("Successfully signed in your account");
+            router.replace("/plant-type")   
+            setLoading(false);
+        } 
+    }
+
+    if (loading) {
+        return(
+            <CreateLayout>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text style={{ marginBottom: 10 }}>Creating your account...</Text>
+                    <ActivityIndicator size="large" color="#00cc99" />
+                </View>
+            </CreateLayout>
+        )
     }
     
     return (
@@ -59,7 +74,7 @@ export default function SignIn() {
             <View style={{ gap: 15 }}>
                 <View style={styles.headerContainer}>
                     <Text style={styles.header}>Create New Account</Text>
-                    <Link href="/sign-in" asChild>
+                    <Link href="/" asChild>
                         <Text style={styles.subHeading}>Already Registered? Log in here</Text>
                     </Link>
                 </View>

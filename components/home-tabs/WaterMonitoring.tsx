@@ -9,7 +9,7 @@ import { useUserContext } from "@/context/UserContext";
 export default function WaterMonitoring() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plants, setPlants ] = useState([]);
-    const [ loading, setLoading ] = useState(true);
+    const [ loading, setLoading ] = useState(false);
 
     const {user} = useUserContext();
 
@@ -29,6 +29,18 @@ export default function WaterMonitoring() {
             getPlant();
         }
     }, [user, modalVisible])
+
+    if (loading) {
+        return (
+            <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
+                <Droplets color="#557153" size={40} />
+                <View style={styles.text}>
+                    <Text style={styles.textColorActive}>Water Monitoring</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={20} weight="medium" color="#557153"/>
+            </Pressable>
+        )
+    }
 
     return (
         <View>
@@ -79,6 +91,11 @@ export default function WaterMonitoring() {
 }
 
 const styles = StyleSheet.create({
+    textColorActive: {
+        fontSize: 20,
+        color: "#557153",
+        fontWeight: "800"      
+    },
     mainHeader: {
         fontSize: 30,
         color: "#ffffff",

@@ -1,5 +1,6 @@
 import { Collapsible } from "@/components/Collapsible";
 import CreateLayout from "@/components/CreateLayout";
+import UploadImage from "@/components/UploadImage";
 import { useUserContext } from "@/context/UserContext";
 import { supabase } from "@/lib/supabase";
 import { Link, router } from "expo-router";
@@ -10,14 +11,11 @@ import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text
 
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
+    const [ image, setImage ] = useState("");
 
-    const {user} = useUserContext();
-    
-    useEffect(() => {
-        if (!user) return;
-    }, [user])
+    const { user } = useUserContext();
 
-    async function addPlantType({plant, index, userId}) {
+    async function addPlantType({plant, index }) {
             // input is based on the number of check per week
             // there are 168 hours in a week 
             const checks = 168/plant.checks;
@@ -31,8 +29,13 @@ export default function PlantTypes() {
                 .from('plant')
                 .insert({
                     plantName: plant.name,
-                    image: null
+                    image: image
                 }).select()
+            
+            if (error || !data || data.length === 0) {
+                Alert.alert("Error adding plant");
+                return;
+            }
     
             const { data: plantData , error: plantError } = await supabase
                 .from('plantType')
@@ -42,14 +45,14 @@ export default function PlantTypes() {
                     frequency: checks,
                     duration: plant.duration,
                     plantId: data?.[0]?.id,
-                    userId: userId,
-                    date: localISOString
+                    date: localISOString,
+                    userId: user.id
                 })
 
-            if (error || plantError ) {
-                Alert.alert(`Error adding plant ${data?.plantName}`)
+            if ( plantError ) {
+                Alert.alert(`Error adding plant "${plant.name}": ${plantError.message}`);
+                return;            
             }
-                
         }
 
     const handlePlants = () => {
@@ -72,9 +75,14 @@ export default function PlantTypes() {
         for ( let i = 0; i< plantTypes.length; i++ ){
             const plant = plantTypes[i]
             if (!plant.name || !plant.checks || !plant.duration) {
-                Alert.alert("Please fill up all values")
+                Alert.alert("Please fill up all values");
+                return;
             }
-            await addPlantType({plant, index: i})
+            if (!image) {
+                Alert.alert("Upload image or wait for it to upload");
+                return;
+            }
+            await addPlantType({plant, index: i })
         }
 
         Alert.alert("Successfully added plants");
@@ -123,6 +131,9 @@ export default function PlantTypes() {
                                                 <View>
                                                     <Text style={styles.subHeading}>Duration (in seconds)</Text>
                                                     <TextInput value={input.duration} placeholder="Duration" style={styles.input} keyboardType="numeric" maxLength={15} onChangeText={text => handleInputChange('duration', text, index)}/>
+                                                </View>
+                                                <View>
+                                                    <UploadImage setImage={setImage}/>
                                                 </View>
                                             </View>
                                         </Collapsible>

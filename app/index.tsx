@@ -1,47 +1,123 @@
 import { useState, useEffect } from 'react'
 import { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
-import { Slot, useRouter } from 'expo-router'
-import { ActivityIndicator, View } from 'react-native'
+import { useRouter } from 'expo-router'
+import { ActivityIndicator, Alert, Button, Image, ImageBackground, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 export default function Main() {
-  const [session, setSession] = useState<Session | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const router = useRouter()
+  const [ email, setEmail ] = useState('')
+  const [ password, setPassword ] = useState('')
+  const [ loading, setLoading ] = useState(false)
+  const router = useRouter();
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setIsLoading(false)
-    })
+  async function signInWithEmail() {
+      setLoading(true)
+      const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password
+      })
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setIsLoading(false)
-    })
-
-    return () => {
-      authListener.subscription?.unsubscribe()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!isLoading) {
-      if (session) {
-        router.navigate('/my-home')
-      } else {
-        router.navigate('/sign-in')
+      if (error){ 
+          Alert.alert(error.message);
+          setLoading(false);
+          return;
       }
-    }
-  }, [session, isLoading])
-
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#557153" />
-      </View>
-    )
+      Alert.alert("Successfully logged in");
+      router.replace('/my-home');
+      setLoading(false);
   }
 
-  return null;
+  return (
+    <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
+        style={{ flex: 1, backgroundColor: '#7caa95' }}>
+        <ImageBackground source={require('@/assets/images/leaf-bg.png')} style={styles.background}>
+            <View style={{ flex: 1 }}>
+                <View style={styles.logo}>
+                    <Image source={require('@/assets/images/AquaRoot-Logo.png')}/>
+                </View>
+                <View style={styles.WelcomeBox}>
+                    <View style={{ gap: 15 }}>
+                        <View style={styles.headerContainer}>
+                            <Text style={styles.header}>Welcome!</Text>
+                            <Text style={styles.subHeading}>Sign in to continue</Text>
+                        </View>
+                        <View
+                            style={{ gap: 20}}>
+                            <ScrollView         
+                                contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', gap: 20 }}   
+                                keyboardShouldPersistTaps="handled">
+                            <View style={{ gap: 10 }}>
+                                <View>
+                                    <Text style={styles.subHeading}>EMAIL</Text>
+                                    <TextInput placeholder="email" style={styles.input} value={email} onChangeText={(text) => setEmail(text)}/>
+                                </View>
+                                <View>
+                                    <Text style={styles.subHeading}>PASSWORD</Text>
+                                    <TextInput placeholder="password" style={styles.input} value={password} onChangeText={(text) => setPassword(text)} secureTextEntry={true} autoCapitalize="none"/>
+                                </View>
+                            </View>
+                            <View style={styles.button}>
+                                {/* <Button title="Log in" onPress={() => router.push("/my-home/")}/> */}
+                                <Button title="Log in" disabled={loading} onPress={() => signInWithEmail()}/>
+                            </View>
+                            </ScrollView>
+                        </View>
+                    </View>
+                    <View style={styles.headerContainer}>
+                        <Text style={styles.subHeading}>Forgot Password?</Text>
+                        <Pressable onPress={() => router.navigate('/sign-up')}>
+                            <Text style={styles.subHeading}>Signup</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
+        </ImageBackground>
+    </KeyboardAvoidingView>
+  )
 }
+
+const styles = StyleSheet.create({
+    logo: {
+        flex: 1.5,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    background: {
+        flex: 1,
+        width: '100%', 
+        height: '100%',
+    },
+    WelcomeBox: {
+        flex: 2,
+        backgroundColor: '#f6f6e9',
+        borderTopRightRadius: 100,
+        borderTopLeftRadius: 7,
+        padding: 50,
+        width: '100%',
+        display: 'flex',
+        gap: 30
+    },
+    input: {
+        backgroundColor: '#8f8e8e',
+        color: '#000000',
+        borderRadius: 20,
+        padding: 16
+    },
+    headerContainer: {
+        alignItems: 'center'
+    }, 
+    button: {
+        backgroundColor: '#1c2120',
+        color: '#ffffff',
+        borderRadius: 10
+    },
+    header: {
+        fontSize: 50,
+        fontWeight: 'bold'
+    },
+    subHeading: {
+        color: '#8f8e8e',
+        fontSize: 10.5
+    }
+})

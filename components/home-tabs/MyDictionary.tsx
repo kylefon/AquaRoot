@@ -66,7 +66,19 @@ export default function MyDictionary() {
           ]
         );
       };
-      
+    
+
+    if (loading) {
+        return (
+            <Pressable style={styles.tab} onPress={() => setModalVisible(true)}>
+                <BookOpenText color="#557153" size={40} />
+                <View style={styles.text}>
+                    <Text style={styles.textColorActive}>Your Dictionary</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={20} weight="medium" color="#557153"/>
+            </Pressable>        
+        )
+    }
     return (
         <View>
                 {/* <SafeAreaView> */}
@@ -77,11 +89,11 @@ export default function MyDictionary() {
                         transparent={true}
                         onRequestClose={() => {
                             Alert.alert("Modal has been closed");
-                            setModalVisible(!modalVisible);
+                            setModalVisible(false);
                             }}>
                                 <View style={styles.centeredView}>
                                 <View style={styles.modalView}>
-                                    <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                    <Pressable onPress={() => setModalVisible(false)} style={{ alignItems: "flex-end"}}>
                                         <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                     </Pressable>
                                     <Text style={styles.mainHeader}>My Dictionary</Text>
@@ -149,7 +161,7 @@ export default function MyDictionary() {
                         </Modal>
                     )}
                 {/* </SafeAreaView> */}
-            <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
+            <Pressable style={styles.tab} onPress={() => setModalVisible(true)}>
                 <BookOpenText color="#557153" size={40} />
                 <View style={styles.text}>
                     <Text style={styles.textColor}>Your Dictionary</Text>
@@ -231,6 +243,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "#557153",
         fontWeight: "600"      
+    },
+    textColorActive: {
+        fontSize: 20,
+        color: "#557153",
+        fontWeight: "800"      
     },
     plantHeader: {
         flexDirection: 'row',

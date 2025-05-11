@@ -13,11 +13,13 @@ export async function getPlants(id: string) {
         .order('potNumber');
 
     if (error) {
+        console.error("Unable to get plants", error);
         Alert.alert("Error getting plant types");
         return [];
     }
 
-    if (data?.length === 0 ) {
+    if (!data ||data?.length === 0 ) {
+        console.error("No plants available");
         Alert.alert("There are no plants available");
         return [];
     }
@@ -27,8 +29,15 @@ export async function getPlants(id: string) {
             .from('plant')
             .select("plantName, image").eq("id", data?.[i].plantId);
 
-        if (plantData === null || data === null) {
+        if (plantData === null) {
+            console.error("No plants available");
             Alert.alert("No plants available");
+            return [];
+        }
+
+        if (plantError) {
+            console.error("Error: ", error);
+            Alert.alert(`Error: ${plantError}`);
             return [];
         }
 
@@ -44,7 +53,7 @@ export async function getAuthenticatedUser() {
 
     if (error || !user) {
         Alert.alert("The user is not logged in");
-        router.replace("/sign-in");
+        router.replace("/");
         return;
     }
     

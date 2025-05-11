@@ -33,6 +33,18 @@ export default function MySchedule() {
         }
     }, [user, modalVisible])
 
+    if (loading) {
+        return (
+            <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
+                <CalendarDays color="#557153" size={40} />
+                <View style={styles.text}>
+                    <Text style={styles.textColorActive}>My Schedule</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={20} weight="medium" color="#557153"/>
+            </Pressable>
+        )
+    }
+
     return (
         <View>
                 {/* <SafeAreaView> */}
@@ -110,6 +122,11 @@ export default function MySchedule() {
 }
 
 const styles = StyleSheet.create({
+    textColorActive: {
+        fontSize: 20,
+        color: "#557153",
+        fontWeight: "800"      
+    },
     imageAbsolute: {
        position: 'absolute', 
         top: 0, 

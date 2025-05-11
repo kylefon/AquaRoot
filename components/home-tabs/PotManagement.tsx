@@ -76,6 +76,18 @@ export default function PotManagement() {
         setModalVisible(false);
     }
 
+    if (loading) {
+        return (
+            <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
+                <Leaf color="#557153" size={40} />
+                <View style={styles.text}>
+                    <Text style={styles.textColorActive}>Pot Management</Text>
+                </View>
+                <IconSymbol name="chevron.right" size={20} weight="medium" color="#557153"/>
+            </Pressable>
+        )
+    }
+
     return (
         <View>
             {!loading && (
@@ -126,6 +138,11 @@ export default function PotManagement() {
 }
 
 const styles = StyleSheet.create({
+    textColorActive: {
+        fontSize: 20,
+        color: "#557153",
+        fontWeight: "800"      
+    },
     mainHeader: {
         fontSize: 30,
         color: "#ffffff",

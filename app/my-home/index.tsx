@@ -1,13 +1,50 @@
 import EditPots from "@/components/home-tabs/EditPots";
 import HomeTabs from "@/components/HomeTabs";
+import { supabase } from "@/lib/supabase";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { Session } from "@supabase/supabase-js";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
 import { CircleUser, Scale } from "lucide-react-native";
-import { Image, Pressable, SafeAreaView, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Image, Pressable, SafeAreaView, StyleSheet } from "react-native";
 import { Button, Text, View } from "react-native";
 
 export default function MyHome() {
+    const [session, setSession] = useState<Session | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const router = useRouter()
     const navigation = useNavigation();
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setSession(session)
+            setIsLoading(false)
+        })
+
+        const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+
+        return () => {
+            authListener.subscription?.unsubscribe()
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!isLoading && !session) {
+            router.replace('/') 
+        }
+    }, [session, isLoading])
+
+    if (isLoading || !session) {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <ActivityIndicator size="large" color="#fff" />
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.background}>
             <View style={{ padding: 15 }}>
