@@ -3,19 +3,28 @@ import CreateLayout from "@/components/CreateLayout";
 import UploadImage from "@/components/UploadImage";
 import { useUserContext } from "@/context/UserContext";
 import { supabase } from "@/lib/supabase";
+import { drizzle } from "drizzle-orm/expo-sqlite/driver";
 import { Link, router } from "expo-router";
-import { Camera, Trash2 } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { Alert, ScrollView, TouchableOpacity } from "react-native";
-import { Button, Dimensions, Image, ImageBackground, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
+import { Trash2 } from "lucide-react-native";
+import { useState } from "react";
+import { ActivityIndicator, Alert, ScrollView } from "react-native";
+import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import * as schema from '@/db/schema';
+import { and, eq } from 'drizzle-orm'
+import { plant as plantTable, plantType } from '@/db/schema';
+import { useDrizzle } from "@/hooks/useDrizzle";
+import { getAuthenticatedUser } from "@/utils/actions";
 
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
-    const [ image, setImage ] = useState("");
+    const [ image, setImage ] = useState();
+    
+    const drizzleDb = useDrizzle();
 
-    const { user } = useUserContext();
+    async function addPlantType({ plant, index }) {
 
-    async function addPlantType({plant, index }) {
+        const user = await getAuthenticatedUser(drizzleDb);
             // input is based on the number of check per week
             // there are 168 hours in a week 
             const checks = 168/plant.checks;
@@ -24,36 +33,43 @@ export default function PlantTypes() {
             const toAdd = checks * 60 * 60 * 1000;
             const updatedDate = new Date(currDate.getTime()  + toAdd)
             const localISOString = new Date(updatedDate.getTime() - updatedDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
-            
-            const { data, error } = await supabase
-                .from('plant')
-                .insert({
+
+            const insertPlant = await drizzleDb
+                .insert(plantTable)
+                .values({
                     plantName: plant.name,
-                    image: image
-                }).select()
-            
-            if (error || !data || data.length === 0) {
+                    image: null
+                }).run()
+
+            const data = await drizzleDb
+            .select()
+            .from(plantTable)
+            .where(eq(plantTable.id, insertPlant.lastInsertRowId))
+            .get();
+ 
+            if ( !data ) {
                 Alert.alert("Error adding plant");
                 return;
             }
-    
-            const { data: plantData , error: plantError } = await supabase
-                .from('plantType')
-                .insert({
-                    potNumber: index + 1,
-                    // number of checks per hour
-                    frequency: checks,
-                    duration: plant.duration,
-                    plantId: data?.[0]?.id,
-                    date: localISOString,
-                    userId: user.id
-                })
 
-            if ( plantError ) {
-                Alert.alert(`Error adding plant "${plant.name}": ${plantError.message}`);
+            const plantData = await drizzleDb
+                .insert(plantType)
+                .values({
+                    potNumber: Number(index + 1),
+                    frequency: Number(checks),
+                    duration: Number(plant.duration),
+                    plantId: data.id,
+                    userId: user.id,
+                    date: localISOString,
+                }).run()
+
+
+            if (!plantData) {
+                Alert.alert(`Error adding plant: ${plant.name}`);
                 return;            
             }
-        }
+
+    }
 
     const handlePlants = () => {
         setPlantTypes(prev => [...prev, { name: "", checks: "", duration: "" }]);
@@ -78,19 +94,17 @@ export default function PlantTypes() {
                 Alert.alert("Please fill up all values");
                 return;
             }
-            if (!image) {
-                Alert.alert("Upload image or wait for it to upload");
-                return;
-            }
+            // if (!image) {
+            //     Alert.alert("Upload image or wait for it to upload");
+            //     return;
+            // }
             await addPlantType({plant, index: i })
         }
 
         Alert.alert("Successfully added plants");
         router.replace("/my-home")
     }
-
-
-
+    
     return (
         <CreateLayout>
             <View style={{ gap: 15 }}>
@@ -132,9 +146,9 @@ export default function PlantTypes() {
                                                     <Text style={styles.subHeading}>Duration (in seconds)</Text>
                                                     <TextInput value={input.duration} placeholder="Duration" style={styles.input} keyboardType="numeric" maxLength={15} onChangeText={text => handleInputChange('duration', text, index)}/>
                                                 </View>
-                                                <View>
-                                                    <UploadImage setImage={setImage}/>
-                                                </View>
+                                                {/* <View>
+                                                    <UploadImage setImage={setImage} />
+                                                </View> */}
                                             </View>
                                         </Collapsible>
                                     </View>

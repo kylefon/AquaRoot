@@ -3,8 +3,8 @@ import { Text, View, TouchableOpacity, StyleSheet, TextInput, Button, Pressable 
 import DateTimePicker from '@react-native-community/datetimepicker'
 
 export default function DatePicker({ setDateValue, dateValue }) {
-    const [ date, setDate ] = useState(null);
-    const [ showPicker, setShowPicker ] = useState(false);
+    const [ date, setDate ] = useState<Date | null>(null);
+    const [ showPicker, setShowPicker ] = useState(true);
 
     const handleDateChange = (event, selectedDate) => {
         if (event.type === 'set') {
@@ -15,9 +15,17 @@ export default function DatePicker({ setDateValue, dateValue }) {
     }
 
     useEffect(() => {
+        if (date) {
+            setDateValue(date);
+        } else {
+            const now = new Date();
+            setDateValue(now.toLocaleDateString("en-ca"));
+            setDate(now);
+        }
         if (dateValue === "") {
             const now = new Date();
             setDateValue(now.toLocaleDateString("en-ca"));
+            setDate(now);
         }
     }, [])
 

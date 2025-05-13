@@ -2,21 +2,22 @@ import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Alert } from "react-native";
 import { useRouter } from 'expo-router'
+import { useSQLiteContext } from "expo-sqlite";
+import { drizzle } from "drizzle-orm/expo-sqlite/driver";
+import * as schema from '@/db/schema';
+import { plant, plantType, user } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
-export async function getPlants(id: string) {
+
+export async function getPlants(drizzleDb: any, id: string) {
     let allPlants: any[] = []
 
-    const { data, error } = await supabase
-        .from('plantType')
-        .select("id, userId, plantId, duration, frequency, potNumber, date, waterUsage" )
-        .eq("userId",id)
-        .order('potNumber');
-
-    if (error) {
-        console.error("Unable to get plants", error);
-        Alert.alert("Error getting plant types");
-        return [];
-    }
+    const data = await drizzleDb
+        .select()
+        .from(plantType)
+        .where(eq(plantType.userId, Number(id)))
+        .orderBy(plantType.potNumber).all();
 
     if (!data ||data?.length === 0 ) {
         console.error("No plants available");
@@ -25,19 +26,16 @@ export async function getPlants(id: string) {
     }
 
     for ( let i = 0; i < data?.length; i++ ) {
-        const { data: plantData, error: plantError } = await supabase
-            .from('plant')
-            .select("plantName, image").eq("id", data?.[i].plantId);
+        const plantData = drizzleDb.select({
+            plantName: plant.plantName,
+            image: plant.image
+        }).from(plant)
+        .where(eq(plant.id, Number(data[i].plantId)))
+        .all()
 
         if (plantData === null) {
             console.error("No plants available");
             Alert.alert("No plants available");
-            return [];
-        }
-
-        if (plantError) {
-            console.error("Error: ", error);
-            Alert.alert(`Error: ${plantError}`);
             return [];
         }
 
@@ -47,113 +45,139 @@ export async function getPlants(id: string) {
     return allPlants;
 }
 
-export async function getAuthenticatedUser() {
-    const router = useRouter()
-    const { data: { user }, error } = await supabase.auth.getUser();
+export async function getAuthenticatedUser(drizzleDb: any) {
+    const result = await drizzleDb
+        .select({
+            id: user.id,
+            username: user.username,
+            email: user.email,
+        })
+        .from(user)
+        .where(eq(user.isLoggedIn, 1))
+        .limit(1)
+        .all();
 
-    if (error || !user) {
-        Alert.alert("The user is not logged in");
-        router.replace("/");
-        return;
-    }
-    
-    return user
+    return result.length ? result[0] : null
 }
 
-export async function editPlantName(name: string, id: string) {
-    const { error } = await supabase
-        .from('plant')
-        .update({
-            plantName: name
-        })
-        .eq('id', id)
+export async function editPlantName(drizzleDb: any, name: string, id: string) {
+    const data =  await drizzleDb
+        .update(plant)
+        .set({ plantName: name})
+        .where(eq(plant.id, Number(id)))
+        .run()
     
-    if (error) {
+    if (!data) {
         Alert.alert("Unable to edit plant");
     }
 }
 
-export async function deletePlant(id: string) {
-    const response = await supabase
-        .from('plant')
-        .delete()
-        .eq('id', id)
+export async function deletePlant(drizzleDb: any, id: string) {
+
+    const response = await drizzleDb
+        .delete(plant)
+        .where(eq(plant.id, Number(id)))
+        .run()
+
+    await drizzleDb
+        .delete(plantType)
+        .where(eq(plantType.plantId, Number(id)))
+        .run()
+    
     
     if (!response) {
         Alert.alert("Unable to delete plant");
     }
 }
 
-export async function editPlantType(data){
-    const { error } = await supabase
-        .from('plant')
-        .update({
+export async function editPlantType(drizzleDb: any, data){
+    const editPlantData = await drizzleDb
+        .update(plant)
+        .set({
             plantName: data.plantName,
             image: data.image
-        }).eq('id', data.plantId)
-    
-    const { error: plantError } = await supabase
-        .from('plantType')
-        .update({
+        }).where(eq(plant.id, data.plantId)).run()
+
+    const editPlantTypeData = await drizzleDb
+        .update(plantType)
+        .set({
             potNumber: data.potNumber,
             duration: data.duration,
             frequency: data.frequency,
             date: data.date,
-        }).eq('plantId', data.plantId)
-    
-    return { error, plantError };
+        }).where(eq(plantType.plantId, data.plantId)).run() 
+    return { editPlantData, editPlantTypeData };
 }
 
-export async function editPotNumber(plantName: string, potNumber: number){
-    const { data, error } = await supabase
-        .from('plant').select().eq('plantName', plantName)
+export async function editPotNumber(drizzleDb: any, plantName: string, potNumber: number){
+    const data = await drizzleDb
+        .select()
+        .from(plant)
+        .where(eq(plant.plantName, plantName))
     
-    if (error) {
+    if (!data) {
         Alert.alert("Unable to get plant name");
         return;
     }
 
-    const { error: plantTypeError } = await supabase
-        .from('plantType').update({potNumber: potNumber}).eq("plantId", data[0].id)
+    const plantTypeData = await drizzleDb
+        .update(plantType)
+        .set({
+            potNumber: potNumber
+        })
+        .where(eq(plantType.plantId, data[0].id))
+        .run()
 
-    if (plantTypeError) {
+    if (!plantTypeData) {
         Alert.alert("Unable to edit pot number");
         return;
     }
 }
 
-export async function addPlantData(data) {
-    const { data: plantData, error } = await supabase
-        .from('plant')
-        .insert({ plantName: data.plantName, image: data.image })
-        .select()
-    
-    const { error: plantTypeError } = await supabase
-        .from('plantType')
-        .insert({
+export async function addPlantData(drizzleDb: any, data) {
+    const plantData = await drizzleDb
+        .insert(plant)
+        .values({
+            plantName: data.plantName, 
+            image: data.image
+        }).run()
+
+    const plantTypeData = await drizzleDb
+        .insert(plantType)
+        .values({
             potNumber: data.potNumber,
             frequency: data.frequency,
             duration: data.duration,
-            plantId: plantData?.[0]?.id,
+            plantId: plantData.lastInsertRowId,
             userId: data.userId,
             date: data.date,
-        })
+        }).run()
     
-    return { error, plantTypeError }
+    return { plantData, plantTypeData }
 }
 
-export async function getPotNumbers(userId) {
-    const { data, error } = await supabase
-        .from('plantType')
-        .select("potNumber")
-        .eq("userId", userId)
+export async function getDuplicateEmail(drizzleDb: any, email: string) {
+    
+    const data = await drizzleDb
+        .select()
+        .from(user)
+        .where(eq(user.email, email))
+        .limit(1)
+        .all();
 
-    return { data, error }
+    return data.length > 0
 }
 
-export async function getUsername(userId) {
-    const { data, error } = await supabase
-        .from('user').select('username').eq('id', userId)
-    
-    return { data, error }
+export function isValidEmail(email: string): boolean {
+    const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+    return regex.test(email);
+}
+
+export function dateWithFrequency(date, frequency) {
+    const toAdd = frequency * 60 * 60 * 1000;
+    const localDate = new Date(date);
+    const updatedTime = new Date(localDate.getTime() + toAdd);
+    const localISOString = new Date(updatedTime.getTime() - updatedTime.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+
+    return localISOString;
 }

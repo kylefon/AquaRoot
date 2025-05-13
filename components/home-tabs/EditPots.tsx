@@ -8,19 +8,23 @@ import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
 import EditPlant from "../EditPlant";
-import { getPlants } from "@/utils/actions";
+import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useUserContext } from "../../context/UserContext";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
 export default function EditPots() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ plantArray, setPlantArray ] = useState([])
     const [ loading, setLoading ] = useState(false);
 
-    const {user} = useUserContext();
+
+    const drizzleDb = useDrizzle();
 
     const getPlant = async () => {
+        const user = await getAuthenticatedUser(drizzleDb);
+
         setLoading(true);
-        const allPlants = await getPlants(user.id);
+        const allPlants = await getPlants(drizzleDb, user.id);
 
         const emptyPlants = Array(4).fill(null);
         allPlants.forEach(plant => {
@@ -38,7 +42,7 @@ export default function EditPots() {
         if (modalVisible) {
             getPlant();
         }
-    }, [user, modalVisible])
+    }, [modalVisible])
 
     return (
         <View style={{ flex: 1 }}>

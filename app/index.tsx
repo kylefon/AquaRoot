@@ -3,30 +3,85 @@ import { Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 import { useRouter } from 'expo-router'
 import { ActivityIndicator, Alert, Button, Image, ImageBackground, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { useSQLiteContext } from 'expo-sqlite'
+import { drizzle } from 'drizzle-orm/expo-sqlite/driver'
+import * as schema from '@/db/schema';
+import { and, eq } from 'drizzle-orm'
+import { user } from '@/db/schema';
+import { useDrizzle } from '@/hooks/useDrizzle'
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
+import * as SQLite from "expo-sqlite";
+
+const db = SQLite.openDatabaseSync('user'); // Ensure 'user' matches your DATABASE_NAME
 
 export default function Main() {
   const [ email, setEmail ] = useState('')
   const [ password, setPassword ] = useState('')
   const [ loading, setLoading ] = useState(false)
   const router = useRouter();
+  
+  const drizzleDb = useDrizzle();
+  useDrizzleStudio(db);
+
+  useEffect(() => {
+    const getLogin = async () => {
+      const checkLogin = await drizzleDb
+      .select()
+      .from(user)
+      .where(eq(user.isLoggedIn, 1))
+      .all();
+            
+      if (checkLogin.length > 0) {
+        router.replace('/my-home');
+      }
+    }
+
+    getLogin();
+  }, [])
 
   async function signInWithEmail() {
-      setLoading(true)
-      const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-      })
+    setLoading(true); 
+    if (email.length === 0 || password.length === 0) {
+      Alert.alert("Please enter both email and password");
+      return;
+    }
+    try {
+      const userTable = await drizzleDb
+        .select()
+        .from(user)
+        .where(eq(user.email, email));
 
-      if (error){ 
-          Alert.alert(error.message);
-          setLoading(false);
-          return;
+      if (!userTable) {
+        Alert.alert('Error', 'Email does not exist');
+        return;
       }
-      Alert.alert("Successfully logged in");
-      router.replace('/my-home');
-      setLoading(false);
-  }
+      const validUser = await drizzleDb
+        .select()
+        .from(user)
+        .where(and(eq(user.email, email), eq(user.password, password)))
+        .limit(1)
+        .all();
 
+      if (validUser) {
+        await drizzleDb
+          .update(user)
+          .set({ isLoggedIn: 1 })
+          .where(eq(user.id, validUser[0].id)).run();
+
+        Alert.alert('Success', 'Login successful');
+        router.replace('/my-home');
+        setEmail('');
+        setPassword('');
+      } else {
+        Alert.alert('Error', 'Incorrect password');
+      }
+    } catch (error) {
+      console.log("Error during login: ", error);
+    } finally {
+      setLoading(false);
+    }
+  }
+  
   return (
     <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 

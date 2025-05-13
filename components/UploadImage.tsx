@@ -1,22 +1,26 @@
-import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system'
-import { FileObject } from '@supabase/storage-js'
 import { decode } from 'base64-arraybuffer'
 import { useUserContext } from "@/context/UserContext";
 import { Alert, Image, Text, TouchableOpacity } from "react-native";
 import { Camera, Trash2 } from "lucide-react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
-import ImageItem from "./ImageItem";
+import { plant, plantType } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { useDrizzle } from "@/hooks/useDrizzle";
+import { getAuthenticatedUser } from "@/utils/actions";
 
 
 export default function UploadImage({ setImage }) {
-    const {user} = useUserContext();
     const [ files, setFiles ] = useState<string>("");
 
+    const drizzleDb = useDrizzle();
+
     const onSelectImage = async () => {
+        const user = await getAuthenticatedUser(drizzleDb);
+
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],
             allowsEditing: true
@@ -25,50 +29,50 @@ export default function UploadImage({ setImage }) {
         if (!result.canceled) {
             const img = result.assets[0];
             const extension = img.uri.split('.').pop();
-            const base64 = await FileSystem.readAsStringAsync(img.uri, { encoding: 'base64' });
+            const destDir = FileSystem.documentDirectory + "images/";
             const filePath = `${user!.id}/${Date.now()}.${extension}`;
-            const contentType = `image/${extension}`;
+            const newPath = destDir + filePath;
 
-            const { error } = await supabase.storage.from('plantimage').upload(filePath, decode(base64), { contentType })
+                try {
+                    await FileSystem.makeDirectoryAsync(destDir, { intermediates: true });
+                    await FileSystem.copyAsync({ from: img.uri, to: newPath });
 
-            if ( error ) {
-                Alert.alert(`Upload failed: ${error}`);
-                return;
+                    setFiles(newPath);
+                    setImage(newPath);
+
+                } catch (err) {
+                    Alert.alert("Error saving image locally: ", err.message);
+                }
             }
-
-            const { data } = supabase.storage.from('plantimage').getPublicUrl(filePath);
-            if (data?.publicUrl) {
-                const finalUrl = `${data.publicUrl}?v=${Date.now()}`;
-                setFiles(finalUrl);                
-                setImage(finalUrl);
-            }   
         }
-    }
 
-    const onRemoveImage = async () => {
-        if (!files) return;
+    // const onRemoveImage = async () => {
+    //     if (!files) return;
 
-        const imagePath = files.split("/plantimage/")[1].split("?")[0];
+    //     try {
+    //         await FileSystem.deleteAsync(files, { idempotent: true });
+    //         setFiles("");
+    //         setImage("");
 
-        const { error } = await supabase.storage.from('plantimage').remove([imagePath]);
-
-        if ( error ) {
-            Alert.alert(`Delete failed: ${error}`);
-            return;
-        }
-        
-        setFiles("");
-        setImage("");
-    }
+    //         if (plantId) {
+    //             await drizzleDb.update(plant)
+    //                 .set({ image: null})
+    //                 .where(eq(plant.id, plantId))
+    //                 .run()
+    //         }
+    //     } catch (err) {
+    //         Alert.alert("Error removing image: ", err.message);
+    //     }
+    // }
 
     return(
         <View>
             {files ? (
                 <View style={{ flexDirection: 'row', margin: 1, alignItems: 'center', justifyContent: 'space-between',gap: 5 }}>
                     <Image style={{ width: 80, height: 80 }} source={{ uri: files }} />
-                    <TouchableOpacity onPress={onRemoveImage}>
+                    {/* <TouchableOpacity onPress={onRemoveImage}>
                         <Trash2 color="red"/>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>                
             ) : null }
 

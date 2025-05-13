@@ -7,8 +7,9 @@ import { Collapsible } from "../Collapsible";
 import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
 import { ScrollView } from "react-native-gesture-handler";
-import { editPotNumber, getPlants } from "@/utils/actions";
+import { editPotNumber, getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -16,12 +17,13 @@ export default function PotManagement() {
     const [ selectedPlants, setSelectedPlants] = useState([]);
     const [ newPlants, setNewPlants ] = useState([]);
 
-    const {user} = useUserContext();
-
+    const drizzleDb = useDrizzle()
+    
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(user.id);
+            const user = await getAuthenticatedUser(drizzleDb);
+            const allPlants = await getPlants(drizzleDb, user.id);
 
             if (allPlants.length === 0) {
                 setModalVisible(false);
@@ -46,7 +48,7 @@ export default function PotManagement() {
         if (modalVisible) {
             getPlant();
         }
-    }, [user, modalVisible])
+    }, [modalVisible])
 
     const handleSelect = (item, i) => {
         setNewPlants(prev => {
@@ -69,7 +71,7 @@ export default function PotManagement() {
         const result = newPlants.map((item, index) => item !== null ? { plantName: item, potNumber: index + 1}: null).filter(item => item !== null);
 
         for (let i = 0; i < result.length; i++ ) {
-            await editPotNumber(result[i].plantName, result[i].potNumber);
+            await editPotNumber(drizzleDb, result[i].plantName, result[i].potNumber);
         }
 
         Alert.alert("Successfully edited pot numbers");

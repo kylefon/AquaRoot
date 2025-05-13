@@ -1,23 +1,42 @@
 import { useUserContext } from "@/context/UserContext";
-import { supabase } from "@/lib/supabase";
-import { getUsername } from "@/utils/actions";
+import { user } from "@/db/schema";
+import { useDrizzle } from "@/hooks/useDrizzle";
+import { getAuthenticatedUser } from "@/utils/actions";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
+import { eq } from "drizzle-orm";
 import { useRouter } from "expo-router";
 import { UserCircle, Users } from "lucide-react-native";
+import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
 export default function CustomDrawer(props: any) {
-
+    const drizzleDb = useDrizzle();
     const router = useRouter();
 
-    const { username } = useUserContext();
+    const [ userData, setUserData ] = useState();
+    
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const user = await getAuthenticatedUser(drizzleDb);
+                setUserData(user);
+            } catch (error) {
+                console.error("Error fetching user data:", error);
+                Alert.alert("Error fetching user data");
+            }
+        };
+
+        fetchUser();
+    }, []);
 
     const signOutUser = async () => {
-        const { error } = await supabase.auth.signOut();
+        const userData = await getAuthenticatedUser(drizzleDb);
+        await drizzleDb.update(user).set({ isLoggedIn: 0 }).where(eq(user.id, userData.id)).run();
+        router.push('/')
 
-        if ( error ) {
-            Alert.alert("Error signing out user");
-        } 
+        // if ( error ) {
+        //     Alert.alert("Error signing out user");
+        // } 
     }
      
     return (
@@ -26,7 +45,7 @@ export default function CustomDrawer(props: any) {
                 <View style={styles.content}>
                     <View style={styles.profile}>
                         <DrawerItem 
-                            label={username ? `Hi ${username}!` : 'Profile'} 
+                            label={`Hi ${userData?.username}!` || 'Profile'} 
                             onPress={() => router.replace('/my-home/profile')}
                             icon={({size,color})=> <UserCircle size={size} color={color} />}
                             labelStyle={{fontSize: 20}}

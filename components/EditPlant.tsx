@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
-import { addPlantData, editPlantType, getPotNumbers } from "@/utils/actions";
+import { addPlantData, dateWithFrequency, editPlantType, getAuthenticatedUser, getPotNumbers } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
 import UploadImage from "./UploadImage";
+import { plantType } from "@/db/schema";
+import { eq } from "drizzle-orm";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
 export default function EditPlant({ data, onRefresh }) {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -20,21 +23,17 @@ export default function EditPlant({ data, onRefresh }) {
 
     const isEdit = data === null;
 
-    const {user} = useUserContext();
-
-    const dateWithFrequency = (date) => {
-        const toAdd = frequency * 60 * 60 * 1000;
-        const localDate = new Date(date);
-
-        const updatedTime = new Date(localDate.getTime() + toAdd);
-        const localISOString = new Date(updatedTime.getTime() - updatedTime.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
-
-        return localISOString;
-    }
+    const drizzleDb = useDrizzle();
 
     const submitForm = async () => {
-        const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`;        
-        const localISOString = dateWithFrequency(formattedDate);
+        const user = await getAuthenticatedUser(drizzleDb);
+
+        if (!plantName || !potNumber || !frequency || !duration || !user || !dateValue || !timeValue) {
+            Alert.alert("Please fill in all values");
+            return;
+        }
+        const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`
+        const localISOString = dateWithFrequency(formattedDate, frequency);
 
         const newData = {
             ...data,
@@ -47,9 +46,9 @@ export default function EditPlant({ data, onRefresh }) {
         }
         
         try {
-            const { error, plantError } = await editPlantType(newData);
+            const { editPlantData, editPlantTypeData } = await editPlantType(drizzleDb, newData);
 
-            if ( error || plantError ) {
+            if ( !editPlantData || !editPlantTypeData ) {
                 Alert.alert("Error", "Unable to edit plant. Please try again")
             } else {
                 Alert.alert("Successfully edited plant");
@@ -62,19 +61,24 @@ export default function EditPlant({ data, onRefresh }) {
     }
     
     const addForm = async () => {
-
-        const formattedDate = `${dateValue}T${timeValue}.000`
-        const localISOString = dateWithFrequency(formattedDate);
-
-
+        const user = await getAuthenticatedUser(drizzleDb);
+        
         if (!plantName || !potNumber || !frequency || !duration || !user || !dateValue || !timeValue) {
             Alert.alert("Please fill in all values");
             return;
         }
 
-        const { data: potNumData , error } = await getPotNumbers(user.id);
+        const formattedDate = `${dateValue}T${timeValue}.000`
+        const localISOString = dateWithFrequency(formattedDate, frequency);
 
-        if (error) {
+        const potNumData = await drizzleDb
+                .select()
+                .from(plantType)
+                .where(eq(plantType.userId, user.id))
+
+        
+
+        if (!potNumData) {
             Alert.alert("Error getting pot numbers");
         }
 
@@ -99,9 +103,9 @@ export default function EditPlant({ data, onRefresh }) {
             image: image
         }
         
-        const { error: plantError, plantTypeError } = await addPlantData(newData);
+        const { plantData, plantTypeData } = await addPlantData(drizzleDb, newData);
 
-        if ( plantError || plantTypeError ) {
+        if ( !plantData || !plantTypeData ) {
             Alert.alert(`Error adding plant ${plantName} at pot ${potNumber}`)
         } else {
             Alert.alert("Successfully added plant");
@@ -170,7 +174,7 @@ export default function EditPlant({ data, onRefresh }) {
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Frequency</Text>
                                                     <View style={styles.inputWrapper}>
-                                                        <TextInput placeholder={`Every ${data?.frequency || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                        <TextInput placeholder={`Every ${ Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2)) || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>

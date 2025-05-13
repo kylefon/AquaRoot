@@ -3,8 +3,9 @@ import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-na
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { getPlants } from "@/utils/actions";
+import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
 export default function MySchedule() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -12,12 +13,13 @@ export default function MySchedule() {
     const [ loading, setLoading ] = useState(false);
     const [ imageLoad, setImageLoad ] = useState<{ [key: string]: boolean }>({});
 
-    const {user} = useUserContext();
+    const drizzleDb = useDrizzle()
 
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(user.id);
+            const user = await getAuthenticatedUser(drizzleDb);
+            const allPlants = await getPlants(drizzleDb, user.id);
 
             if (allPlants.length === 0) {
                 setModalVisible(false);
@@ -31,7 +33,7 @@ export default function MySchedule() {
         if (modalVisible) {
             getPlant();
         }
-    }, [user, modalVisible])
+    }, [modalVisible])
 
     if (loading) {
         return (

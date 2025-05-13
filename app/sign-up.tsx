@@ -1,18 +1,26 @@
 import CreateLayout from "@/components/CreateLayout";
 import { supabase } from "@/lib/supabase";
+import { drizzle } from "drizzle-orm/expo-sqlite/driver";
 import { Link, router } from "expo-router";
+import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
+import * as schema from '@/db/schema';
 import { ActivityIndicator, Alert, Button, Dimensions, Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
+import { user } from "@/db/schema";
+import { getDuplicateEmail, isValidEmail } from "@/utils/actions";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
-export default function SignIn() {
+export default function SignUp() {
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [loading, setLoading] = useState(false)
 
+    const drizzleDb = useDrizzle();
+    
     async function signUpWithEmail() {
-        setLoading(true)
+        setLoading(true);
 
         if (username.length < 3) {
             Alert.alert("Username should be more than 2 characters");
@@ -32,32 +40,38 @@ export default function SignIn() {
             return;
         }
 
-        const {
-            data: signUpData,
-            error: signUpError
-        } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-            options: {
-                data: {
-                    username: username
-                },
-            },
-        })
-
-        if (signUpError) {
-            Alert.alert(signUpError.message);
+        if (!isValidEmail(email)) {
+            Alert.alert("Invalid email format");
             setLoading(false);
             return;
         }
 
-        if (signUpData?.user) {
-            Alert.alert("Successfully signed in your account");
-            router.replace("/plant-type")   
-            setLoading(false);
-        } 
-    }
+        const checkEmail = await getDuplicateEmail(drizzleDb, email);
 
+        if (checkEmail) {
+            setLoading(false);
+            Alert.alert("User already registered");
+            return;
+        }
+
+        const signUpData = drizzleDb.insert(user).values({
+            email: email,
+            password: password,
+            username: username,
+            isLoggedIn: 1
+        }).run()
+
+
+        if (!signUpData) {
+            Alert.alert("Unable to sign up user");
+            setLoading(false);
+            return;
+        }
+
+        Alert.alert("Successfully signed in your account");
+        router.replace("/plant-type")   
+        setLoading(false);            
+    }
     if (loading) {
         return(
             <CreateLayout>

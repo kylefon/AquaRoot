@@ -3,9 +3,10 @@ import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "reac
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { deletePlant, editPlantName, getPlants } from "@/utils/actions";
+import { deletePlant, editPlantName, getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
 import { Image } from "react-native";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -15,12 +16,15 @@ export default function MyDictionary() {
     const [ plantName, setPlantName ] = useState('');
     const [ toEditId, setToEditId ] = useState(null);
 
-    const {user} = useUserContext()
+    const drizzleDb = useDrizzle()
+
 
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const allPlants = await getPlants(user.id);
+            const user = await getAuthenticatedUser(drizzleDb);
+
+            const allPlants = await getPlants(drizzleDb, user.id);
 
             if (allPlants.length === 0) {
                 setModalVisible(false);
@@ -34,18 +38,21 @@ export default function MyDictionary() {
         if (modalVisible) {
             getPlant();
         }
-    }, [user, modalVisible])
+    }, [modalVisible])
 
     const handleEditPlant = async (name: string, id: string) => {
-        await editPlantName(name, id);
-        const allPlants = await getPlants(user.id);
+        const user = await getAuthenticatedUser(drizzleDb);
+        await editPlantName(drizzleDb, name, id);
+        const allPlants = await getPlants(drizzleDb, user.id);
         setPlants(allPlants);
         setPlantName('');
 
         Alert.alert("Successfully edited plant name");
     }
 
-    const handleDeletePlant = (id: string) => {
+    const handleDeletePlant = async (id: string) => {
+        const user = await getAuthenticatedUser(drizzleDb);
+
         Alert.alert(
           "Delete Plant",
           "Are you sure you want to delete this plant?",
@@ -58,8 +65,8 @@ export default function MyDictionary() {
               text: "Delete",
               style: "destructive",
               onPress:  async () => {
-                await deletePlant(id);
-                const allPlants = await getPlants(user.id);
+                await deletePlant(drizzleDb, id);
+                const allPlants = await getPlants(drizzleDb, user.id);
                 setPlants(allPlants); 
               },
             },
@@ -150,7 +157,7 @@ export default function MyDictionary() {
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantSubText}>
-                                                    <Text style={styles.subHeader}>Every {data.frequency} hours</Text>
+                                                    <Text style={styles.subHeader}>Every {Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2))} hours</Text>
                                                     <Text style={styles.subHeader}>Valve: {data.duration}s</Text>
                                                 </View>
                                             </View>

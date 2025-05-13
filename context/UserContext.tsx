@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { getAuthenticatedUser, getUsername } from "../utils/actions";
+import { getAuthenticatedUser } from "../utils/actions";
 import { User } from "@supabase/supabase-js";
 import { ActivityIndicator, Alert, Text, View } from "react-native";
+import { useDrizzle } from "@/hooks/useDrizzle";
 
 const UserContext = createContext(null);
 
@@ -10,30 +11,25 @@ export const useUserContext = () => {
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState<User | null>(null);
-    const [username, setUsername] = useState<string>('');
-    const [loading, setLoading] = useState(true);
+    const [user, setUser] = useState(null);
+    const [ loading, setLoading ] = useState(true);
+    const drizzleDb = useDrizzle()
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const user = await getAuthenticatedUser();
+                const user = await getAuthenticatedUser(drizzleDb);
                 if (!user) {
                     setUser(null);
                     return;
                 }
-
-                const { data, error } = await getUsername(user.id);
-                if (error) {
-                    console.error("Unable to get username:", error);
-                    return;
-                }
-
+                
                 setUser(user);
-                setUsername(data?.[0]?.username);
             } catch (err) {
                 console.error("Unexpected error:", err);
                 setUser(null);
+            } finally {
+                setLoading(false);
             }
         }
         
@@ -41,7 +37,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }, []);
 
     return (
-        <UserContext.Provider value={{ user, username }}>
+        <UserContext.Provider value={{ user, loading }}>
             { children }
         </UserContext.Provider>
     );

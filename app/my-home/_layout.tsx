@@ -1,5 +1,4 @@
 import CustomDrawer from '@/components/CustomDrawer';
-import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Drawer } from 'expo-router/drawer';
 import { Bell, CircleUser, House, Pencil } from 'lucide-react-native';
 

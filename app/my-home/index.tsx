@@ -9,41 +9,23 @@ import { CircleUser, Scale } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, Image, Pressable, SafeAreaView, StyleSheet } from "react-native";
 import { Button, Text, View } from "react-native";
+import * as FileSystem from 'expo-file-system';
+
 
 export default function MyHome() {
-    const [session, setSession] = useState<Session | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const router = useRouter()
     const navigation = useNavigation();
+    
+    // Check where the database is stored
+    const getDbFilePath = async () => {
+    const dbPath = `${FileSystem.documentDirectory}SQLite/user.db`;
+    console.log("Database file path: ", dbPath);
+    };
 
+    // Call this in your useEffect or at some point after the app has started
     useEffect(() => {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-            setSession(session)
-            setIsLoading(false)
-        })
+    getDbFilePath();
+    }, []);
 
-        const { data: authListener } = supabase.auth.onAuthStateChange((_event, session) => {
-            setSession(session)
-        })
-
-        return () => {
-            authListener.subscription?.unsubscribe()
-        }
-    }, [])
-
-    useEffect(() => {
-        if (!isLoading && !session) {
-            router.replace('/') 
-        }
-    }, [session, isLoading])
-
-    if (isLoading || !session) {
-        return (
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <ActivityIndicator size="large" color="#fff" />
-            </View>
-        )
-    }
 
     return (
         <SafeAreaView style={styles.background}>
