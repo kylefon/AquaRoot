@@ -20,7 +20,9 @@ export default function WaterMonitoring() {
             setLoading(true);
             const user = await getAuthenticatedUser(drizzleDb);
             const allPlants = await getPlants(drizzleDb, user.id);
-            if (allPlants.length === 0) {
+            if (!allPlants) {
+                Alert.alert("Error", "No Plants Available")
+                setLoading(false);
                 setModalVisible(false);
                 return;
             }

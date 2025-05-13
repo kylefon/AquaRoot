@@ -20,9 +20,7 @@ export async function getPlants(drizzleDb: any, id: string) {
         .orderBy(plantType.potNumber).all();
 
     if (!data ||data?.length === 0 ) {
-        console.error("No plants available");
-        Alert.alert("There are no plants available");
-        return [];
+        return null;
     }
 
     for ( let i = 0; i < data?.length; i++ ) {

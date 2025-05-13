@@ -7,7 +7,7 @@ import { drizzle } from "drizzle-orm/expo-sqlite/driver";
 import { Link, router } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { Trash2 } from "lucide-react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ActivityIndicator, Alert, ScrollView } from "react-native";
 import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import * as schema from '@/db/schema';
@@ -38,7 +38,7 @@ export default function PlantTypes() {
                 .insert(plantTable)
                 .values({
                     plantName: plant.name,
-                    image: null
+                    image: image
                 }).run()
 
             const data = await drizzleDb
@@ -94,10 +94,10 @@ export default function PlantTypes() {
                 Alert.alert("Please fill up all values");
                 return;
             }
-            // if (!image) {
-            //     Alert.alert("Upload image or wait for it to upload");
-            //     return;
-            // }
+            if (!image) {
+                Alert.alert("Upload image or wait for it to upload");
+                return;
+            }
             await addPlantType({plant, index: i })
         }
 
@@ -146,9 +146,9 @@ export default function PlantTypes() {
                                                     <Text style={styles.subHeading}>Duration (in seconds)</Text>
                                                     <TextInput value={input.duration} placeholder="Duration" style={styles.input} keyboardType="numeric" maxLength={15} onChangeText={text => handleInputChange('duration', text, index)}/>
                                                 </View>
-                                                {/* <View>
+                                                <View>
                                                     <UploadImage setImage={setImage} />
-                                                </View> */}
+                                                </View>
                                             </View>
                                         </Collapsible>
                                     </View>

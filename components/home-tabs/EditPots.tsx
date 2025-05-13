@@ -24,7 +24,7 @@ export default function EditPots() {
         const user = await getAuthenticatedUser(drizzleDb);
 
         setLoading(true);
-        const allPlants = await getPlants(drizzleDb, user.id);
+        const allPlants = await getPlants(drizzleDb, user.id) || [];
 
         const emptyPlants = Array(4).fill(null);
         allPlants.forEach(plant => {

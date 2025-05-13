@@ -28,14 +28,17 @@ export default function UploadImage({ setImage }) {
 
         if (!result.canceled) {
             const img = result.assets[0];
-            const extension = img.uri.split('.').pop();
-            const destDir = FileSystem.documentDirectory + "images/";
-            const filePath = `${user!.id}/${Date.now()}.${extension}`;
+            const extension = img.uri.split('.').pop() || 'jpg';
+            const userFolder = `${user!.id}`;
+            const destDir = FileSystem.documentDirectory + `images/${userFolder}`;
+            const filePath = `${Date.now()}.${extension}`;
             const newPath = destDir + filePath;
 
                 try {
                     await FileSystem.makeDirectoryAsync(destDir, { intermediates: true });
-                    await FileSystem.copyAsync({ from: img.uri, to: newPath });
+                    const cachedPath = FileSystem.cacheDirectory + filePath;
+                    await FileSystem.copyAsync({ from: img.uri, to: cachedPath });
+                    await FileSystem.moveAsync({ from: cachedPath, to: newPath });
 
                     setFiles(newPath);
                     setImage(newPath);

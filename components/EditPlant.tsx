@@ -7,7 +7,7 @@ import TimePicker from "./TimePicker";
 import { addPlantData, dateWithFrequency, editPlantType, getAuthenticatedUser, getPotNumbers } from "@/utils/actions";
 import { useUserContext } from "@/context/UserContext";
 import UploadImage from "./UploadImage";
-import { plantType } from "@/db/schema";
+import { plant, plantType, user } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { useDrizzle } from "@/hooks/useDrizzle";
 
@@ -112,7 +112,7 @@ export default function EditPlant({ data, onRefresh }) {
             setModalVisible(false);
         }
     }
-
+  
     return (
         <View style={{ flex: 1 }}>
                 <SafeAreaView>

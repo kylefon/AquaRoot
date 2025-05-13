@@ -26,7 +26,9 @@ export default function MyDictionary() {
 
             const allPlants = await getPlants(drizzleDb, user.id);
 
-            if (allPlants.length === 0) {
+            if (!allPlants) {
+                Alert.alert("Error", "No Plants Available")
+                setLoading(false);
                 setModalVisible(false);
                 return;
             }
@@ -44,6 +46,9 @@ export default function MyDictionary() {
         const user = await getAuthenticatedUser(drizzleDb);
         await editPlantName(drizzleDb, name, id);
         const allPlants = await getPlants(drizzleDb, user.id);
+        if (!allPlants) {
+            Alert.alert("Error", "No Plants Available")
+        }
         setPlants(allPlants);
         setPlantName('');
 

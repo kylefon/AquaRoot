@@ -12,7 +12,7 @@ import { useDrizzle } from '@/hooks/useDrizzle'
 import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
 import * as SQLite from "expo-sqlite";
 
-const db = SQLite.openDatabaseSync('user'); // Ensure 'user' matches your DATABASE_NAME
+const db = SQLite.openDatabaseSync('user');
 
 export default function Main() {
   const [ email, setEmail ] = useState('')
@@ -41,6 +41,7 @@ export default function Main() {
 
   async function signInWithEmail() {
     setLoading(true); 
+
     if (email.length === 0 || password.length === 0) {
       Alert.alert("Please enter both email and password");
       return;
@@ -51,7 +52,7 @@ export default function Main() {
         .from(user)
         .where(eq(user.email, email));
 
-      if (!userTable) {
+      if (userTable.length === 0) {
         Alert.alert('Error', 'Email does not exist');
         return;
       }
@@ -81,7 +82,7 @@ export default function Main() {
       setLoading(false);
     }
   }
-  
+
   return (
     <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
