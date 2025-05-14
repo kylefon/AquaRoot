@@ -1,11 +1,7 @@
 import CreateLayout from "@/components/CreateLayout";
-import { supabase } from "@/lib/supabase";
-import { drizzle } from "drizzle-orm/expo-sqlite/driver";
 import { Link, router } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
 import { useState } from "react";
-import * as schema from '@/db/schema';
-import { ActivityIndicator, Alert, Button, Dimensions, Image, ImageBackground, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { user } from "@/db/schema";
 import { getDuplicateEmail, isValidEmail } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";

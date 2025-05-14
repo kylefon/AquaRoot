@@ -1,13 +1,7 @@
-import { supabase } from "@/lib/supabase";
-import { useState } from "react";
-import { Alert } from "react-native";
-import { useRouter } from 'expo-router'
-import { useSQLiteContext } from "expo-sqlite";
-import { drizzle } from "drizzle-orm/expo-sqlite/driver";
-import * as schema from '@/db/schema';
 import { plant, plantType, user } from "@/db/schema";
+import { GetPlantData, NewPlantData } from "@/types/models";
 import { eq } from "drizzle-orm";
-import { useDrizzle } from "@/hooks/useDrizzle";
+import { Alert } from "react-native";
 
 
 export async function getPlants(drizzleDb: any, id: string) {
@@ -58,7 +52,7 @@ export async function getAuthenticatedUser(drizzleDb: any) {
     return result.length ? result[0] : null
 }
 
-export async function editPlantName(drizzleDb: any, name: string, id: string) {
+export async function editPlantName(drizzleDb: any, name: string, id: number) {
     const data =  await drizzleDb
         .update(plant)
         .set({ plantName: name})
@@ -70,7 +64,7 @@ export async function editPlantName(drizzleDb: any, name: string, id: string) {
     }
 }
 
-export async function deletePlant(drizzleDb: any, id: string) {
+export async function deletePlant(drizzleDb: any, id: number) {
 
     const response = await drizzleDb
         .delete(plant)
@@ -88,7 +82,7 @@ export async function deletePlant(drizzleDb: any, id: string) {
     }
 }
 
-export async function editPlantType(drizzleDb: any, data){
+export async function editPlantType(drizzleDb: any, data: GetPlantData){
     const editPlantData = await drizzleDb
         .update(plant)
         .set({
@@ -132,7 +126,7 @@ export async function editPotNumber(drizzleDb: any, plantName: string, potNumber
     }
 }
 
-export async function addPlantData(drizzleDb: any, data) {
+export async function addPlantData(drizzleDb: any, data: NewPlantData) {
     const plantData = await drizzleDb
         .insert(plant)
         .values({
@@ -171,7 +165,7 @@ export function isValidEmail(email: string): boolean {
     return regex.test(email);
 }
 
-export function dateWithFrequency(date, frequency) {
+export function dateWithFrequency(date: string, frequency: number) {
     const toAdd = frequency * 60 * 60 * 1000;
     const localDate = new Date(date);
     const updatedTime = new Date(localDate.getTime() + toAdd);

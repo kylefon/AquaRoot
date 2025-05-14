@@ -1,6 +1,6 @@
-import { useUserContext } from "@/context/UserContext";
 import { user } from "@/db/schema";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { AuthenticatedUser } from "@/types/models";
 import { getAuthenticatedUser } from "@/utils/actions";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { eq } from "drizzle-orm";
@@ -13,7 +13,7 @@ export default function CustomDrawer(props: any) {
     const drizzleDb = useDrizzle();
     const router = useRouter();
 
-    const [ userData, setUserData ] = useState();
+    const [ userData, setUserData ] = useState<AuthenticatedUser>();
     
     useEffect(() => {
         const fetchUser = async () => {

@@ -1,15 +1,14 @@
-import { Droplets, Pencil, Trash2 } from "lucide-react-native";
+import { Droplets } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { useUserContext } from "@/context/UserContext";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
 
 export default function WaterMonitoring() {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ plants, setPlants ] = useState([]);
+    const [ plants, setPlants ] = useState<GetPlantData[] | null>([]);
     const [ loading, setLoading ] = useState(false);
 
     const drizzleDb = useDrizzle()
@@ -64,7 +63,7 @@ export default function WaterMonitoring() {
                                 <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                             </Pressable>
                             <Text style={styles.mainHeader}>Water Monitoring</Text>
-                            {plants.map((data, index) => {
+                            {plants && plants.map((data, index) => {
                                 const waterUsage = ((24/data.frequency)* data.duration * 0.001149).toFixed(2);
                                 return (
                                     <View style={styles.plantView} key={index}>
@@ -75,7 +74,11 @@ export default function WaterMonitoring() {
                                             <Text style={styles.subHeader}>Every {Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2))} hours</Text>
                                             <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
                                             <Text style={styles.subHeader}>Water Usage: {waterUsage}L/hour</Text>
-                                            <Text style={styles.subHeader}>Water Used: {Number.isInteger(data?.waterUsage) ? data?.waterUsage : parseFloat(data?.waterUsage.toFixed(2))}L</Text>
+                                            {data?.waterUsage ? (
+                                                <Text style={styles.subHeader}>Water Used: {parseFloat(data?.waterUsage.toFixed(2))}L</Text>
+                                            ):(
+                                                <Text style={styles.subHeader}>Water Used: 0L</Text>
+                                            )}
                                         </View>
                                     </View>
                                 )

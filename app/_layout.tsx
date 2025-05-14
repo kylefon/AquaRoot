@@ -10,7 +10,6 @@ import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { UserProvider } from '../context/UserContext';
 import { ActivityIndicator } from 'react-native';
 import { drizzle } from 'drizzle-orm/expo-sqlite/driver';

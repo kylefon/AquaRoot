@@ -1,15 +1,14 @@
-import { CalendarDays, Pencil, Sprout, Trash2 } from "lucide-react-native";
+import { CalendarDays, Sprout } from "lucide-react-native";
 import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { useUserContext } from "@/context/UserContext";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
 
 export default function MySchedule() {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ plants, setPlants ] = useState([]);
+    const [ plants, setPlants ] = useState<GetPlantData[]>([]);
     const [ loading, setLoading ] = useState(false);
     const [ imageLoad, setImageLoad ] = useState<{ [key: string]: boolean }>({});
 
@@ -68,12 +67,13 @@ export default function MySchedule() {
                                         </Pressable>
                                         <Text style={styles.mainHeader}>My Schedule</Text>
                                         { plants.map((data, index) => {
-                                            const rawDate = data.date; 
-                                            const [datePart, timePart] = rawDate.split("T");
+                                            const rawDate = data.date || String(new Date()); 
+                                            const [datePart, timePart] = rawDate?.split("T");
                                             const [year, month, day] = datePart.split("-");
-                                            let [hour, minute] = timePart.split(":");
-                                            
-                                            hour = parseInt(hour);
+                                            let [hourStr, minuteStr] = timePart.split(":");
+
+                                            let hour = parseInt(hourStr, 10);
+                                            const minute = parseInt(minuteStr, 10);
                                             const ampm = hour >= 12 ? "PM" : "AM";
                                             hour = hour % 12 || 12; 
                                             

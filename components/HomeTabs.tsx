@@ -1,4 +1,4 @@
-import { StyleSheet, useColorScheme, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import MyDictionary from "./home-tabs/MyDictionary";
 import PotManagement from "./home-tabs/PotManagement";
 import WaterMonitoring from "./home-tabs/WaterMonitoring";

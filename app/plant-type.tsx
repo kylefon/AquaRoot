@@ -1,20 +1,21 @@
 import { Collapsible } from "@/components/Collapsible";
 import CreateLayout from "@/components/CreateLayout";
 import UploadImage from "@/components/UploadImage";
-import { useUserContext } from "@/context/UserContext";
-import { supabase } from "@/lib/supabase";
-import { drizzle } from "drizzle-orm/expo-sqlite/driver";
 import { Link, router } from "expo-router";
-import { useSQLiteContext } from "expo-sqlite";
 import { Trash2 } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Alert, ScrollView } from "react-native";
+import { useState } from "react";
+import { Alert, ScrollView } from "react-native";
 import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import * as schema from '@/db/schema';
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm';
 import { plant as plantTable, plantType } from '@/db/schema';
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { getAuthenticatedUser } from "@/utils/actions";
+
+type NewPlantType = {
+  name: string;
+  checks: number;
+  duration: number;
+};
 
 export default function PlantTypes() {
     const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
@@ -22,7 +23,7 @@ export default function PlantTypes() {
     
     const drizzleDb = useDrizzle();
 
-    async function addPlantType({ plant, index }) {
+    async function addPlantType({ plant, index }: { plant: NewPlantType, index: number}) {
 
         const user = await getAuthenticatedUser(drizzleDb);
             // input is based on the number of check per week
@@ -98,7 +99,11 @@ export default function PlantTypes() {
                 Alert.alert("Upload image or wait for it to upload");
                 return;
             }
-            await addPlantType({plant, index: i })
+            await addPlantType({ plant: {
+                name: plant.name,
+                checks: Number(plant.checks),
+                duration: Number(plant.duration)
+            }, index: i })
         }
 
         Alert.alert("Successfully added plants");

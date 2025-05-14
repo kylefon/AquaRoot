@@ -1,24 +1,29 @@
-import { Calendar, Droplets, Pencil, Timer, Trash, Trash2 } from "lucide-react-native";
+import { Calendar, Timer } from "lucide-react-native";
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
-import { addPlantData, dateWithFrequency, editPlantType, getAuthenticatedUser, getPotNumbers } from "@/utils/actions";
-import { useUserContext } from "@/context/UserContext";
+import { addPlantData, dateWithFrequency, editPlantType, getAuthenticatedUser } from "@/utils/actions";
 import UploadImage from "./UploadImage";
-import { plant, plantType, user } from "@/db/schema";
+import { plantType } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
 
-export default function EditPlant({ data, onRefresh }) {
+type EditPlantProps = {
+    data: GetPlantData;
+    onRefresh: any;
+}
+
+export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [dateValue, setDateValue] = useState(data?.date || "");
-    const [timeValue, setTimeValue] = useState(data?.time || "");
+    const [timeValue, setTimeValue] = useState("");
     const [plantName, setPlantName] = useState(data?.plantName || "");
-    const [potNumber, setPotNumber] = useState(data?.potNumber || "");
-    const [duration, setDuration] = useState(data?.duration || "");
-    const [frequency, setFrequency] = useState(data?.frequency || "");
+    const [potNumber, setPotNumber] = useState<string>(data?.potNumber.toString() || "");
+    const [duration, setDuration] = useState<string>(data?.duration.toString() || "");
+    const [frequency, setFrequency] = useState<string>(data?.frequency.toString() || "");
     const [ image, setImage ] = useState(data?.image || "");
 
     const isEdit = data === null;
@@ -33,15 +38,15 @@ export default function EditPlant({ data, onRefresh }) {
             return;
         }
         const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`
-        const localISOString = dateWithFrequency(formattedDate, frequency);
+        const localISOString = dateWithFrequency(formattedDate, Number(frequency));
 
         const newData = {
             ...data,
             date: localISOString,
             plantName: plantName,
-            potNumber: potNumber,
-            duration: duration,
-            frequency: frequency,
+            potNumber: Number(potNumber),
+            duration: Number(duration),
+            frequency: Number(frequency),
             image: image
         }
         
@@ -69,7 +74,7 @@ export default function EditPlant({ data, onRefresh }) {
         }
 
         const formattedDate = `${dateValue}T${timeValue}.000`
-        const localISOString = dateWithFrequency(formattedDate, frequency);
+        const localISOString = dateWithFrequency(formattedDate, Number(frequency));
 
         const potNumData = await drizzleDb
                 .select()
@@ -82,7 +87,7 @@ export default function EditPlant({ data, onRefresh }) {
             Alert.alert("Error getting pot numbers");
         }
 
-        if (potNumber < 1 || potNumber > 4) {
+        if (Number(potNumber) < 1 || Number(potNumber) > 4) {
             Alert.alert("Pot number should be from 1-4");
             return;
         };
@@ -95,9 +100,9 @@ export default function EditPlant({ data, onRefresh }) {
         
         const newData= {
             plantName: plantName,
-            potNumber: potNumber,
-            frequency: frequency,
-            duration: duration,
+            potNumber: Number(potNumber),
+            frequency: Number(frequency),
+            duration: Number(duration),
             userId: user?.id,
             date: localISOString,
             image: image

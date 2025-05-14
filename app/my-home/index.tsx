@@ -1,14 +1,10 @@
 import EditPots from "@/components/home-tabs/EditPots";
 import HomeTabs from "@/components/HomeTabs";
-import { supabase } from "@/lib/supabase";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { Session } from "@supabase/supabase-js";
-import { LinearGradient } from "expo-linear-gradient";
-import { useRouter } from "expo-router";
-import { CircleUser, Scale } from "lucide-react-native";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Image, Pressable, SafeAreaView, StyleSheet } from "react-native";
-import { Button, Text, View } from "react-native";
+import { CircleUser } from "lucide-react-native";
+import { useEffect } from "react";
+import { Image, SafeAreaView, StyleSheet } from "react-native";
+import { Text, View } from "react-native";
 import * as FileSystem from 'expo-file-system';
 
 

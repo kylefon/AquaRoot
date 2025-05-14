@@ -1,19 +1,19 @@
 import { plant, plantType, user } from "@/db/schema";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { PlantData, PlantTypeData, UserData } from "@/types/models";
 import { DrawerActions } from "@react-navigation/native";
-import { drizzle } from "drizzle-orm/expo-sqlite";
 import { useNavigation } from "expo-router";
 import { CircleUser } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
-import { Button, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Application() {
-    const [ userData, setUserData ] = useState();
-    const [ plantData, setPlantData ] = useState();
-    const [ plantTypeData, setPlantTypeData ] = useState();
+    const [ userData, setUserData ] = useState<UserData[]>();
+    const [ plantData, setPlantData ] = useState<PlantData[]>();
+    const [ plantTypeData, setPlantTypeData ] = useState<PlantTypeData[]>();
     const navigation = useNavigation();
 
     const drizzleDb = useDrizzle();

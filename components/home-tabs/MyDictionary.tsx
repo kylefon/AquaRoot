@@ -2,19 +2,18 @@ import { BookOpenText, Check, Pencil, Sprout, Trash2 } from "lucide-react-native
 import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { deletePlant, editPlantName, getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { useUserContext } from "@/context/UserContext";
 import { Image } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ plants, setPlants ] = useState([]);
+    const [ plants, setPlants ] = useState<GetPlantData[] | null>([]);
     const [ loading, setLoading ] = useState(false);
     const [ imageLoad, setImageLoad ] = useState<{ [key: string]: boolean }>({});
     const [ plantName, setPlantName ] = useState('');
-    const [ toEditId, setToEditId ] = useState(null);
+    const [ toEditId, setToEditId ] = useState<number | null>(null);
 
     const drizzleDb = useDrizzle()
 
@@ -42,7 +41,7 @@ export default function MyDictionary() {
         }
     }, [modalVisible])
 
-    const handleEditPlant = async (name: string, id: string) => {
+    const handleEditPlant = async (name: string, id: number) => {
         const user = await getAuthenticatedUser(drizzleDb);
         await editPlantName(drizzleDb, name, id);
         const allPlants = await getPlants(drizzleDb, user.id);
@@ -55,7 +54,7 @@ export default function MyDictionary() {
         Alert.alert("Successfully edited plant name");
     }
 
-    const handleDeletePlant = async (id: string) => {
+    const handleDeletePlant = async (id: number) => {
         const user = await getAuthenticatedUser(drizzleDb);
 
         Alert.alert(
@@ -109,7 +108,7 @@ export default function MyDictionary() {
                                         <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                     </Pressable>
                                     <Text style={styles.mainHeader}>My Dictionary</Text>
-                                    {plants.map((data, index) => (
+                                    {plants?.map((data: GetPlantData, index: number) => (
                                         <View style={{ flexDirection: 'row', gap: 20 }} key={index}>
                                             { data.image ? (
                                                 <View style={{ position: 'relative', width: 80, height: 80 }}>

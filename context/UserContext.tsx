@@ -1,18 +1,22 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuthenticatedUser } from "../utils/actions";
-import { User } from "@supabase/supabase-js";
-import { ActivityIndicator, Alert, Text, View } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { AuthenticatedUser } from "@/types/models";
 
-const UserContext = createContext(null);
+type UserContextType = {
+    user: AuthenticatedUser | null;
+    loading: boolean;
+}
+
+const UserContext = createContext<UserContextType | null>(null);
 
 export const useUserContext = () => {
     return useContext(UserContext);
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState(null);
-    const [ loading, setLoading ] = useState(true);
+    const [user, setUser] = useState<AuthenticatedUser | null>(null);
+    const [ loading, setLoading ] = useState<boolean>(true);
     const drizzleDb = useDrizzle()
 
     useEffect(() => {
@@ -34,7 +38,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         }
         
         fetchUser();
-    }, []);
+    }, [drizzleDb]);
 
     return (
         <UserContext.Provider value={{ user, loading }}>

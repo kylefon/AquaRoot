@@ -1,20 +1,13 @@
-import { Leaf, Pencil, TestTube, Trash2 } from "lucide-react-native";
-import { Alert, Button, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { IconSymbol } from "../ui/IconSymbol";
+import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Collapsible } from "../Collapsible";
-import SelectDropdown from "react-native-select-dropdown";
-import InlineDropdown from "../Dropdown";
-import { ScrollView } from "react-native-gesture-handler";
 import EditPlant from "../EditPlant";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { useUserContext } from "../../context/UserContext";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
 
 export default function EditPots() {
     const [ modalVisible, setModalVisible ] = useState(false);
-    const [ plantArray, setPlantArray ] = useState([])
+    const [ plantArray, setPlantArray ] = useState<GetPlantData[] | []>([])
     const [ loading, setLoading ] = useState(false);
 
 

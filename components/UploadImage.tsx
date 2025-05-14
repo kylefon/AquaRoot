@@ -1,19 +1,14 @@
 import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system'
-import { decode } from 'base64-arraybuffer'
-import { useUserContext } from "@/context/UserContext";
+import * as FileSystem from 'expo-file-system';
 import { Alert, Image, Text, TouchableOpacity } from "react-native";
-import { Camera, Trash2 } from "lucide-react-native";
+import { Camera } from "lucide-react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
-import { plant, plantType } from "@/db/schema";
-import { eq } from "drizzle-orm";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { getAuthenticatedUser } from "@/utils/actions";
 
-
-export default function UploadImage({ setImage }) {
+export default function UploadImage({ setImage }: { setImage: any }) {
     const [ files, setFiles ] = useState<string>("");
 
     const drizzleDb = useDrizzle();
@@ -43,7 +38,7 @@ export default function UploadImage({ setImage }) {
                     setFiles(newPath);
                     setImage(newPath);
 
-                } catch (err) {
+                } catch (err: any) {
                     Alert.alert("Error saving image locally: ", err.message);
                 }
             }

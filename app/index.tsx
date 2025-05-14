@@ -1,16 +1,11 @@
-import { useState, useEffect } from 'react'
-import { Session } from '@supabase/supabase-js'
-import { supabase } from '@/lib/supabase'
-import { useRouter } from 'expo-router'
-import { ActivityIndicator, Alert, Button, Image, ImageBackground, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
-import { useSQLiteContext } from 'expo-sqlite'
-import { drizzle } from 'drizzle-orm/expo-sqlite/driver'
-import * as schema from '@/db/schema';
-import { and, eq } from 'drizzle-orm'
-import { user } from '@/db/schema';
+import { user } from '@/db/schema'
 import { useDrizzle } from '@/hooks/useDrizzle'
-import { useDrizzleStudio } from 'expo-drizzle-studio-plugin';
-import * as SQLite from "expo-sqlite";
+import { and, eq } from 'drizzle-orm'
+import { useDrizzleStudio } from 'expo-drizzle-studio-plugin'
+import { useRouter } from 'expo-router'
+import * as SQLite from "expo-sqlite"
+import { useEffect, useState } from 'react'
+import { Alert, Button, Image, ImageBackground, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 const db = SQLite.openDatabaseSync('user');
 

@@ -1,5 +1,5 @@
-import { Children, ReactNode } from "react";
-import { Button, Dimensions, Image, ImageBackground, SafeAreaView, StyleSheet, Text, TextInput, View } from "react-native";
+import { ReactNode } from "react";
+import { ImageBackground, StyleSheet, View } from "react-native";
 
 export default function CreateLayout({ children }:{ children: ReactNode }) {
 

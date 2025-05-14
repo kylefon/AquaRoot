@@ -1,21 +1,17 @@
-import { Leaf, Pencil, Scroll, Trash2 } from "lucide-react-native";
-import { Alert, Button, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
+import { Leaf } from "lucide-react-native";
+import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { Collapsible } from "../Collapsible";
-import SelectDropdown from "react-native-select-dropdown";
 import InlineDropdown from "../Dropdown";
-import { ScrollView } from "react-native-gesture-handler";
 import { editPotNumber, getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { useUserContext } from "@/context/UserContext";
 import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
-    const [ selectedPlants, setSelectedPlants] = useState([]);
-    const [ newPlants, setNewPlants ] = useState([]);
+    const [ selectedPlants, setSelectedPlants] = useState<any>([]);
+    const [ newPlants, setNewPlants ] = useState<( string | null)[]>([]);
 
     const drizzleDb = useDrizzle()
     
@@ -52,10 +48,10 @@ export default function PotManagement() {
         }
     }, [modalVisible])
 
-    const handleSelect = (item, i) => {
+    const handleSelect = (item: string, i: number) => {
         setNewPlants(prev => {
             const updated = [...prev];
-            updated[i] = item === "None" ? null : item; 
+            updated[i] = item === "None" ? null : item;
             return updated; 
           });
     }
@@ -70,10 +66,11 @@ export default function PotManagement() {
             return;
         }
 
-        const result = newPlants.map((item, index) => item !== null ? { plantName: item, potNumber: index + 1}: null).filter(item => item !== null);
-
-        for (let i = 0; i < result.length; i++ ) {
-            await editPotNumber(drizzleDb, result[i].plantName, result[i].potNumber);
+        const result = newPlants?.map((item, index) => item !== null ? { plantName: item, potNumber: index + 1}: null).filter(item => item !== null); 
+        if (result){
+            for (let i = 0; i < result.length; i++ ) {
+                await editPotNumber(drizzleDb, result[i].plantName, result[i].potNumber);
+            }
         }
 
         Alert.alert("Successfully edited pot numbers");
@@ -111,7 +108,7 @@ export default function PotManagement() {
                                 <Text style={styles.mainHeader}>Pot Management</Text>
                                 <View>
                                     <View style={styles.plantView}>
-                                        {selectedPlants.map((_, index) => (
+                                        {selectedPlants.map((_: any, index: number) => (
                                                 <View style={styles.dropdownContainer} key={index}>
                                                     <Text style={styles.potText}>Pot {index + 1}</Text>
                                                     <View style={{ flex: 1 }}>
