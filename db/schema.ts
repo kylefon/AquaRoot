@@ -27,7 +27,6 @@ export const plantType = sqliteTable('plantType', {
   userId: integer('userId').notNull().references(() => user.id),
   waterUsage: integer('waterUsage').default(0),
   date: text('date'),
-  notificationId: text('notificationId'),
 });
 
 export type User = typeof user.$inferSelect;

@@ -6,6 +6,7 @@ import { editPotNumber, getAuthenticatedUser, getPlants } from "@/utils/actions"
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -73,6 +74,8 @@ export default function PotManagement() {
             }
         }
 
+        const success = await sendPlantDataToESP();
+        if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
         Alert.alert("Successfully edited pot numbers");
         setModalVisible(false);
     }

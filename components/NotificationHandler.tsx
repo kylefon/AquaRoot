@@ -6,15 +6,15 @@ import * as Notifications from 'expo-notifications';
 import { useEffect } from 'react';
 
 export default function NotificationHandler() {
+  // currently not in use and can be deleted once PlantDataToESP and notifESP works
+
   const drizzleDb = useDrizzle();
-  const { refreshNotifications } = useNotifications();
+
+  // const { refreshNotifications } = useNotifications();
 
   useEffect(() => {
     const subscription = Notifications.addNotificationReceivedListener(async notification => {
       const notifData = notification.request?.content?.dataString;
-      const anotherData = notification.request?.content?.data;
-
-      console.log("DATA DATA DATA ", anotherData);
 
       if (!notifData) {
         console.log("Notification received but data is undefined, ignoring...");
@@ -45,7 +45,7 @@ export default function NotificationHandler() {
         //     }
         //   });
 
-        await refreshNotifications(drizzleDb);
+        // await refreshNotifications(drizzleDb);
 
           console.log("✅ Set up recurring watering every", frequency, "hours");      
         } catch (err) {

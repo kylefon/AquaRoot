@@ -12,6 +12,7 @@ import { GetPlantData } from "@/types/models";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useNotifications } from "@/context/useNotifications";
 import { ScheduleNotification } from "@/scripts/notifications";
+import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
 
 type EditPlantProps = {
     data: GetPlantData;
@@ -31,7 +32,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const isEdit = data === null;
 
     const drizzleDb = useDrizzle();
-    const { refreshNotifications } = useNotifications();
+    // const { refreshNotifications } = useNotifications();
     
     const submitForm = async () => {
         const user = await getAuthenticatedUser(drizzleDb);
@@ -61,8 +62,11 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 Alert.alert("Successfully edited plant");
                 setModalVisible(false);
                 console.log(newData);
-                await refreshNotifications(drizzleDb)
+                // await refreshNotifications(drizzleDb)
                 // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb);
+
+                const success = await sendPlantDataToESP();
+                if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
             }
         } catch (err) {
             Alert.alert(`Unexpected Error: ${err}`);
@@ -116,10 +120,12 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         } else {
             Alert.alert("Successfully added plant");
             setModalVisible(false);
-            await refreshNotifications(drizzleDb);
+            // await refreshNotifications(drizzleDb);
             // console.log(plantData, plantTypeData);
-            
             // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb)
+
+            const success = await sendPlantDataToESP();
+            if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
         }
     }
   

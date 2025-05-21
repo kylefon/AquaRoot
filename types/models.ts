@@ -40,7 +40,6 @@ export type GetPlantData = {
     date: string | null;
     plantName: string;
     image: string | null;
-    notificationId: string | null;
 }
 
 export type AuthenticatedUser = { 

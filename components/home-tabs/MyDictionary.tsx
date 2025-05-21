@@ -6,6 +6,7 @@ import { Image } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -72,6 +73,8 @@ export default function MyDictionary() {
                 await deletePlant(drizzleDb, id);
                 const allPlants = await getPlants(drizzleDb, user.id);
                 setPlants(allPlants); 
+                const success = await sendPlantDataToESP();
+                if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
               },
             },
           ]

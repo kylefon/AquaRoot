@@ -100,7 +100,7 @@ export default function WaterMonitoring() {
 
 const styles = StyleSheet.create({
     textColorActive: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "800"      
     },

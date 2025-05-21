@@ -1,13 +1,11 @@
 import { plantType } from "@/db/schema";
 import { GetPlantData } from "@/types/models";
 import { convertUTCStringToLocalDate } from "@/utils/actions";
-import { eq } from "drizzle-orm";
-import * as Notifications from "expo-notifications";
-
 export async function ScheduleNotification(plant: GetPlantData, scheduleNotificationAsync: any, drizzleDb: any) {
-    
-    const now = new Date();
+    // notification test without ESP32 fetch
+    // currently not in use and can be deleted once PlantDataToESP and notifESP works
 
+    const now = new Date();
 
     if (!plant.date) return;
 

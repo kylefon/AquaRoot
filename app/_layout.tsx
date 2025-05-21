@@ -61,7 +61,7 @@ export default function RootLayout() {
         useSuspense
       >
         <NotificationsProvider>
-          <NotificationHandler />
+          {/* <NotificationHandler /> */}
           <GestureHandlerRootView>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
               <UserProvider>
