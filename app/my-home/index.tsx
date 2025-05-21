@@ -1,32 +1,28 @@
 import EditPots from "@/components/home-tabs/EditPots";
 import HomeTabs from "@/components/HomeTabs";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import { CircleUser } from "lucide-react-native";
-import { useEffect } from "react";
-import { Image, SafeAreaView, StyleSheet } from "react-native";
-import { Text, View } from "react-native";
 import * as FileSystem from 'expo-file-system';
+import { useEffect } from "react";
 
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
 export default function MyHome() {
     const navigation = useNavigation();
-    
-    // Check where the database is stored
-    const getDbFilePath = async () => {
-    const dbPath = `${FileSystem.documentDirectory}SQLite/user.db`;
-    console.log("Database file path: ", dbPath);
-    };
 
-    // Call this in your useEffect or at some point after the app has started
     useEffect(() => {
-    getDbFilePath();
-    }, []);
+        const getDbFilePath = async () => {
+            const dbPath = `${FileSystem.documentDirectory}SQLite/user.db`;
+            console.log("Database file path: ", dbPath);
+        };
 
+        getDbFilePath();
+    }, []);
 
     return (
         <SafeAreaView style={styles.background}>
             <View style={{ padding: 15 }}>
-                <CircleUser style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+                <MaterialIcons name="account-circle" style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
                 <View style={styles.pageContainer}>
                     <View style={styles.logo}>
                         <Image source={require('@/assets/images/logo-png.png')} style={styles.logoImage}/>
@@ -37,7 +33,7 @@ export default function MyHome() {
                             <HomeTabs />
                         </View>
                         <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
-                            <EditPots />
+                            <EditPots/>
                         </View>
                     </View>
                 </View>
@@ -50,7 +46,7 @@ const styles = StyleSheet.create({
     profile: {
         position: 'absolute',
         top: 20, 
-        left: 20,
+        left: 5,
         zIndex: 10, 
     },
     pageContainer: {
@@ -72,7 +68,7 @@ const styles = StyleSheet.create({
     header: {
         fontWeight: "bold",
         color: "#ffffff",
-        fontSize: 40,
+        fontSize: 25,
         textAlign: "center"
     },
     headerContainer: {
@@ -91,7 +87,7 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     }, 
     contentContainer: {
-        gap: 50
+        gap: 30
     },
     gradientCircle: {
         width: "100%",

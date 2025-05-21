@@ -90,7 +90,7 @@ export default function Main() {
                 <View style={styles.WelcomeBox}>
                     <View style={{ gap: 15 }}>
                         <View style={styles.headerContainer}>
-                            <Text style={styles.header}>Welcome!</Text>
+                            <Text style={styles.header}>Welcome</Text>
                             <Text style={styles.subHeading}>Sign in to continue</Text>
                         </View>
                         <View

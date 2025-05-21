@@ -2,7 +2,6 @@ import { Collapsible } from "@/components/Collapsible";
 import CreateLayout from "@/components/CreateLayout";
 import UploadImage from "@/components/UploadImage";
 import { Link, router } from "expo-router";
-import { Trash2 } from "lucide-react-native";
 import { useState } from "react";
 import { Alert, ScrollView } from "react-native";
 import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
@@ -10,6 +9,7 @@ import { eq } from 'drizzle-orm';
 import { plant as plantTable, plantType } from '@/db/schema';
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { getAuthenticatedUser } from "@/utils/actions";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 type NewPlantType = {
   name: string;
@@ -133,9 +133,9 @@ export default function PlantTypes() {
                                         <Collapsible 
                                             title={`Plant ${index + 1}`}
                                             deleteElement={ plantTypes.length > 1 ? (
-                                                <Trash2 onPress={() => handleRemove(index)} color="#4d4c4c"/>
+                                                <MaterialIcons name="delete" size={24} color="#4d4c4c" onPress={() => handleRemove(index)}/>
                                             ):(
-                                                <Trash2 color="#4d4c4c"/>
+                                                <MaterialIcons name="delete" color="#4d4c4c"/>
                                             )}
                                         >
                                             <View style={{ gap: 5 }}>

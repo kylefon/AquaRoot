@@ -1,4 +1,3 @@
-import { BookOpenText, Check, Pencil, Sprout, Trash2 } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import { deletePlant, editPlantName, getAuthenticatedUser, getPlants } from "@/u
 import { Image } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -82,7 +82,7 @@ export default function MyDictionary() {
     if (loading) {
         return (
             <Pressable style={styles.tab} onPress={() => setModalVisible(true)}>
-                <BookOpenText color="#557153" size={40} />
+                <MaterialIcons color="#557153" size={40} name="menu-book"/>
                 <View style={styles.text}>
                     <Text style={styles.textColorActive}>Your Dictionary</Text>
                 </View>
@@ -95,7 +95,7 @@ export default function MyDictionary() {
                 {/* <SafeAreaView> */}
                     {!loading && (
                         <Modal 
-                        animationType="slide" 
+                        animationType="fade" 
                         visible={modalVisible} 
                         transparent={true}
                         onRequestClose={() => {
@@ -114,7 +114,7 @@ export default function MyDictionary() {
                                                 <View style={{ position: 'relative', width: 80, height: 80 }}>
                                                     { !imageLoad[data.plantId] && (
                                                         <View style={styles.imageAbsolute}>
-                                                            <Sprout size={80} color="#557153"/>
+                                                            <MaterialIcons name="eco" size={80} color="#557153"/>
                                                         </View>
                                                     )}
                                                     <Image source={{ uri: data.image}} style={styles.image} 
@@ -123,7 +123,7 @@ export default function MyDictionary() {
                                                 </View>
                                             ):(
                                                 <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153", backgroundColor: "white" }}>
-                                                    <Sprout size={80} color="#557153"/>
+                                                    <MaterialIcons name="eco" size={80} color="#557153"/>
                                                 </View>
                                             )}
                                             <View style={styles.plantView}>
@@ -142,20 +142,20 @@ export default function MyDictionary() {
                                                                 setPlantName(data.plantName);
                                                             }
                                                         }}>
-                                                            <Pencil color="#557153"/>
+                                                                <MaterialIcons name="edit" color="#557153"/>
                                                         </Pressable>
                                                         {toEditId === data.id ? (
                                                             <Pressable onPress={() => {
                                                                 setToEditId(null);
                                                                 handleEditPlant(plantName, data.plantId)
                                                             }}>
-                                                                <Check color="#557153"/>
+                                                                <MaterialIcons name="edit" color="#557153"/>
                                                             </Pressable>
                                                         ):(
                                                             <Pressable onPress={() => {
                                                                 handleDeletePlant(data.plantId)
                                                             }}>
-                                                                <Trash2 color="#560216"/>
+                                                                <MaterialIcons name="delete" color="#560216"/>
                                                             </Pressable>
                                                         )}
                                                     </View>
@@ -173,7 +173,7 @@ export default function MyDictionary() {
                     )}
                 {/* </SafeAreaView> */}
             <Pressable style={styles.tab} onPress={() => setModalVisible(true)}>
-                <BookOpenText color="#557153" size={40} />
+                <MaterialIcons name="menu-book" color="#557153" size={40}/>
                 <View style={styles.text}>
                     <Text style={styles.textColor}>Your Dictionary</Text>
                 </View>
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
         color: "#557153",
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },

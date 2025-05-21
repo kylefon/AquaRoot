@@ -1,4 +1,3 @@
-import { Leaf } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import InlineDropdown from "../Dropdown";
 import { editPotNumber, getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -80,7 +80,7 @@ export default function PotManagement() {
     if (loading) {
         return (
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <Leaf color="#557153" size={40} />
+                <MaterialIcons name="eco" color="#557153" size={40} />
                 <View style={styles.text}>
                     <Text style={styles.textColorActive}>Pot Management</Text>
                 </View>
@@ -93,7 +93,7 @@ export default function PotManagement() {
         <View>
             {!loading && (
                 <Modal 
-                    animationType="slide" 
+                    animationType="fade" 
                     visible={modalVisible} 
                         transparent={true}
                         onRequestClose={() => {
@@ -128,7 +128,7 @@ export default function PotManagement() {
                     </Modal>
                 )}
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <Leaf color="#557153" size={40} />
+                <MaterialIcons name="eco" color="#557153" size={40} />                
                 <View style={styles.text}>
                     <Text style={styles.textColor}>Pot Management</Text>
                 </View>
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         paddingTop: 10
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },

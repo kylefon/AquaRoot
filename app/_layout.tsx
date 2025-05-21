@@ -15,6 +15,8 @@ import { ActivityIndicator } from 'react-native';
 import { drizzle } from 'drizzle-orm/expo-sqlite/driver';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import migrations from '@/drizzle/migrations';
+import { NotificationsProvider } from '@/context/useNotifications';
+import NotificationHandler from '@/components/NotificationHandler';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -58,20 +60,23 @@ export default function RootLayout() {
         options={{ enableChangeListener: true }}
         useSuspense
       >
-        <GestureHandlerRootView>
-          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-            <UserProvider>
-              <Stack>
-                <Stack.Screen name="index" options={{ headerShown: false }} />
-                <Stack.Screen name="sign-up" options={{ headerShown: false }} />
-                <Stack.Screen name="plant-type" options={{ headerShown: false }} />
-                <Stack.Screen name="my-home" options={{ headerShown: false }} />
-                <Stack.Screen name="+not-found" />
-              </Stack>
-              <StatusBar style="auto" />
-            </UserProvider>
-          </ThemeProvider>
-        </GestureHandlerRootView>
+        <NotificationsProvider>
+          <NotificationHandler />
+          <GestureHandlerRootView>
+            <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+              <UserProvider>
+                <Stack>
+                  <Stack.Screen name="index" options={{ headerShown: false }} />
+                  <Stack.Screen name="sign-up" options={{ headerShown: false }} />
+                  <Stack.Screen name="plant-type" options={{ headerShown: false }} />
+                  <Stack.Screen name="my-home" options={{ headerShown: false }} />
+                  <Stack.Screen name="+not-found" />
+                </Stack>
+                <StatusBar style="auto" />
+              </UserProvider>
+            </ThemeProvider>
+          </GestureHandlerRootView>
+        </NotificationsProvider>
       </SQLiteProvider>
     </Suspense>
   );

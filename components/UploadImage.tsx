@@ -2,11 +2,11 @@ import { useState } from "react";
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { Alert, Image, Text, TouchableOpacity } from "react-native";
-import { Camera } from "lucide-react-native";
 import { StyleSheet } from "react-native";
 import { View } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { getAuthenticatedUser } from "@/utils/actions";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function UploadImage({ setImage }: { setImage: any }) {
     const [ files, setFiles ] = useState<string>("");
@@ -76,7 +76,7 @@ export default function UploadImage({ setImage }: { setImage: any }) {
 
             <TouchableOpacity onPress={onSelectImage}>
                 <View style={styles.upload}>
-                    <Camera/>
+                    <MaterialIcons name="photo-camera"/>
                     <Text style={{ fontWeight: "bold"}} >Upload Image</Text>
                 </View>
             </TouchableOpacity>

@@ -1,16 +1,33 @@
 import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, Platform, Pressable } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { TextInput } from "react-native-gesture-handler";
 
-export default function DatePicker({ setDateValue, dateValue }) {
+type DatePickerProps = {
+    setDateValue: any;
+    dateValue: string;
+}
+
+
+export default function DatePicker({ setDateValue, dateValue }: DatePickerProps) {
     const [ date, setDate ] = useState<Date | null>(null);
-    const [ showPicker, setShowPicker ] = useState(true);
+    const [ showPicker, setShowPicker ] = useState(false);
 
-    const handleDateChange = (event, selectedDate) => {
+    const toggleDatePicker = () => {
+        setShowPicker(!showPicker);
+    }
+
+    const handleDateChange = (event: any, selectedDate: any) => {
         if (event.type === 'set') {
             const currentDate = selectedDate || date;
-            setDate(currentDate);
             setDateValue(currentDate.toLocaleDateString('en-ca'))
+
+            if (Platform.OS === "android") {
+                toggleDatePicker(); 
+                setDate(currentDate);
+            }
+        } else {
+            toggleDatePicker();
         }
     }
 
@@ -31,16 +48,25 @@ export default function DatePicker({ setDateValue, dateValue }) {
 
     return (
         <View style={{ flex: 1 }}>
-            <TouchableOpacity onPress={() => setShowPicker(!showPicker)} style={[styles.input, showPicker && styles.inputActive]}>
-                { showPicker ? ( 
+            <TouchableOpacity onPress={toggleDatePicker} style={styles.inputWrapper}>
+                { showPicker && ( 
                     <DateTimePicker 
                         mode="date"
                         minimumDate={new Date()}
                         value={ date || new Date() }
                         onChange={handleDateChange}
                     />
-                ):(
-                    <Text style={{ color: "gray"}}>Date</Text>
+                )}
+                {!showPicker && (
+                    <Pressable onPress={toggleDatePicker}>
+                        <TextInput 
+                            placeholder="Date"
+                            style={styles.input}
+                            placeholderTextColor="gray"
+                            value={date?.toLocaleDateString('en-ca')}
+                            editable={false}
+                            />
+                    </Pressable>
                 )}
             </TouchableOpacity>
         </View>
@@ -48,17 +74,18 @@ export default function DatePicker({ setDateValue, dateValue }) {
 }
 
 const styles = StyleSheet.create({
+    inputWrapper: { 
+        alignItems: 'center', 
+        justifyContent: 'space-between',  
+        flexDirection: 'row', 
+        flex: 1, 
+        backgroundColor: '#ffffff', 
+        borderRadius: 20,
+    },
     input: {
         backgroundColor: '#ffffff',
         color: '#000000',
         borderRadius: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        flex: 1,
-        width: "100%"
-    }, 
-    inputActive: {
-        alignItems: 'center',
-        padding: 0
-    }
+        flex: 1
+    },
 })

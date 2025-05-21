@@ -10,7 +10,6 @@ export default function EditPots() {
     const [ plantArray, setPlantArray ] = useState<GetPlantData[] | []>([])
     const [ loading, setLoading ] = useState(false);
 
-
     const drizzleDb = useDrizzle();
 
     const getPlant = async () => {
@@ -42,7 +41,7 @@ export default function EditPots() {
                 {/* <SafeAreaView style={{ flex: 1 }}> */}
                 {!loading && (
                     <Modal 
-                    animationType="slide" 
+                    animationType="fade" 
                     visible={modalVisible} 
                     transparent={true}
                     onRequestClose={() => {
@@ -63,7 +62,9 @@ export default function EditPots() {
                                                 {/* { data === null ? (
                                                     <Text>No Plants Assigned</Text>
                                                 ): ( */}
-                                                    <EditPlant data={data} onRefresh={getPlant}/>
+                                                    <EditPlant data={data} onRefresh={async () => {
+                                                        await getPlant();
+                                                    }}/>
                                                 {/* )} */}
                                             </View>
                                         ))}
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         paddingTop: 10
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },

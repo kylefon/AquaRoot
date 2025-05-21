@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
         color: "#557153",
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },
@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
         paddingVertical: 40,
         backgroundColor: '#f6f6e9',
         borderRadius: 10,
-        marginTop: 50,
+        marginTop: 20,
         display: 'flex',
         gap: 40,
     },

@@ -2,10 +2,10 @@ import { user } from "@/db/schema";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { AuthenticatedUser } from "@/types/models";
 import { getAuthenticatedUser } from "@/utils/actions";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
 import { eq } from "drizzle-orm";
 import { useRouter } from "expo-router";
-import { UserCircle, Users } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
@@ -47,7 +47,7 @@ export default function CustomDrawer(props: any) {
                         <DrawerItem 
                             label={`Hi ${userData?.username}!` || 'Profile'} 
                             onPress={() => router.replace('/my-home/profile')}
-                            icon={({size,color})=> <UserCircle size={size} color={color} />}
+                            icon={({size,color})=> <MaterialIcons name="account-circle" size={size} color={color} />}
                             labelStyle={{fontSize: 20}}
                         />
                         <View>
@@ -55,7 +55,7 @@ export default function CustomDrawer(props: any) {
                         </View>
                     </View>
                     <View> 
-                        <DrawerItem label={`About Us`} onPress={() => router.replace('/my-home/about-us')} icon={({ size, color }) => <Users size={size} color={color} />} />
+                        <DrawerItem label={`About Us`} onPress={() => router.replace('/my-home/about-us')} icon={({ size, color }) => <MaterialIcons name="groups" size={size} color={color}/>} />
                         <DrawerItem label={'Logout'} onPress={() => signOutUser()}/>
                     </View>
                 </View>

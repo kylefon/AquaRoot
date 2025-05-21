@@ -1,10 +1,10 @@
-import { CalendarDays, Sprout } from "lucide-react-native";
-import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { IconSymbol } from "../ui/IconSymbol";
-import { useEffect, useState } from "react";
-import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import { getAuthenticatedUser, getPlants } from "@/utils/actions";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useEffect, useState } from "react";
+import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { IconSymbol } from "../ui/IconSymbol";
 
 export default function MySchedule() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -39,7 +39,7 @@ export default function MySchedule() {
     if (loading) {
         return (
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <CalendarDays color="#557153" size={40} />
+                <MaterialIcons name="calendar-month" color="#557153" size={40}/>
                 <View style={styles.text}>
                     <Text style={styles.textColorActive}>My Schedule</Text>
                 </View>
@@ -53,7 +53,7 @@ export default function MySchedule() {
                 {/* <SafeAreaView> */}
                     {!loading && (
                         <Modal 
-                        animationType="slide" 
+                        animationType="fade" 
                         visible={modalVisible} 
                         transparent={true}
                         onRequestClose={() => {
@@ -72,8 +72,8 @@ export default function MySchedule() {
                                             const [year, month, day] = datePart.split("-");
                                             let [hourStr, minuteStr] = timePart.split(":");
 
-                                            let hour = parseInt(hourStr, 10);
-                                            const minute = parseInt(minuteStr, 10);
+                                            let hour = hourStr;
+                                            const minute = minuteStr;
                                             const ampm = hour >= 12 ? "PM" : "AM";
                                             hour = hour % 12 || 12; 
                                             
@@ -85,7 +85,7 @@ export default function MySchedule() {
                                                         <>
                                                         { !imageLoad[data.plantId] && (
                                                                 <View style={styles.imageAbsolute}>
-                                                                    <Sprout size={80} color="#557153"/>
+                                                                    <MaterialIcons name="eco" color="#557153"/>
                                                                 </View>
                                                             )}
                                                             <Image source={{ uri: data.image}} style={styles.image} 
@@ -94,7 +94,7 @@ export default function MySchedule() {
                                                         </>
                                                     ):(
                                                         <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153", backgroundColor: "white" }}>
-                                                            <Sprout size={80} color="#557153"/>
+                                                            <MaterialIcons name="eco" color="#557153" size={80}/>
                                                         </View>
                                                     )}
                                                     <View style={styles.plantView} >
@@ -115,7 +115,7 @@ export default function MySchedule() {
                     )} 
             {/* </SafeAreaView> */}
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <CalendarDays color="#557153" size={40} />
+                <MaterialIcons name="calendar-month" color="#557153" size={40}/>
                 <View style={styles.text}>
                     <Text style={styles.textColor}>My Schedule</Text>
                 </View>
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
         color: "#557153",
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },

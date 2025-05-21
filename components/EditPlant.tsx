@@ -1,4 +1,3 @@
-import { Calendar, Timer } from "lucide-react-native";
 import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,6 +9,9 @@ import { plantType } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useNotifications } from "@/context/useNotifications";
+import { ScheduleNotification } from "@/scripts/notifications";
 
 type EditPlantProps = {
     data: GetPlantData;
@@ -29,7 +31,8 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const isEdit = data === null;
 
     const drizzleDb = useDrizzle();
-
+    const { refreshNotifications } = useNotifications();
+    
     const submitForm = async () => {
         const user = await getAuthenticatedUser(drizzleDb);
 
@@ -38,11 +41,10 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
             return;
         }
         const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`
-        const localISOString = dateWithFrequency(formattedDate, Number(frequency));
-
+ 
         const newData = {
             ...data,
-            date: localISOString,
+            date: formattedDate,
             plantName: plantName,
             potNumber: Number(potNumber),
             duration: Number(duration),
@@ -58,7 +60,9 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
             } else {
                 Alert.alert("Successfully edited plant");
                 setModalVisible(false);
-                onRefresh();
+                console.log(newData);
+                await refreshNotifications(drizzleDb)
+                // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb);
             }
         } catch (err) {
             Alert.alert(`Unexpected Error: ${err}`);
@@ -74,14 +78,11 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         }
 
         const formattedDate = `${dateValue}T${timeValue}.000`
-        const localISOString = dateWithFrequency(formattedDate, Number(frequency));
 
         const potNumData = await drizzleDb
-                .select()
-                .from(plantType)
-                .where(eq(plantType.userId, user.id))
-
-        
+            .select()
+            .from(plantType)
+            .where(eq(plantType.userId, user.id))
 
         if (!potNumData) {
             Alert.alert("Error getting pot numbers");
@@ -104,7 +105,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
             frequency: Number(frequency),
             duration: Number(duration),
             userId: user?.id,
-            date: localISOString,
+            date: formattedDate,
             image: image
         }
         
@@ -115,6 +116,10 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         } else {
             Alert.alert("Successfully added plant");
             setModalVisible(false);
+            await refreshNotifications(drizzleDb);
+            // console.log(plantData, plantTypeData);
+            
+            // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb)
         }
     }
   
@@ -122,7 +127,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         <View style={{ flex: 1 }}>
                 <SafeAreaView>
                         <Modal 
-                            animationType="slide" 
+                            animationType="fade" 
                             visible={modalVisible} 
                             transparent={true}
                             onRequestClose={() => {
@@ -153,14 +158,14 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                                                     <Text style={styles.plantName}>Date</Text>
                                                     <View style={styles.inputWrapper}>
                                                         <DatePicker setDateValue={setDateValue} dateValue={dateValue}/>
-                                                        <Calendar color="gray"/>
+                                                        <MaterialIcons name="event" color="gray"/>
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Time</Text>
                                                     <View style={styles.inputWrapper}>
                                                         <TimePicker setTimeValue={setTimeValue} timeValue={timeValue}/>
-                                                        <Timer color="gray"/>
+                                                        <MaterialIcons name="schedule" color="gray"/>
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
@@ -270,7 +275,7 @@ const styles = StyleSheet.create({
         textAlign: "center",
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },

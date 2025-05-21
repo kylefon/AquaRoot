@@ -1,10 +1,10 @@
-import { Droplets } from "lucide-react-native";
 import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 export default function WaterMonitoring() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -37,7 +37,7 @@ export default function WaterMonitoring() {
     if (loading) {
         return (
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <Droplets color="#557153" size={40} />
+                <MaterialIcons name="water-drop" color="#557153" size={40} />
                 <View style={styles.text}>
                     <Text style={styles.textColorActive}>Water Monitoring</Text>
                 </View>
@@ -50,7 +50,7 @@ export default function WaterMonitoring() {
         <View>
             {!loading && (
                 <Modal 
-                animationType="slide" 
+                animationType="fade" 
                 visible={modalVisible} 
                 transparent={true}
                 onRequestClose={() => {
@@ -88,7 +88,7 @@ export default function WaterMonitoring() {
                 </Modal>
             )}
             <Pressable style={styles.tab} onPress={() => setModalVisible(!modalVisible)}>
-                <Droplets color="#557153" size={40} />
+                <MaterialIcons name="water-drop" color="#557153" size={40} />
                 <View style={styles.text}>
                     <Text style={styles.textColor}>Water Monitoring</Text>
                 </View>
@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
         color: "#557153",
     },
     textColor: {
-        fontSize: 20,
+        fontSize: 15,
         color: "#557153",
         fontWeight: "600"      
     },

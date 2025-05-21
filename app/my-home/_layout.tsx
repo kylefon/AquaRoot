@@ -1,6 +1,6 @@
 import CustomDrawer from '@/components/CustomDrawer';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { Drawer } from 'expo-router/drawer';
-import { Bell, CircleUser, House, Pencil } from 'lucide-react-native';
 
 export default function MyHomeLayout() {
   return (
@@ -10,7 +10,7 @@ export default function MyHomeLayout() {
         options={{
             drawerLabel: 'Profile',
             drawerIcon: ({ size, color }) => (
-                <CircleUser size={size} color={color} />
+                <MaterialIcons name="account-circle" size={size} color={color} />
             ),
             drawerItemStyle: { display: 'none' }
         }}
@@ -20,7 +20,7 @@ export default function MyHomeLayout() {
         options={{
             drawerLabel: 'About Us',
             drawerIcon: ({ size, color }) => (
-                <CircleUser size={size} color={color} />
+                <MaterialIcons name="account-circle" size={size} color={color} />
             ),
             drawerItemStyle: { display: 'none' }
         }}
@@ -30,7 +30,7 @@ export default function MyHomeLayout() {
         options={{
             drawerLabel: 'Home',
             drawerIcon: ({ size, color }) => (
-                <House size={size} color={color} />
+                <MaterialIcons name="home" size={size} color={color} />
             ),
             drawerLabelStyle: {
                 fontSize: 20
@@ -42,7 +42,7 @@ export default function MyHomeLayout() {
         options={{
             drawerLabel: 'Customize Notification',
             drawerIcon: ({ size, color }) => (
-                <Bell size={size} color={color} />
+                <MaterialIcons name="notifications" size={size} color={color} />
             ),
             drawerLabelStyle: {
                 fontSize: 20
@@ -54,7 +54,7 @@ export default function MyHomeLayout() {
         options={{
             drawerLabel: 'Customize Application',
             drawerIcon: ({ size, color }) => (
-                <Pencil size={size} color={color} />
+                <MaterialIcons name="edit" size={size} color={color} />
             ),
             drawerLabelStyle: {
                 fontSize: 20

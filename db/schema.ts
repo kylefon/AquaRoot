@@ -26,10 +26,10 @@ export const plantType = sqliteTable('plantType', {
   plantId: integer('plantId').notNull().references(() => plant.id),
   userId: integer('userId').notNull().references(() => user.id),
   waterUsage: integer('waterUsage').default(0),
-  date: text('date')
+  date: text('date'),
+  notificationId: text('notificationId'),
 });
 
-// Export Task to use as an interface in your app
 export type User = typeof user.$inferSelect;
 export type Plant = typeof plant.$inferSelect;
 export type PlantType = typeof plantType.$inferSelect;

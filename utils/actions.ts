@@ -173,3 +173,19 @@ export function dateWithFrequency(date: string, frequency: number) {
 
     return localISOString;
 }
+
+export async function editDate(drizzleDb: any, date: string, plantId: number) {
+    const result = await drizzleDb
+        .update(plantType)
+        .set({
+            date: date
+        })
+        .where(eq(plantType.plantId, plantId)).run();
+    return result;
+}
+
+export function convertUTCStringToLocalDate(utcString: string): Date {
+  const utcDate = new Date(utcString);
+  const localTimeMillis = utcDate.getTime();
+  return new Date(localTimeMillis);
+}

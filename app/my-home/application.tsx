@@ -1,9 +1,9 @@
 import { plant, plantType, user } from "@/db/schema";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { PlantData, PlantTypeData, UserData } from "@/types/models";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { CircleUser } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 import { Text, View } from "react-native";
@@ -52,7 +52,7 @@ export default function Application() {
     return(
         <SafeAreaView style={styles.background}>
             <View style={{ padding: 15 }}>
-                <CircleUser style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())}/>
+                <MaterialIcons name="account-circle" style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
                 <View style={{ alignItems: 'center', justifyContent: "center"}}>
                     <Text style={styles.header}>Customize Application</Text>
                 </View>
