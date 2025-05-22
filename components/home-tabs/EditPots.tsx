@@ -38,7 +38,6 @@ export default function EditPots() {
 
     return (
         <View style={{ flex: 1 }}>
-                {/* <SafeAreaView style={{ flex: 1 }}> */}
                 {!loading && (
                     <Modal 
                     animationType="fade" 
@@ -70,7 +69,6 @@ export default function EditPots() {
                         </View>
                     </Modal>
                 )}
-                {/* </SafeAreaView> */}
             <Pressable 
                 style={({ pressed }) => [
                     styles.wateringCanButton,

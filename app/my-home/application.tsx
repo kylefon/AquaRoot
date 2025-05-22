@@ -9,43 +9,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Application() {
-    // const [ userData, setUserData ] = useState<UserData[]>();
-    // const [ plantData, setPlantData ] = useState<PlantData[]>();
-    // const [ plantTypeData, setPlantTypeData ] = useState<PlantTypeData[]>();
     const navigation = useNavigation();
-
-    // const drizzleDb = useDrizzle();
-
-    // useEffect(() => {
-    //     getDatabaseContent();
-    //     getPlantContent();
-    //     getPlantTypeContent();
-    // }, [])
-
-    // const getDatabaseContent = async () => {
-    //     const result = await drizzleDb.select().from(user).all();
-    //     setUserData(result);
-    // }
-
-    // const getPlantContent = async () => {
-    //     const result = await drizzleDb.select().from(plant).all();
-    //     setPlantData(result);
-    // }
-
-    // const getPlantTypeContent = async () => {
-    //     const result = await drizzleDb.select().from(plantType).all();
-    //     setPlantTypeData(result);
-    // }
-
-    // const renderItem = (item: any) => (
-    //     <View style={styles.item}>
-    //         {Object.entries(item).map(([key, value]) => (
-    //             <Text style={styles.itemText} key={key}>
-    //                 {key}: {value?.toString()}
-    //             </Text>
-    //         ))}
-    //     </View>
-    // );
 
     return(
         <SafeAreaView style={styles.background}>
@@ -55,22 +19,6 @@ export default function Application() {
                     <Text style={styles.header}>Customize Application</Text>
                 </View>
             </View>
-            {/* <ScrollView>
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Users</Text>
-                    <FlatList data={userData} renderItem={({ item }) => renderItem(item)} keyExtractor={(item, index) => `user-${index}`} />
-                </View>
-
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Plants</Text>
-                    <FlatList data={plantData} renderItem={({ item }) => renderItem(item)} keyExtractor={(item, index) => `plant-${index}`} />
-                </View>
-
-                <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Plant Types</Text>
-                    <FlatList data={plantTypeData} renderItem={({ item }) => renderItem(item)} keyExtractor={(item, index) => `plantType-${index}`} />
-                </View>
-            </ScrollView> */}
         </SafeAreaView>
     )
 }

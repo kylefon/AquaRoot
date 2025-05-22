@@ -1,4 +1,3 @@
-import { ScheduleNotification } from "@/scripts/notifications";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import * as Notifications from "expo-notifications";
 import {
@@ -49,16 +48,16 @@ const NotificationsProvider: FC<PropsWithChildren> = ({ children }) => {
     configureNotificationsAsync();
   }, []);
 
-const refreshNotifications = async (drizzleDb: any) => {
-  const user = await getAuthenticatedUser(drizzleDb);
-  const plantData = await getPlants(drizzleDb, user.id);
-  if (!plantData) return;
-  if (plantData?.length > 0) {
-    for (const plant of plantData) {
-      await ScheduleNotification(plant, scheduleNotificationAsync, drizzleDb);
-    }
-  }
-};
+// const refreshNotifications = async (drizzleDb: any) => {
+//   const user = await getAuthenticatedUser(drizzleDb);
+//   const plantData = await getPlants(drizzleDb, user.id);
+//   if (!plantData) return;
+//   if (plantData?.length > 0) {
+//     for (const plant of plantData) {
+//       await ScheduleNotification(plant, scheduleNotificationAsync, drizzleDb);
+//     }
+//   }
+// };
 
 const scheduledNotificationsRef = useRef<Record<number, { id: string; date: string }>>({});
     const scheduleNotificationAsync = async ({
@@ -100,7 +99,7 @@ const scheduledNotificationsRef = useRef<Record<number, { id: string; date: stri
   //   scheduledNotificationsRef.current = "";
   // };
 
-  const value = { scheduleNotificationAsync, refreshNotifications };
+  const value = { scheduleNotificationAsync };
 
   return (
     <NotificationsContext.Provider value={value}>

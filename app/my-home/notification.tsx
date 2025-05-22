@@ -14,23 +14,6 @@ export default function Notification() {
                 <View style={{ alignItems: 'center', justifyContent: "center"}}>
                     <Text style={styles.header}>Customize Notification</Text>
                 </View>
-                {/* <Button title="Stop Notifications" onPress={async () => {
-                    await Notifications.cancelAllScheduledNotificationsAsync();
-                    Alert.alert("All notifications caneled");
-                }}/>
-                <Button
-                    title="Check Scheduled Notifications"
-                    onPress={async () => {
-                        const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-                        console.log("🔍 Scheduled Notifications:");
-                        scheduled.forEach((notif, index) => {
-                        console.log(
-                            `#${index + 1} | ID: ${notif.identifier}\nTitle: ${notif.content.title}\nTrigger:`,
-                            notif.trigger
-                        );
-                        });
-                    }}
-                /> */}
             </View>
         </SafeAreaView>
     )

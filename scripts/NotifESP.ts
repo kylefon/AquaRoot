@@ -9,7 +9,7 @@ export default function NotifESP() {
 
     const drizzleDb = useDrizzle();
 
-    // for now, poll for every 5 seconds
+    // poll for every 5 seconds
     useEffect(() => {
         const interval = setInterval(async () => {
             try {

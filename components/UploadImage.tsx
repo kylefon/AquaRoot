@@ -42,33 +42,11 @@ export default function UploadImage({ setImage }: { setImage: any }) {
             }
         }
 
-    // const onRemoveImage = async () => {
-    //     if (!files) return;
-
-    //     try {
-    //         await FileSystem.deleteAsync(files, { idempotent: true });
-    //         setFiles("");
-    //         setImage("");
-
-    //         if (plantId) {
-    //             await drizzleDb.update(plant)
-    //                 .set({ image: null})
-    //                 .where(eq(plant.id, plantId))
-    //                 .run()
-    //         }
-    //     } catch (err) {
-    //         Alert.alert("Error removing image: ", err.message);
-    //     }
-    // }
-
     return(
         <View>
             {files ? (
                 <View style={{ flexDirection: 'row', margin: 1, alignItems: 'center', justifyContent: 'space-between',gap: 5 }}>
                     <Image style={{ width: 80, height: 80 }} source={{ uri: files }} />
-                    {/* <TouchableOpacity onPress={onRemoveImage}>
-                        <Trash2 color="red"/>
-                    </TouchableOpacity> */}
                 </View>                
             ) : null }
 

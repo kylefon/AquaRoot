@@ -11,15 +11,6 @@ import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 export default function MyHome() {
     const navigation = useNavigation();
 
-    useEffect(() => {
-        const getDbFilePath = async () => {
-            const dbPath = `${FileSystem.documentDirectory}SQLite/user.db`;
-            console.log("Database file path: ", dbPath);
-        };
-
-        getDbFilePath();
-    }, []);
-
     return (
         <SafeAreaView style={styles.background}>
             <LinearGradient

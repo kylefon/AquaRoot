@@ -33,10 +33,6 @@ export default function CustomDrawer(props: any) {
         const userData = await getAuthenticatedUser(drizzleDb);
         await drizzleDb.update(user).set({ isLoggedIn: 0 }).where(eq(user.id, userData.id)).run();
         router.push('/')
-
-        // if ( error ) {
-        //     Alert.alert("Error signing out user");
-        // } 
     }
      
     return (

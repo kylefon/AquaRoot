@@ -29,7 +29,6 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const isEdit = data === null;
 
     const drizzleDb = useDrizzle();
-    // const { refreshNotifications } = useNotifications();
 
     useEffect(() => {
     if (modalVisible) {
@@ -45,10 +44,21 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const submitForm = async () => {
         const user = await getAuthenticatedUser(drizzleDb);
 
-        if (!plantName || !potNumber || !frequency || !duration || !user || !dateValue || !timeValue) {
-            Alert.alert("Please fill in all values");
+        const missingFields = [];
+
+        if (!plantName) missingFields.push("Plant Name");
+        if (!potNumber) missingFields.push("Pot Number");
+        if (!frequency) missingFields.push("Frequency");
+        if (!duration) missingFields.push("Duration");
+        if (!user) missingFields.push("User");
+        if (!dateValue) missingFields.push("Date");
+        if (!timeValue) missingFields.push("Time");
+
+        if (missingFields.length > 0) {
+            Alert.alert("Missing Information", `Please fill in the following: ${missingFields.join(", ")}`);
             return;
         }
+
         const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`
 
         const potNumData = await drizzleDb
@@ -86,9 +96,6 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
             } else {
                 Alert.alert("Successfully edited plant");
                 setModalVisible(false);
-                console.log(newData);
-                // await refreshNotifications(drizzleDb)
-                // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb);
 
                 // Uncomment this if ESP connection is ready
                 // const success = await sendPlantDataToESP();
@@ -103,8 +110,18 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const addForm = async () => {
         const user = await getAuthenticatedUser(drizzleDb);
         
-        if (!plantName || !potNumber || !frequency || !duration || !user || !dateValue || !timeValue) {
-            Alert.alert("Please fill in all values");
+        const missingFields = [];
+
+        if (!plantName) missingFields.push("Plant Name");
+        if (!potNumber) missingFields.push("Pot Number");
+        if (!frequency) missingFields.push("Frequency");
+        if (!duration) missingFields.push("Duration");
+        if (!user) missingFields.push("User");
+        if (!dateValue) missingFields.push("Date");
+        if (!timeValue) missingFields.push("Time");
+
+        if (missingFields.length > 0) {
+            Alert.alert("Missing Information", `Please fill in the following: ${missingFields.join(", ")}`);
             return;
         }
 
@@ -147,9 +164,6 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         } else {
             Alert.alert("Successfully added plant");
             setModalVisible(false);
-            // await refreshNotifications(drizzleDb);
-            // console.log(plantData, plantTypeData);
-            // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb)
 
             // Uncomment this if ESP connection is ready
             // const success = await sendPlantDataToESP();
