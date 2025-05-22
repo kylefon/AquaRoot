@@ -1,8 +1,8 @@
 import { StyleSheet, View } from "react-native";
 import MyDictionary from "./home-tabs/MyDictionary";
+import MySchedule from "./home-tabs/MySchedule";
 import PotManagement from "./home-tabs/PotManagement";
 import WaterMonitoring from "./home-tabs/WaterMonitoring";
-import MySchedule from "./home-tabs/MySchedule";
 
 export default function HomeTabs() {
     return (

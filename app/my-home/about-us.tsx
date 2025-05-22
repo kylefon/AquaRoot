@@ -1,8 +1,7 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { StyleSheet } from "react-native";
-import { Button, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function AboutUs() {

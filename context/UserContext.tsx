@@ -1,7 +1,7 @@
-import { createContext, useContext, useEffect, useState } from "react";
-import { getAuthenticatedUser } from "../utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { AuthenticatedUser } from "@/types/models";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getAuthenticatedUser } from "../utils/actions";
 
 type UserContextType = {
     user: AuthenticatedUser | null;

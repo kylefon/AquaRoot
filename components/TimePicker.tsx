@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, StyleSheet, Pressable, Platform } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { TextInput } from "react-native";
+import { useEffect, useState } from "react";
+import { Platform, Pressable, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 
 type TimePickerProps = {
     setTimeValue: any;

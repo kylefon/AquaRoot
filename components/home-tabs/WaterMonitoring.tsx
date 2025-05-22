@@ -1,10 +1,10 @@
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { IconSymbol } from "../ui/IconSymbol";
-import { useEffect, useState } from "react";
-import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useEffect, useState } from "react";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { IconSymbol } from "../ui/IconSymbol";
 
 export default function WaterMonitoring() {
     const [ modalVisible, setModalVisible ] = useState(false);

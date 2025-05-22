@@ -1,12 +1,10 @@
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { IconSymbol } from "../ui/IconSymbol";
-import { useEffect, useState } from "react";
-import { deletePlant, editPlantName, getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { Image } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import { deletePlant, editPlantName, getAuthenticatedUser, getPlants } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
+import { useEffect, useState } from "react";
+import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { IconSymbol } from "../ui/IconSymbol";
 
 export default function MyDictionary() {
     const [ modalVisible, setModalVisible ] = useState(false);

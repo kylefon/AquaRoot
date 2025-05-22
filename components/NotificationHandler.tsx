@@ -1,7 +1,6 @@
 // components/NotificationHandler.tsx
-import { useNotifications } from '@/context/useNotifications';
 import { useDrizzle } from '@/hooks/useDrizzle';
-import { convertUTCStringToLocalDate, dateWithFrequency, editDate } from '@/utils/actions';
+import { dateWithFrequency, editDate } from '@/utils/actions';
 import * as Notifications from 'expo-notifications';
 import { useEffect } from 'react';
 

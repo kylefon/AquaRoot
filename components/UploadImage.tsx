@@ -1,12 +1,10 @@
-import { useState } from "react";
-import * as ImagePicker from 'expo-image-picker';
-import * as FileSystem from 'expo-file-system';
-import { Alert, Image, Text, TouchableOpacity } from "react-native";
-import { StyleSheet } from "react-native";
-import { View } from "react-native";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { getAuthenticatedUser } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import * as FileSystem from 'expo-file-system';
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from "react";
+import { Alert, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function UploadImage({ setImage }: { setImage: any }) {
     const [ files, setFiles ] = useState<string>("");

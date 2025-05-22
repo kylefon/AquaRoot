@@ -2,8 +2,8 @@ import { useDrizzle } from "@/hooks/useDrizzle";
 import { addWaterUsage, dateWithFrequency, editDate } from "@/utils/actions";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
-import { sendPlantDataToESP } from "./sendPlantDataToESP";
 import { Alert } from "react-native";
+import { sendPlantDataToESP } from "./sendPlantDataToESP";
 
 export default function NotifESP() {
 
@@ -29,7 +29,7 @@ export default function NotifESP() {
                         const newDate = dateWithFrequency(data.date, Number(data.frequency))
                         await editDate(drizzleDb, newDate, Number(data.plantId));
 
-                        const newWaterUsage = Number((data.duration * 0.001149).toFixed(2));
+                        const newWaterUsage = Number((data.duration * 0.001149).toFixed(2)) + data.waterUsage;
                         await addWaterUsage(drizzleDb, newWaterUsage, data.plantId);
                         
                         const success = await sendPlantDataToESP();

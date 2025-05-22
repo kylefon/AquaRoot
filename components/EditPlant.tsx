@@ -1,18 +1,15 @@
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { plantType } from "@/db/schema";
+import { useDrizzle } from "@/hooks/useDrizzle";
+import { GetPlantData } from "@/types/models";
+import { addPlantData, editPlantType, getAuthenticatedUser } from "@/utils/actions";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
-import { addPlantData, dateWithFrequency, editPlantType, getAuthenticatedUser } from "@/utils/actions";
 import UploadImage from "./UploadImage";
-import { plantType } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { useDrizzle } from "@/hooks/useDrizzle";
-import { GetPlantData } from "@/types/models";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useNotifications } from "@/context/useNotifications";
-import { ScheduleNotification } from "@/scripts/notifications";
-import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
 
 type EditPlantProps = {
     data: GetPlantData;
@@ -33,6 +30,17 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
     const drizzleDb = useDrizzle();
     // const { refreshNotifications } = useNotifications();
+
+    useEffect(() => {
+    if (modalVisible) {
+        setPlantName(data?.plantName || "");
+        setPotNumber(data?.potNumber?.toString() || "");
+        setDuration(data?.duration?.toString() || "");
+        setFrequency(data?.frequency?.toString() || "");
+        setDateValue(data?.date || "");
+        setImage(data?.image || "");
+    }
+    }, [modalVisible]);
     
     const submitForm = async () => {
         const user = await getAuthenticatedUser(drizzleDb);

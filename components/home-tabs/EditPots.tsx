@@ -1,9 +1,9 @@
-import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
-import { useEffect, useState } from "react";
-import EditPlant from "../EditPlant";
-import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
+import { getAuthenticatedUser, getPlants } from "@/utils/actions";
+import { useEffect, useState } from "react";
+import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import EditPlant from "../EditPlant";
 
 export default function EditPots() {
     const [ modalVisible, setModalVisible ] = useState(false);

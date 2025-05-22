@@ -1,3 +1,6 @@
+import { ScheduleNotification } from "@/scripts/notifications";
+import { getAuthenticatedUser, getPlants } from "@/utils/actions";
+import * as Notifications from "expo-notifications";
 import {
   createContext,
   FC,
@@ -6,10 +9,6 @@ import {
   useEffect,
   useRef,
 } from "react";
-import * as Notifications from "expo-notifications";
-import { dateWithFrequency, getAuthenticatedUser, getPlants } from "@/utils/actions";
-import { ScheduleNotification } from "@/scripts/notifications";
-import { useDrizzle } from "@/hooks/useDrizzle";
 
 //reference: https://dev.to/walter_bloggins/local-notifications-in-expo-2p47
 
@@ -122,4 +121,4 @@ const useNotifications = () => {
   return context;
 };
 
-export { useNotifications, NotificationsProvider };
+export { NotificationsProvider, useNotifications };

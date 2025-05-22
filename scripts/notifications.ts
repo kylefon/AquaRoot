@@ -1,4 +1,3 @@
-import { plantType } from "@/db/schema";
 import { GetPlantData } from "@/types/models";
 import { convertUTCStringToLocalDate } from "@/utils/actions";
 export async function ScheduleNotification(plant: GetPlantData, scheduleNotificationAsync: any, drizzleDb: any) {

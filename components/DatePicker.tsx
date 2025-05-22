@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
-import { View, TouchableOpacity, StyleSheet, Platform, Pressable } from "react-native";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useEffect, useState } from "react";
+import { Platform, Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 
 type DatePickerProps = {

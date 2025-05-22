@@ -5,49 +5,47 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet } from "react-native";
-import { Text, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Application() {
-    const [ userData, setUserData ] = useState<UserData[]>();
-    const [ plantData, setPlantData ] = useState<PlantData[]>();
-    const [ plantTypeData, setPlantTypeData ] = useState<PlantTypeData[]>();
+    // const [ userData, setUserData ] = useState<UserData[]>();
+    // const [ plantData, setPlantData ] = useState<PlantData[]>();
+    // const [ plantTypeData, setPlantTypeData ] = useState<PlantTypeData[]>();
     const navigation = useNavigation();
 
-    const drizzleDb = useDrizzle();
+    // const drizzleDb = useDrizzle();
 
-    useEffect(() => {
-        getDatabaseContent();
-        getPlantContent();
-        getPlantTypeContent();
-    }, [])
+    // useEffect(() => {
+    //     getDatabaseContent();
+    //     getPlantContent();
+    //     getPlantTypeContent();
+    // }, [])
 
-    const getDatabaseContent = async () => {
-        const result = await drizzleDb.select().from(user).all();
-        setUserData(result);
-    }
+    // const getDatabaseContent = async () => {
+    //     const result = await drizzleDb.select().from(user).all();
+    //     setUserData(result);
+    // }
 
-    const getPlantContent = async () => {
-        const result = await drizzleDb.select().from(plant).all();
-        setPlantData(result);
-    }
+    // const getPlantContent = async () => {
+    //     const result = await drizzleDb.select().from(plant).all();
+    //     setPlantData(result);
+    // }
 
-    const getPlantTypeContent = async () => {
-        const result = await drizzleDb.select().from(plantType).all();
-        setPlantTypeData(result);
-    }
+    // const getPlantTypeContent = async () => {
+    //     const result = await drizzleDb.select().from(plantType).all();
+    //     setPlantTypeData(result);
+    // }
 
-    const renderItem = (item: any) => (
-        <View style={styles.item}>
-            {Object.entries(item).map(([key, value]) => (
-                <Text style={styles.itemText} key={key}>
-                    {key}: {value?.toString()}
-                </Text>
-            ))}
-        </View>
-    );
+    // const renderItem = (item: any) => (
+    //     <View style={styles.item}>
+    //         {Object.entries(item).map(([key, value]) => (
+    //             <Text style={styles.itemText} key={key}>
+    //                 {key}: {value?.toString()}
+    //             </Text>
+    //         ))}
+    //     </View>
+    // );
 
     return(
         <SafeAreaView style={styles.background}>

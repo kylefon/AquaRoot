@@ -1,15 +1,14 @@
 import { Collapsible } from "@/components/Collapsible";
 import CreateLayout from "@/components/CreateLayout";
 import UploadImage from "@/components/UploadImage";
-import { Link, router } from "expo-router";
-import { useState } from "react";
-import { Alert, ScrollView } from "react-native";
-import { Button, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
-import { eq } from 'drizzle-orm';
 import { plant as plantTable, plantType } from '@/db/schema';
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { getAuthenticatedUser } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { eq } from 'drizzle-orm';
+import { Link, router } from "expo-router";
+import { useState } from "react";
+import { Alert, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 
 type NewPlantType = {
   name: string;

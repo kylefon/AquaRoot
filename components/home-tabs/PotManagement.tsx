@@ -1,13 +1,11 @@
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
-import { IconSymbol } from "../ui/IconSymbol";
-import { useEffect, useState } from "react";
-import InlineDropdown from "../Dropdown";
-import { editPotNumber, getAuthenticatedUser, getPlants } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
-import { GetPlantData } from "@/types/models";
+import { editPotNumber, getAuthenticatedUser, getPlants } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
+import { useEffect, useState } from "react";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import InlineDropdown from "../Dropdown";
+import { IconSymbol } from "../ui/IconSymbol";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);

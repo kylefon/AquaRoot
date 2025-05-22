@@ -2,21 +2,20 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
 import { StatusBar } from 'expo-status-bar';
 import { Suspense, useEffect } from 'react';
-import 'react-native-reanimated';
 import 'react-native-gesture-handler';
-import { SQLiteProvider, openDatabaseSync } from 'expo-sqlite';
+import 'react-native-reanimated';
 
+import { NotificationsProvider } from '@/context/useNotifications';
+import migrations from '@/drizzle/migrations';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { UserProvider } from '../context/UserContext';
-import { ActivityIndicator } from 'react-native';
 import { drizzle } from 'drizzle-orm/expo-sqlite/driver';
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import migrations from '@/drizzle/migrations';
-import { NotificationsProvider } from '@/context/useNotifications';
-import NotificationHandler from '@/components/NotificationHandler';
+import { ActivityIndicator } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { UserProvider } from '../context/UserContext';
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();

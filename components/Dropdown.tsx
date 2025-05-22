@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import {
-  View,
+  StyleSheet,
   Text,
   TouchableOpacity,
-  FlatList,
-  StyleSheet
+  View
 } from "react-native";
 import { IconSymbol } from "./ui/IconSymbol";
-import { GetPlantData } from "@/types/models";
 
 // from https://dev.to/aneeqakhan/how-to-create-a-dropdown-from-scratch-in-react-native-1379
 

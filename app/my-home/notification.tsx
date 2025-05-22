@@ -1,10 +1,8 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerActions } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { Alert, Button, StyleSheet } from "react-native";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import * as Notifications from "expo-notifications";
 
 export default function Notification() {
     const navigation = useNavigation();
