@@ -14,11 +14,12 @@ type NewPlantType = {
   name: string;
   checks: number;
   duration: number;
+  image: string
 };
 
 export default function PlantTypes() {
-    const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "" }]);
-    const [ image, setImage ] = useState();
+    const [ plantTypes, setPlantTypes ] = useState([{ name: "", checks: "", duration: "", image: "" }]);
+    // const [ image, setImage ] = useState();
     
     const drizzleDb = useDrizzle();
 
@@ -38,7 +39,7 @@ export default function PlantTypes() {
                 .insert(plantTable)
                 .values({
                     plantName: plant.name,
-                    image: image
+                    image: plant.image
                 }).run()
 
             const data = await drizzleDb
@@ -72,7 +73,7 @@ export default function PlantTypes() {
     }
 
     const handlePlants = () => {
-        setPlantTypes(prev => [...prev, { name: "", checks: "", duration: "" }]);
+        setPlantTypes(prev => [...prev, { name: "", checks: "", duration: "", image: "" }]);
     }
 
     const handleRemove = (index: number) => {
@@ -81,7 +82,7 @@ export default function PlantTypes() {
         setPlantTypes(newPlantTypes);
     }
 
-    const handleInputChange = ( field: 'name' | 'checks' | 'duration', value: string, index: number ) => {
+    const handleInputChange = ( field: 'name' | 'checks' | 'duration' | 'image', value: string, index: number ) => {
         const newPlantTypes = [...plantTypes];
         newPlantTypes[index][field] = value;
         setPlantTypes(newPlantTypes);
@@ -94,14 +95,15 @@ export default function PlantTypes() {
                 Alert.alert("Please fill up all values");
                 return;
             }
-            if (!image) {
+            if (!plant.image) {
                 Alert.alert("Upload image or wait for it to upload");
                 return;
             }
             await addPlantType({ plant: {
                 name: plant.name,
                 checks: Number(plant.checks),
-                duration: Number(plant.duration)
+                duration: Number(plant.duration),
+                image: plant.image
             }, index: i })
         }
 
@@ -151,7 +153,7 @@ export default function PlantTypes() {
                                                     <TextInput value={input.duration} placeholder="Duration" style={styles.input} keyboardType="numeric" maxLength={15} onChangeText={text => handleInputChange('duration', text, index)}/>
                                                 </View>
                                                 <View>
-                                                    <UploadImage setImage={setImage} />
+                                                    <UploadImage setImage={(imagePath: string) => handleInputChange('image', imagePath, index) } />
                                                 </View>
                                             </View>
                                         </Collapsible>
