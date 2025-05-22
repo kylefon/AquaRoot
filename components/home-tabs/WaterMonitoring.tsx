@@ -77,7 +77,7 @@ export default function WaterMonitoring() {
                                             <View style={styles.plantSubText}>
                                                 <Text style={styles.subHeader}>Every {Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2))} hours</Text>
                                                 <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
-                                                <Text style={styles.subHeader}>Water Usage: {waterUsage}L/hour</Text>
+                                                <Text style={styles.subHeader}>Water Usage: {waterUsage}L/day</Text>
                                                 {data?.waterUsage ? (
                                                     <Text style={styles.subHeader}>Water Used: {parseFloat(data?.waterUsage.toFixed(2))}L</Text>
                                                 ):(
