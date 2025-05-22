@@ -1,4 +1,4 @@
-import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import InlineDropdown from "../Dropdown";
@@ -7,6 +7,7 @@ import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { sendPlantDataToESP } from "@/scripts/sendPlantDataToESP";
+import { ScrollView } from "react-native-gesture-handler";
 
 export default function PotManagement() {
     const [ modalVisible, setModalVisible ] = useState(false);
@@ -74,8 +75,8 @@ export default function PotManagement() {
             }
         }
 
-        const success = await sendPlantDataToESP();
-        if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
+        // const success = await sendPlantDataToESP();
+        // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
         Alert.alert("Successfully edited pot numbers");
         setModalVisible(false);
     }
@@ -104,7 +105,11 @@ export default function PotManagement() {
                             setModalVisible(!modalVisible);
                         }}>
                         <View style={styles.centeredView}>
-                            <View style={styles.modalView}>
+                            <KeyboardAvoidingView 
+                                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                                style={{ width: "93%" }}
+                            >
+                                <ScrollView contentContainerStyle={styles.modalView} keyboardShouldPersistTaps="handled">
                                 <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
                                     <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                 </Pressable>
@@ -126,7 +131,8 @@ export default function PotManagement() {
                                         </Pressable>
                                     </View>
                                 </View>
-                            </View>
+                            </ScrollView>
+                            </KeyboardAvoidingView>
                         </View>
                     </Modal>
                 )}
@@ -143,12 +149,11 @@ export default function PotManagement() {
 
 const styles = StyleSheet.create({
     textColorActive: {
-        fontSize: 20,
         color: "#557153",
         fontWeight: "800"      
     },
     mainHeader: {
-        fontSize: 30,
+        fontSize: 20,
         color: "#ffffff",
         textAlign: 'center',
         fontWeight: "bold"
@@ -176,7 +181,7 @@ const styles = StyleSheet.create({
         padding: 35,
         backgroundColor: '#a9af7e',
         gap:15,
-        width: '93%',
+        width: '100%',
     },
     plantView: {
         gap: 13
@@ -196,7 +201,7 @@ const styles = StyleSheet.create({
     potText: {
         color: '#ffffff',
         fontWeight: "bold",
-        fontSize: 20,
+        fontSize: 15,
         paddingTop: 10
     },
     textColor: {

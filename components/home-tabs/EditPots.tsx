@@ -51,7 +51,7 @@ export default function EditPots() {
                         <View style={styles.centeredView}>
                             <View style={styles.modalView}>
                                 <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                    <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                    <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20 }}>x</Text>
                                 </Pressable>
                                 <Text style={styles.mainHeader}>Edit Plants</Text>
                                 <View>
@@ -59,13 +59,9 @@ export default function EditPots() {
                                         {plantArray.map(( data, index ) => (
                                             <View style={styles.dropdownContainer} key={index}>
                                                 <Text style={styles.potText}>Pot {index + 1}</Text>
-                                                {/* { data === null ? (
-                                                    <Text>No Plants Assigned</Text>
-                                                ): ( */}
-                                                    <EditPlant data={data} onRefresh={async () => {
-                                                        await getPlant();
-                                                    }}/>
-                                                {/* )} */}
+                                                <EditPlant data={data} onRefresh={async () => {
+                                                    await getPlant();
+                                                }}/>
                                             </View>
                                         ))}
                                     </View>
@@ -83,7 +79,7 @@ export default function EditPots() {
                 onPress={() => setModalVisible(!modalVisible)} 
                 >
                     <Image source={require('@/assets/images/watering-can.png')} style={styles.wateringCan}/>
-                    <Text style={{ fontWeight: "bold", fontSize: 20, color: "#557153" }}>Edit Plants</Text>
+                    <Text style={{ fontWeight: "bold", fontSize: 15, color: "#557153" }}>Edit Plants</Text>
             </Pressable>
         </View>
     )
@@ -91,7 +87,7 @@ export default function EditPots() {
 
 const styles = StyleSheet.create({
     mainHeader: {
-        fontSize: 30,
+        fontSize: 20,
         color: "#ffffff",
         textAlign: 'center',
         fontWeight: "bold"
@@ -164,7 +160,7 @@ const styles = StyleSheet.create({
     potText: {
         color: '#ffffff',
         fontWeight: "bold",
-        fontSize: 20,
+        fontSize: 15,
         paddingTop: 10
     },
     textColor: {

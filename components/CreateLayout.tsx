@@ -1,16 +1,21 @@
 import { ReactNode } from "react";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from "react-native";
 
 export default function CreateLayout({ children }:{ children: ReactNode }) {
 
     return (
         <View style={{ flex: 1, backgroundColor: '#7caa95'}}>
             <ImageBackground source={require('@/assets/images/leaf-bg.png')} style={styles.background}>
-                <View style={{ flex: 1 }}>
-                    <View style={styles.WelcomeBox}>
-                        {children}
-                    </View>
-                </View>
+                <KeyboardAvoidingView
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    style={{ flexGrow: 1 }}
+                >
+                    <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
+                        <View style={styles.WelcomeBox}>
+                            {children}
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </ImageBackground>
         </View>
     )
@@ -23,7 +28,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     WelcomeBox: {
-        flex: 1,
+        flex: 2,
         backgroundColor: '#f6f6e9',
         borderTopRightRadius: 100,
         borderTopLeftRadius: 7,

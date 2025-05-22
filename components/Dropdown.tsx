@@ -46,18 +46,15 @@ const InlineDropdown = ({ data, onSelect, i }: InlineDropdownProps) => {
       </TouchableOpacity>
       {isDropdownVisible && (
         <View style={styles.dropdown}>
-          <FlatList
-            data={["None", ...data.filter((item: string) => item)]} 
-            keyExtractor={(item, index) => index.toString() }
-            renderItem={({ item }) => (
+            {["None", ...data.filter((item: string) => item)].map((item, index) => (
               <TouchableOpacity
+                key={index}
                 style={styles.option}
                 onPress={() => handleSelect(item)}
               >
                 <Text style={styles.optionText}>{item}</Text>
               </TouchableOpacity>
-            )}
-          />
+            ))} 
         </View>
       )}
     </View>
@@ -80,6 +77,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#4d4c4c",
     textAlign: "center",
+    fontSize: 12
   },
   dropdown: {
     marginTop: 5,
@@ -92,10 +90,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
   },
   option: {
-    padding: 15,
+    paddingHorizontal: 20,
+    paddingVertical: 10
   },
   optionText: {
-    fontSize: 16,
+    fontSize: 12,
   },
 });
 

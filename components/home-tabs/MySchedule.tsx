@@ -3,7 +3,7 @@ import { GetPlantData } from "@/types/models";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useEffect, useState } from "react";
-import { Alert, Image, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 
 export default function MySchedule() {
@@ -61,7 +61,7 @@ export default function MySchedule() {
                                 setModalVisible(!modalVisible);
                             }}>
                                 <View style={styles.centeredView}>
-                                    <View style={styles.modalView}>
+                                    <View style={styles.modalView}>                                        
                                         <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
                                             <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
                                         </Pressable>
@@ -70,10 +70,9 @@ export default function MySchedule() {
                                             const rawDate = data.date || String(new Date()); 
                                             const [datePart, timePart] = rawDate?.split("T");
                                             const [year, month, day] = datePart.split("-");
-                                            let [hourStr, minuteStr] = timePart.split(":");
+                                            let [hourStr, minute] = timePart.split(":");
 
-                                            let hour = hourStr;
-                                            const minute = minuteStr;
+                                            let hour = parseInt(hourStr);
                                             const ampm = hour >= 12 ? "PM" : "AM";
                                             hour = hour % 12 || 12; 
                                             
@@ -127,7 +126,6 @@ export default function MySchedule() {
 
 const styles = StyleSheet.create({
     textColorActive: {
-        fontSize: 20,
         color: "#557153",
         fontWeight: "800"      
     },
@@ -153,7 +151,7 @@ const styles = StyleSheet.create({
         borderRadius: 100,
     },
     mainHeader: {
-        fontSize: 30,
+        fontSize: 20,
         color: "#ffffff",
         textAlign: 'center',
         fontWeight: "bold"
@@ -212,7 +210,7 @@ const styles = StyleSheet.create({
     },
     subHeader: {
         color: "#557153",
-        fontSize: 15,
+        fontSize: 12,
         fontWeight: "600"
     },
     plantSubText: {
@@ -222,7 +220,7 @@ const styles = StyleSheet.create({
     },
     plantName: {
         color: '#ffffff',
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: "bold"
     },
     icons: {

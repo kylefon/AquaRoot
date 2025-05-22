@@ -5,7 +5,7 @@ import { useDrizzleStudio } from 'expo-drizzle-studio-plugin'
 import { useRouter } from 'expo-router'
 import * as SQLite from "expo-sqlite"
 import { useEffect, useState } from 'react'
-import { Alert, Button, Image, ImageBackground, KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Button, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 const db = SQLite.openDatabaseSync('user');
 
@@ -39,6 +39,7 @@ export default function Main() {
 
     if (email.length === 0 || password.length === 0) {
       Alert.alert("Please enter both email and password");
+      setLoading(false);
       return;
     }
     try {
@@ -49,6 +50,7 @@ export default function Main() {
 
       if (userTable.length === 0) {
         Alert.alert('Error', 'Email does not exist');
+        setLoading(false);
         return;
       }
       const validUser = await drizzleDb
@@ -70,6 +72,7 @@ export default function Main() {
         setPassword('');
       } else {
         Alert.alert('Error', 'Incorrect password');
+        setLoading(false);
       }
     } catch (error) {
       console.log("Error during login: ", error);
@@ -79,18 +82,16 @@ export default function Main() {
   }
 
   return (
-    <KeyboardAvoidingView 
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'} 
-        style={{ flex: 1, backgroundColor: '#7caa95' }}>
+    <View style={{ flex: 1, backgroundColor: '#7caa95' }}>
         <ImageBackground source={require('@/assets/images/leaf-bg.png')} style={styles.background}>
             <View style={{ flex: 1 }}>
                 <View style={styles.logo}>
-                    <Image source={require('@/assets/images/AquaRoot-Logo.png')}/>
+                    <Image source={require('@/assets/images/AquaRoot-HomeLogo.png')} style={{ width: 200,  height: 200, resizeMode: 'contain', }}/>
                 </View>
                 <View style={styles.WelcomeBox}>
                     <View style={{ gap: 15 }}>
                         <View style={styles.headerContainer}>
-                            <Text style={styles.header}>Welcome</Text>
+                            <Text style={styles.header}>Welcome!</Text>
                             <Text style={styles.subHeading}>Sign in to continue</Text>
                         </View>
                         <View
@@ -108,10 +109,9 @@ export default function Main() {
                                     <TextInput placeholder="password" style={styles.input} value={password} onChangeText={(text) => setPassword(text)} secureTextEntry={true} autoCapitalize="none"/>
                                 </View>
                             </View>
-                            <View style={styles.button}>
-                                {/* <Button title="Log in" onPress={() => router.push("/my-home/")}/> */}
-                                <Button title="Log in" disabled={loading} onPress={() => signInWithEmail()}/>
-                            </View>
+                            <Pressable style={styles.button} disabled={loading} onPress={() => signInWithEmail()}>
+                                <Text style={{ fontSize: 10, padding: 10, color: 'white', textAlign: "center"}}>Log in</Text>
+                            </Pressable>
                             </ScrollView>
                         </View>
                     </View>
@@ -124,7 +124,7 @@ export default function Main() {
                 </View>
             </View>
         </ImageBackground>
-    </KeyboardAvoidingView>
+    </View>
   )
 }
 
@@ -151,9 +151,9 @@ const styles = StyleSheet.create({
     },
     input: {
         backgroundColor: '#8f8e8e',
-        color: '#000000',
         borderRadius: 20,
-        padding: 16
+        padding: 16,
+        opacity: 0.38
     },
     headerContainer: {
         alignItems: 'center'
@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
     button: {
         backgroundColor: '#1c2120',
         color: '#ffffff',
-        borderRadius: 10
+        borderRadius: 10,
     },
     header: {
-        fontSize: 50,
+        fontSize: 40,
         fontWeight: 'bold'
     },
     subHeading: {

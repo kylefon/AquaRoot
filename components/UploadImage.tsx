@@ -76,7 +76,7 @@ export default function UploadImage({ setImage }: { setImage: any }) {
 
             <TouchableOpacity onPress={onSelectImage}>
                 <View style={styles.upload}>
-                    <MaterialIcons name="photo-camera"/>
+                    <MaterialIcons name="photo-camera"  size={25}/>
                     <Text style={{ fontWeight: "bold"}} >Upload Image</Text>
                 </View>
             </TouchableOpacity>

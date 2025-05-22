@@ -16,7 +16,7 @@ export default function Notification() {
                 <View style={{ alignItems: 'center', justifyContent: "center"}}>
                     <Text style={styles.header}>Customize Notification</Text>
                 </View>
-                <Button title="Stop Notifications" onPress={async () => {
+                {/* <Button title="Stop Notifications" onPress={async () => {
                     await Notifications.cancelAllScheduledNotificationsAsync();
                     Alert.alert("All notifications caneled");
                 }}/>
@@ -32,7 +32,7 @@ export default function Notification() {
                         );
                         });
                     }}
-                />
+                /> */}
             </View>
         </SafeAreaView>
     )
@@ -47,9 +47,9 @@ const styles = StyleSheet.create({
     header: {
         fontWeight: "bold",
         color: "#ffffff",
-        fontSize: 20,
+        fontSize: 18,
         textAlign: "center",
-        padding: 15
+        padding: 15,
     },
     profile: {
         position: 'absolute',

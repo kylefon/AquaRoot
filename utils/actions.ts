@@ -189,3 +189,13 @@ export function convertUTCStringToLocalDate(utcString: string): Date {
   const localTimeMillis = utcDate.getTime();
   return new Date(localTimeMillis);
 }
+
+export async function addWaterUsage(drizzleDb: any, newWaterUsage: number, plantId: number) {
+    const getUsage = await drizzleDb.set({
+        waterUsage: newWaterUsage
+    }).where(eq( plantType.plantId, plantId )).run();
+
+    if (!getUsage) {
+        Alert.alert("Failed to update water usage");
+    }
+}

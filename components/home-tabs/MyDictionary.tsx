@@ -1,4 +1,4 @@
-import { Alert, Modal, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { deletePlant, editPlantName, getAuthenticatedUser, getPlants } from "@/utils/actions";
@@ -73,8 +73,10 @@ export default function MyDictionary() {
                 await deletePlant(drizzleDb, id);
                 const allPlants = await getPlants(drizzleDb, user.id);
                 setPlants(allPlants); 
-                const success = await sendPlantDataToESP();
-                if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
+
+                // Uncomment this if ESP connection is ready
+                // const success = await sendPlantDataToESP();
+                // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
               },
             },
           ]
@@ -106,9 +108,13 @@ export default function MyDictionary() {
                             setModalVisible(false);
                             }}>
                                 <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
+                                    <KeyboardAvoidingView
+                                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                                        style={{ width: "93%" }}
+                                    >
+                                    <ScrollView contentContainerStyle={styles.modalView} keyboardShouldPersistTaps="handled">
                                     <Pressable onPress={() => setModalVisible(false)} style={{ alignItems: "flex-end"}}>
-                                        <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                        <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20 }}>x</Text>
                                     </Pressable>
                                     <Text style={styles.mainHeader}>My Dictionary</Text>
                                     {plants?.map((data: GetPlantData, index: number) => (
@@ -122,10 +128,10 @@ export default function MyDictionary() {
                                                     )}
                                                     <Image source={{ uri: data.image}} style={styles.image} 
                                                         onLoad={() => setImageLoad( prev => ({ ...prev, [data.plantId]: true}))}
-                                                    />
+                                                        />
                                                 </View>
                                             ):(
-                                                <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153", backgroundColor: "white" }}>
+                                                <View style={{ borderWidth: 2, borderRadius: 100, borderColor:"#557153", backgroundColor: "white", width: 80, height: 80 }}>
                                                     <MaterialIcons name="eco" size={80} color="#557153"/>
                                                 </View>
                                             )}
@@ -145,20 +151,20 @@ export default function MyDictionary() {
                                                                 setPlantName(data.plantName);
                                                             }
                                                         }}>
-                                                                <MaterialIcons name="edit" color="#557153"/>
+                                                                <MaterialIcons name="edit" color="#557153" size={25}/>
                                                         </Pressable>
                                                         {toEditId === data.id ? (
                                                             <Pressable onPress={() => {
                                                                 setToEditId(null);
                                                                 handleEditPlant(plantName, data.plantId)
                                                             }}>
-                                                                <MaterialIcons name="edit" color="#557153"/>
+                                                                <MaterialIcons name="check" color="#557153" size={25}/>
                                                             </Pressable>
                                                         ):(
                                                             <Pressable onPress={() => {
                                                                 handleDeletePlant(data.plantId)
                                                             }}>
-                                                                <MaterialIcons name="delete" color="#560216"/>
+                                                                <MaterialIcons name="delete" color="#560216" size={25}/>
                                                             </Pressable>
                                                         )}
                                                     </View>
@@ -170,7 +176,8 @@ export default function MyDictionary() {
                                             </View>
                                         </View>
                                     ))}
-                                </View>
+                                    </ScrollView>
+                                </KeyboardAvoidingView>
                             </View>
                         </Modal>
                     )}
@@ -219,7 +226,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     mainHeader: {
-        fontSize: 30,
+        fontSize: 20,
         color: "#ffffff",
         textAlign: 'center',
         fontWeight: "bold"
@@ -235,7 +242,7 @@ const styles = StyleSheet.create({
         padding: 35,
         backgroundColor: '#a9af7e',
         gap:15,
-        width: '93%'
+        width: '100%'
     },
     plantView: {
         gap: 13,
@@ -259,7 +266,6 @@ const styles = StyleSheet.create({
         fontWeight: "600"      
     },
     textColorActive: {
-        fontSize: 20,
         color: "#557153",
         fontWeight: "800"      
     },
@@ -274,17 +280,18 @@ const styles = StyleSheet.create({
     },
     subHeader: {
         color: "#557153",
-        fontSize: 15,
+        fontSize: 12,
         fontWeight: "600"
     },
     plantSubText: {
         flexDirection: 'row',
+        flexWrap: "wrap",
         justifyContent: 'space-between',
         paddingHorizontal: 10
     },
     plantName: {
         color: '#ffffff',
-        fontSize: 20
+        fontSize: 15
     },
     icons: {
         flexDirection: 'row',

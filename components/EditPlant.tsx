@@ -42,6 +42,23 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
             return;
         }
         const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`
+
+        const potNumData = await drizzleDb
+            .select()
+            .from(plantType)
+            .where(eq(plantType.userId, user.id))
+
+        if (Number(potNumber) < 1 || Number(potNumber) > 4) {
+            Alert.alert("Pot number should be from 1-4");
+            return;
+        };
+
+        const potNumbers = potNumData?.map(item => item.potNumber);
+
+        if (potNumbers?.includes(Number(potNumber)) && data.potNumber !== Number(potNumber)) {
+            Alert.alert(`There is already a plant at pot ${potNumber}`);
+            return;
+        }
  
         const newData = {
             ...data,
@@ -65,8 +82,10 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 // await refreshNotifications(drizzleDb)
                 // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb);
 
-                const success = await sendPlantDataToESP();
-                if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
+                // Uncomment this if ESP connection is ready
+                // const success = await sendPlantDataToESP();
+                // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
+                onRefresh();
             }
         } catch (err) {
             Alert.alert(`Unexpected Error: ${err}`);
@@ -124,8 +143,10 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
             // console.log(plantData, plantTypeData);
             // await ScheduleNotification(newData, scheduleNotificationAsync, drizzleDb)
 
-            const success = await sendPlantDataToESP();
-            if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
+            // Uncomment this if ESP connection is ready
+            // const success = await sendPlantDataToESP();
+            // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
+            onRefresh();
         }
     }
   
@@ -164,14 +185,14 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                                                     <Text style={styles.plantName}>Date</Text>
                                                     <View style={styles.inputWrapper}>
                                                         <DatePicker setDateValue={setDateValue} dateValue={dateValue}/>
-                                                        <MaterialIcons name="event" color="gray"/>
+                                                        <MaterialIcons name="event" color="gray" size={25}/>
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
                                                     <Text style={styles.plantName}>Time</Text>
                                                     <View style={styles.inputWrapper}>
                                                         <TimePicker setTimeValue={setTimeValue} timeValue={timeValue}/>
-                                                        <MaterialIcons name="schedule" color="gray"/>
+                                                        <MaterialIcons name="schedule" color="gray"  size={25}/>
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>
@@ -241,7 +262,8 @@ const styles = StyleSheet.create({
     inputWrapper: { 
         alignItems: 'center', 
         justifyContent: 'space-between', 
-        padding: 8, 
+        paddingVertical: 2,
+        paddingHorizontal: 5, 
         flexDirection: 'row', 
         flex: 1, 
         backgroundColor: '#ffffff', 
@@ -254,7 +276,7 @@ const styles = StyleSheet.create({
         flex: 1
     },
     mainHeader: {
-        fontSize: 30,
+        fontSize: 20,
         color: "#ffffff",
         textAlign: 'center',
         fontWeight: "bold"
@@ -301,7 +323,7 @@ const styles = StyleSheet.create({
     },
     plantName: {
         color: '#000000',
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: "bold"
     },
     icons: {

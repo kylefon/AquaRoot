@@ -1,7 +1,7 @@
 import CreateLayout from "@/components/CreateLayout";
 import { Link, router } from "expo-router";
 import { useState } from "react";
-import { ActivityIndicator, Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { ActivityIndicator, Alert, Button, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { user } from "@/db/schema";
 import { getDuplicateEmail, isValidEmail } from "@/utils/actions";
 import { useDrizzle } from "@/hooks/useDrizzle";
@@ -89,28 +89,29 @@ export default function SignUp() {
                     </Link>
                 </View>
                 <View style={{ gap: 20}}>
-                    <View style={{ gap: 10 }}>
-                        <View>
-                            <Text style={styles.subHeading}>USERNAME</Text>
-                            <TextInput placeholder="username" value={username} maxLength={15} onChangeText={(text) => setUsername(text)} style={styles.input}/>
-                        </View>
-                        <View>
-                            <Text style={styles.subHeading}>EMAIL</Text>
-                            <TextInput placeholder="example@gmail.com" value={email} onChangeText={(text) => setEmail(text)} style={styles.input} autoCapitalize="none"/>
-                        </View>
-                        <View>
-                            <Text style={styles.subHeading}>PASSWORD</Text>
-                            <TextInput placeholder="password" value={password} onChangeText={(text) => setPassword(text)} style={styles.input} secureTextEntry={true} autoCapitalize={'none'}/>
-                        </View>
-                        <View>
-                            <Text style={styles.subHeading}>CONFIRM PASSWORD</Text>
-                            <TextInput placeholder="confirm password" value={confirmPassword} onChangeText={(text) => setConfirmPassword(text)} style={styles.input} secureTextEntry={true} autoCapitalize={'none'}/>
+                    <View style={{ flexGrow: 1, justifyContent: "center", gap: 10 }} >
+                        <View style={{ gap: 15 }}>
+                            <View>
+                                <Text style={styles.subHeading}>USERNAME</Text>
+                                <TextInput placeholder="username" value={username} maxLength={15} onChangeText={(text) => setUsername(text)} style={styles.input}/>
+                            </View>
+                            <View>
+                                <Text style={styles.subHeading}>EMAIL</Text>
+                                <TextInput placeholder="example@gmail.com" value={email} onChangeText={(text) => setEmail(text)} style={styles.input} autoCapitalize="none"/>
+                            </View>
+                            <View>
+                                <Text style={styles.subHeading}>PASSWORD</Text>
+                                <TextInput placeholder="password" value={password} onChangeText={(text) => setPassword(text)} style={styles.input} secureTextEntry={true} autoCapitalize={'none'}/>
+                            </View>
+                            <View>
+                                <Text style={styles.subHeading}>CONFIRM PASSWORD</Text>
+                                <TextInput placeholder="confirm password" value={confirmPassword} onChangeText={(text) => setConfirmPassword(text)} style={styles.input} secureTextEntry={true} autoCapitalize={'none'}/>
+                            </View>
                         </View>
                     </View>
-                    <View style={styles.button}>
-                        {/* <Button title="Next" onPress={() => router.push("/plant-type")}/> */}
-                        <Button title="Next" disabled={loading} onPress={() => signUpWithEmail()}/>
-                    </View>
+                    <Pressable style={styles.button} disabled={loading} onPress={() => signUpWithEmail()}>
+                        <Text style={{ fontSize: 10, padding: 10, color: 'white', textAlign: "center"}}>Next</Text>
+                    </Pressable>
                 </View>
             </View>
         </CreateLayout>
@@ -122,7 +123,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#8f8e8e',
         color: '#000000',
         borderRadius: 20,
-        padding: 16
+        padding: 16,
+        opacity: 0.38
     },
     headerContainer: {
         alignItems: 'center'
@@ -133,10 +135,10 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     header: {
-        fontSize: 50,
+        fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
-        lineHeight: 50,
+        lineHeight: 30,
     },
     subHeading: {
         color: '#8f8e8e',

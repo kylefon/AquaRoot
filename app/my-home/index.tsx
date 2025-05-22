@@ -4,6 +4,7 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import * as FileSystem from 'expo-file-system';
 import { useEffect } from "react";
+import { LinearGradient } from 'expo-linear-gradient';
 
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 
@@ -21,23 +22,31 @@ export default function MyHome() {
 
     return (
         <SafeAreaView style={styles.background}>
-            <View style={{ padding: 15 }}>
-                <MaterialIcons name="account-circle" style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
-                <View style={styles.pageContainer}>
-                    <View style={styles.logo}>
-                        <Image source={require('@/assets/images/logo-png.png')} style={styles.logoImage}/>
-                    </View>
-                    <View style={styles.contentContainer}>
-                        <View>
-                            <Text style={styles.header}>My Home</Text>
-                            <HomeTabs />
+            <LinearGradient
+                colors={["#678a71", "#4b6244", "#678a71"]}
+                locations={[0.3, 0.5, 0.9]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 0, y: 1 }}
+                style={{ flex: 1, padding: 30 }}
+            >
+                <View>
+                    <MaterialIcons name="account-circle" style={styles.profile} size={40} color="#ffffff" onPress={() => navigation.dispatch(DrawerActions.openDrawer())} />
+                    <View style={styles.pageContainer}>
+                        <View style={styles.logo}>
+                            <Image source={require('@/assets/images/AquaRoot-WhiteText.png')} style={styles.logoImage}/>
                         </View>
-                        <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
-                            <EditPots/>
+                        <View style={styles.contentContainer}>
+                            <View>
+                                <Text style={styles.header}>My Home</Text>
+                                <HomeTabs />
+                            </View>
+                            <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
+                                <EditPots/>
+                            </View>
                         </View>
                     </View>
                 </View>
-            </View>
+            </LinearGradient>
         </SafeAreaView>
     )
 }
@@ -51,7 +60,7 @@ const styles = StyleSheet.create({
     },
     pageContainer: {
         display: 'flex',
-        gap: 5
+        gap: 25
     },
     logo: {
         alignItems: "center",
@@ -61,8 +70,8 @@ const styles = StyleSheet.create({
         zIndex: 5
     },
     logoImage: {
-        width: 150,
-        height: 150,
+        width: 100,
+        height: 100,
         resizeMode: 'contain'
     },
     header: {
@@ -77,10 +86,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     }, 
     background: {
-        backgroundColor: "#3c4b2b",
+        // backgroundColor: "#3c4b2b",
         width: "100%",
         height: "100%",
-        padding: 30,
         flex: 1
     }, 
     canContainer: {

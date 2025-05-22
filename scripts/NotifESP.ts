@@ -1,5 +1,5 @@
 import { useDrizzle } from "@/hooks/useDrizzle";
-import { dateWithFrequency, editDate } from "@/utils/actions";
+import { addWaterUsage, dateWithFrequency, editDate } from "@/utils/actions";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
 import { sendPlantDataToESP } from "./sendPlantDataToESP";
@@ -29,6 +29,9 @@ export default function NotifESP() {
                         const newDate = dateWithFrequency(data.date, Number(data.frequency))
                         await editDate(drizzleDb, newDate, Number(data.plantId));
 
+                        const newWaterUsage = Number((data.duration * 0.001149).toFixed(2));
+                        await addWaterUsage(drizzleDb, newWaterUsage, data.plantId);
+                        
                         const success = await sendPlantDataToESP();
                         if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
                     }

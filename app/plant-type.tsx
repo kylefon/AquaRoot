@@ -133,9 +133,9 @@ export default function PlantTypes() {
                                         <Collapsible 
                                             title={`Plant ${index + 1}`}
                                             deleteElement={ plantTypes.length > 1 ? (
-                                                <MaterialIcons name="delete" size={24} color="#4d4c4c" onPress={() => handleRemove(index)}/>
+                                                <MaterialIcons name="delete" size={25} color="#4d4c4c" onPress={() => handleRemove(index)}/>
                                             ):(
-                                                <MaterialIcons name="delete" color="#4d4c4c"/>
+                                                <MaterialIcons name="delete" size={25} color="#4d4c4c"/>
                                             )}
                                         >
                                             <View style={{ gap: 5 }}>
@@ -166,9 +166,8 @@ export default function PlantTypes() {
                             <Text>+</Text>
                         </Pressable>
                     )}
-                    <Pressable style={styles.button}>
-                        <Button title="Sign Up" onPress={() => submitForm()}/>
-                        {/* <Button title="Sign Up" onPress={() => router.push("/my-home")}/> */}
+                    <Pressable style={styles.button} onPress={() => submitForm()}>
+                        <Text style={{ fontSize: 10, padding: 10, color: 'white', textAlign: "center"}}>Sign Up</Text>
                     </Pressable>
                 </View>
                 </ScrollView>
@@ -219,10 +218,10 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     header: {
-        fontSize: 50,
+        fontSize: 30,
         fontWeight: 'bold',
         textAlign: 'center',
-        lineHeight: 50,
+        lineHeight: 30,
     },
     subHeading: {
         color: '#8f8e8e',

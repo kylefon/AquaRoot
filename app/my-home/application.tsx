@@ -57,7 +57,7 @@ export default function Application() {
                     <Text style={styles.header}>Customize Application</Text>
                 </View>
             </View>
-            <ScrollView>
+            {/* <ScrollView>
                 <View style={styles.section}>
                     <Text style={styles.sectionTitle}>Users</Text>
                     <FlatList data={userData} renderItem={({ item }) => renderItem(item)} keyExtractor={(item, index) => `user-${index}`} />
@@ -72,7 +72,7 @@ export default function Application() {
                     <Text style={styles.sectionTitle}>Plant Types</Text>
                     <FlatList data={plantTypeData} renderItem={({ item }) => renderItem(item)} keyExtractor={(item, index) => `plantType-${index}`} />
                 </View>
-            </ScrollView>
+            </ScrollView> */}
         </SafeAreaView>
     )
 }
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     header: {
         fontWeight: "bold",
         color: "#ffffff",
-        fontSize: 20,
+        fontSize: 18,
         textAlign: "center",
         padding: 15,
     },

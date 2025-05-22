@@ -1,4 +1,4 @@
-import { Alert, Modal, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { IconSymbol } from "../ui/IconSymbol";
 import { useEffect, useState } from "react";
 import { getAuthenticatedUser, getPlants } from "@/utils/actions";
@@ -58,32 +58,37 @@ export default function WaterMonitoring() {
                     setModalVisible(!modalVisible);
                 }}>
                     <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                            <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
-                                <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
-                            </Pressable>
-                            <Text style={styles.mainHeader}>Water Monitoring</Text>
-                            {plants && plants.map((data, index) => {
-                                const waterUsage = ((24/data.frequency)* data.duration * 0.001149).toFixed(2);
-                                return (
-                                    <View style={styles.plantView} key={index}>
-                                        <View style={styles.plantHeader}>
-                                            <Text style={styles.plantName}>Pot {data.potNumber}: {data.plantName}</Text>
+                        <KeyboardAvoidingView 
+                            behavior={Platform.OS === "ios" ? "padding" : "height"}
+                            style={{ width: "93%" }}
+                        >
+                            <ScrollView contentContainerStyle={styles.modalView} keyboardShouldPersistTaps="handled">
+                                <Pressable onPress={() => setModalVisible(!modalVisible)} style={{ alignItems: "flex-end"}}>
+                                    <Text style={{color: '#557153', fontWeight: "bold", fontSize: 20}}>x</Text>
+                                </Pressable>
+                                <Text style={styles.mainHeader}>Water Monitoring</Text>
+                                {plants && plants.map((data, index) => {
+                                    const waterUsage = ((24/data.frequency)* data.duration * 0.001149).toFixed(2);
+                                    return (
+                                        <View style={styles.plantView} key={index}>
+                                            <View style={styles.plantHeader}>
+                                                <Text style={styles.plantName}>Pot {data.potNumber}: {data.plantName}</Text>
+                                            </View>
+                                            <View style={styles.plantSubText}>
+                                                <Text style={styles.subHeader}>Every {Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2))} hours</Text>
+                                                <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
+                                                <Text style={styles.subHeader}>Water Usage: {waterUsage}L/hour</Text>
+                                                {data?.waterUsage ? (
+                                                    <Text style={styles.subHeader}>Water Used: {parseFloat(data?.waterUsage.toFixed(2))}L</Text>
+                                                ):(
+                                                    <Text style={styles.subHeader}>Water Used: 0L</Text>
+                                                )}
+                                            </View>
                                         </View>
-                                        <View style={styles.plantSubText}>
-                                            <Text style={styles.subHeader}>Every {Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2))} hours</Text>
-                                            <Text style={styles.subHeader}>Valve: {data.duration} s</Text>
-                                            <Text style={styles.subHeader}>Water Usage: {waterUsage}L/hour</Text>
-                                            {data?.waterUsage ? (
-                                                <Text style={styles.subHeader}>Water Used: {parseFloat(data?.waterUsage.toFixed(2))}L</Text>
-                                            ):(
-                                                <Text style={styles.subHeader}>Water Used: 0L</Text>
-                                            )}
-                                        </View>
-                                    </View>
-                                )
-                            })}
-                        </View>
+                                    )
+                                })}
+                            </ScrollView>
+                        </KeyboardAvoidingView>
                     </View>
                 </Modal>
             )}
@@ -100,12 +105,11 @@ export default function WaterMonitoring() {
 
 const styles = StyleSheet.create({
     textColorActive: {
-        fontSize: 15,
         color: "#557153",
         fontWeight: "800"      
     },
     mainHeader: {
-        fontSize: 30,
+        fontSize: 20,
         color: "#ffffff",
         textAlign: 'center',
         fontWeight: "bold"
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
         padding: 35,
         backgroundColor: '#a9af7e',
         gap:15,
-        width: '93%'
+        width: '100%'
     },
     plantView: {
         borderBottomColor: "#557153",
@@ -153,7 +157,7 @@ const styles = StyleSheet.create({
     },
     subHeader: {
         color: "#557153",
-        fontSize: 15,
+        fontSize: 12,
         fontWeight: "600"
     },
     plantSubText: {
@@ -161,7 +165,7 @@ const styles = StyleSheet.create({
     },
     plantName: {
         color: '#ffffff',
-        fontSize: 20,
+        fontSize: 15,
         fontWeight: "bold"
     },
     icons: {
