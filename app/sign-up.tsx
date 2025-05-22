@@ -5,8 +5,10 @@ import { getDuplicateEmail, isValidEmail } from "@/utils/actions";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { sha256 } from "js-sha256";
 
 export default function SignUp() {
+
     const [username, setUsername] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -50,9 +52,11 @@ export default function SignUp() {
             return;
         }
 
-        const signUpData = drizzleDb.insert(user).values({
+        const hashedPassword = sha256(password);
+
+        const signUpData = await drizzleDb.insert(user).values({
             email: email.toLowerCase(),
-            password: password,
+            password: hashedPassword,
             username: username,
             isLoggedIn: 1
         }).run()
@@ -67,7 +71,7 @@ export default function SignUp() {
         Alert.alert("Successfully signed in your account");
         router.replace("/plant-type")   
         setLoading(false);            
-    }
+    } 
     if (loading) {
         return(
             <CreateLayout>

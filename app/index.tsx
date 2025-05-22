@@ -6,6 +6,7 @@ import { useRouter } from 'expo-router'
 import * as SQLite from "expo-sqlite"
 import { useEffect, useState } from 'react'
 import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { sha256 } from 'js-sha256';
 
 const db = SQLite.openDatabaseSync('user');
 
@@ -53,10 +54,13 @@ export default function Main() {
         setLoading(false);
         return;
       }
+
+      const hashedInputPassword = sha256(password);
+
       const validUser = await drizzleDb
         .select()
         .from(user)
-        .where(and(eq(user.email, email.toLowerCase()), eq(user.password, password)))
+        .where(and(eq(user.email, email.toLowerCase()), eq(user.password, hashedInputPassword)))
         .limit(1)
         .all();
 
@@ -75,6 +79,7 @@ export default function Main() {
         setLoading(false);
       }
     } catch (error) {
+      Alert.alert("Error", "Unable during login");
       console.log("Error during login: ", error);
     } finally {
       setLoading(false);
