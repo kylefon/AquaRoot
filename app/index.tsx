@@ -150,10 +150,10 @@ const styles = StyleSheet.create({
         gap: 30
     },
     input: {
-        backgroundColor: '#8f8e8e',
+        backgroundColor: '#cfcec6',
+        color: "#4d4c4c",
         borderRadius: 20,
         padding: 16,
-        opacity: 0.38
     },
     headerContainer: {
         alignItems: 'center'

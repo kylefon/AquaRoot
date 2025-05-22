@@ -120,11 +120,10 @@ export default function SignUp() {
 
 const styles = StyleSheet.create({
     input: {
-        backgroundColor: '#8f8e8e',
-        color: '#000000',
+        backgroundColor: '#cfcec6',
+        color: '#4d4c4c',
         borderRadius: 20,
         padding: 16,
-        opacity: 0.38
     },
     headerContainer: {
         alignItems: 'center'
