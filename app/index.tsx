@@ -5,7 +5,7 @@ import { useDrizzleStudio } from 'expo-drizzle-studio-plugin'
 import { useRouter } from 'expo-router'
 import * as SQLite from "expo-sqlite"
 import { useEffect, useState } from 'react'
-import { Alert, Button, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 
 const db = SQLite.openDatabaseSync('user');
 
@@ -46,7 +46,7 @@ export default function Main() {
       const userTable = await drizzleDb
         .select()
         .from(user)
-        .where(eq(user.email, email));
+        .where(eq(user.email, email.toLowerCase()));
 
       if (userTable.length === 0) {
         Alert.alert('Error', 'Email does not exist');
@@ -56,7 +56,7 @@ export default function Main() {
       const validUser = await drizzleDb
         .select()
         .from(user)
-        .where(and(eq(user.email, email), eq(user.password, password)))
+        .where(and(eq(user.email, email.toLowerCase()), eq(user.password, password)))
         .limit(1)
         .all();
 

@@ -51,7 +51,7 @@ export default function SignUp() {
         }
 
         const signUpData = drizzleDb.insert(user).values({
-            email: email,
+            email: email.toLowerCase(),
             password: password,
             username: username,
             isLoggedIn: 1
@@ -97,7 +97,7 @@ export default function SignUp() {
                             </View>
                             <View>
                                 <Text style={styles.subHeading}>EMAIL</Text>
-                                <TextInput placeholder="example@gmail.com" value={email} onChangeText={(text) => setEmail(text)} style={styles.input} autoCapitalize="none"/>
+                                <TextInput placeholder="example@gmail.com" value={email} onChangeText={(text) => setEmail(text.toLowerCase())} style={styles.input} autoCapitalize="none"/>
                             </View>
                             <View>
                                 <Text style={styles.subHeading}>PASSWORD</Text>
