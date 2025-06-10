@@ -17,8 +17,8 @@ export default function WaterMonitoring() {
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const user = await getAuthenticatedUser(drizzleDb);
-            const allPlants = await getPlants(drizzleDb, user.id);
+            const user = await getAuthenticatedUser();
+            const allPlants = await getPlants(user.id);
             if (!allPlants) {
                 Alert.alert("Error", "No Plants Available")
                 setLoading(false);

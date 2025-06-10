@@ -4,82 +4,93 @@ import { eq } from "drizzle-orm";
 import { Alert } from "react-native";
 
 
-export async function getPlants(drizzleDb: any, id: string) {
-    let allPlants: any[] = []
+export async function getPlants(id: string) {
+    try {
+        const response = await fetch(`http://<ESP32-IP>/plants/getUserPlants?userId=${id}`)
+        if (!response.ok) {
+            throw new Error('Failed to fetch plants');
+        }
 
-    const data = await drizzleDb
-        .select()
-        .from(plantType)
-        .where(eq(plantType.userId, Number(id)))
-        .orderBy(plantType.potNumber).all();
+        const result = await response.json();
 
-    if (!data ||data?.length === 0 ) {
-        return null;
-    }
+        if (result.data === null) {
+            Alert.alert("No plants found");
+            return null;
+        }
 
-    for ( let i = 0; i < data?.length; i++ ) {
-        const plantData = drizzleDb.select({
-            plantName: plant.plantName,
-            image: plant.image
-        }).from(plant)
-        .where(eq(plant.id, Number(data[i].plantId)))
-        .all()
-
-        if (plantData === null) {
-            console.error("No plants available");
+        if (Array.isArray(result.data) && result.data.length === 0 ) {
             Alert.alert("No plants available");
             return [];
         }
 
-        allPlants.push({ ...plantData[0], ...data[i] })
-    }
-
-    return allPlants;
+        return result.data;
+    } catch (err) {
+        console.error("Error fetching plants: ", err);
+        Alert.alert("Error" , "unable to fetch platnts");
+        return [];
+    } 
 }
 
-export async function getAuthenticatedUser(drizzleDb: any) {
-    const result = await drizzleDb
-        .select({
-            id: user.id,
-            username: user.username,
-            email: user.email,
+export async function getAuthenticatedUser() {
+    try { 
+        const response = await fetch(`http://<ESP32-IP>/users/getLoggedUser`)
+        if (!response.ok) {
+            throw new Error("Failed to fetch logged-in user");
+        }
+
+        const result = await response.json();
+
+        return result.data;
+    } catch (err) {
+        console.error("Error getting authenticated user: ", err);
+        Alert.alert("Error", "Unable to retrieve logged-in user");
+        return null;
+    }
+}
+
+export async function editPlantName(name: string, id: number) {
+    try {
+        const response = await fetch(`http://<ESP32-IP>/plants/editName`, {
+            method: 'PUT',
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id, name })
         })
-        .from(user)
-        .where(eq(user.isLoggedIn, 1))
-        .limit(1)
-        .all();
 
-    return result.length ? result[0] : null
-}
+        if (!response.ok) {
+            throw new Error("Failed to update plant name");
+        }
 
-export async function editPlantName(drizzleDb: any, name: string, id: number) {
-    const data =  await drizzleDb
-        .update(plant)
-        .set({ plantName: name})
-        .where(eq(plant.id, Number(id)))
-        .run()
-    
-    if (!data) {
-        Alert.alert("Unable to edit plant");
+        const result = await response.json();
+
+        if (!result.success) {
+            Alert.alert("Error", "Unable to edit plant name");
+        }
+    } catch (err) {
+        console.error("Error editing plant name:", err);
+        Alert.alert("Error", "Could not edit plant name");
     }
 }
 
-export async function deletePlant(drizzleDb: any, id: number) {
+export async function deletePlant(id: number) {
+    try {
+        const response = await fetch(`http://<ESP32-IP>/plants/delete?=id=${id}`, {
+            method: "DELETE"
+        })
 
-    const response = await drizzleDb
-        .delete(plant)
-        .where(eq(plant.id, Number(id)))
-        .run()
+        if (!response.ok) {
+            throw new Error("Failed to delete plant");
+        }
 
-    await drizzleDb
-        .delete(plantType)
-        .where(eq(plantType.plantId, Number(id)))
-        .run()
-    
-    
-    if (!response) {
-        Alert.alert("Unable to delete plant");
+        const result = await response.json();
+
+        if (!result.success) {
+            Alert.alert("Unable to delete app");
+        }
+    } catch (err) {
+        console.error("Error deleting plant:", err);
+        Alert.alert("Error", "Could not delete plant");
     }
+    
 }
 
 export async function editPlantType(drizzleDb: any, data: GetPlantData){
@@ -101,28 +112,24 @@ export async function editPlantType(drizzleDb: any, data: GetPlantData){
     return { editPlantData, editPlantTypeData };
 }
 
-export async function editPotNumber(drizzleDb: any, plantName: string, potNumber: number){
-    const data = await drizzleDb
-        .select()
-        .from(plant)
-        .where(eq(plant.plantName, plantName))
-    
-    if (!data) {
-        Alert.alert("Unable to get plant name");
-        return;
-    }
+export async function editPotNumber(plantName: string, potNumber: number) {
+    try {
+        const response = await fetch(`http://<ESP32-IP>/pots/editPotNumber`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ plantName, potNumber })
+        });
 
-    const plantTypeData = await drizzleDb
-        .update(plantType)
-        .set({
-            potNumber: potNumber
-        })
-        .where(eq(plantType.plantId, data[0].id))
-        .run()
+        const result = await response.json();
 
-    if (!plantTypeData) {
-        Alert.alert("Unable to edit pot number");
-        return;
+        if (!result.success) {
+            Alert.alert("Error", "Unable to update pot number");
+        }
+    } catch (err) {
+        console.error("Error updating pot number:", err);
+        Alert.alert("Error", "Could not update pot number");
     }
 }
 

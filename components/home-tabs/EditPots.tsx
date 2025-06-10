@@ -13,13 +13,13 @@ export default function EditPots() {
     const drizzleDb = useDrizzle();
 
     const getPlant = async () => {
-        const user = await getAuthenticatedUser(drizzleDb);
+        const user = await getAuthenticatedUser();
 
         setLoading(true);
-        const allPlants = await getPlants(drizzleDb, user.id) || [];
+        const allPlants = await getPlants(user.id) || [];
 
         const emptyPlants = Array(4).fill(null);
-        allPlants.forEach(plant => {
+        allPlants.forEach((plant: { potNumber: number; }) => {
             const index = plant.potNumber - 1;
             if ( index >= 0 && index < 4) {
                 emptyPlants[index] = plant;

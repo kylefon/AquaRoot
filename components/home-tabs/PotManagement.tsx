@@ -12,14 +12,12 @@ export default function PotManagement() {
     const [ loading, setLoading ] = useState(false);
     const [ selectedPlants, setSelectedPlants] = useState<any>([]);
     const [ newPlants, setNewPlants ] = useState<( string | null)[]>([]);
-
-    const drizzleDb = useDrizzle()
     
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const user = await getAuthenticatedUser(drizzleDb);
-            const allPlants = await getPlants(drizzleDb, user.id);
+            const user = await getAuthenticatedUser();
+            const allPlants = await getPlants(user.id);
 
             if (!allPlants) {
                 Alert.alert("Error", "No Plants Available")
@@ -28,10 +26,10 @@ export default function PotManagement() {
                 return;
             }
             
-            const name = allPlants.filter(plant => plant.plantName && plant.potNumber).map(plant => ({ plantName: plant.plantName, potNumber: plant.potNumber}))
+            const name = allPlants.filter((plant: { plantName: any; potNumber: any; }) => plant.plantName && plant.potNumber).map((plant: { plantName: any; potNumber: any; }) => ({ plantName: plant.plantName, potNumber: plant.potNumber}))
             const plantArray = Array(4).fill(null);
 
-            name.forEach(plant => {
+            name.forEach((plant: { potNumber: number; plantName: any; }) => {
                 const index = plant.potNumber - 1;
                 if ( index >= 0 && index < 4) {
                     plantArray[index] = plant.plantName;
@@ -69,7 +67,7 @@ export default function PotManagement() {
         const result = newPlants?.map((item, index) => item !== null ? { plantName: item, potNumber: index + 1}: null).filter(item => item !== null); 
         if (result){
             for (let i = 0; i < result.length; i++ ) {
-                await editPotNumber(drizzleDb, result[i].plantName, result[i].potNumber);
+                await editPotNumber(result[i].plantName, result[i].potNumber);
             }
         }
 

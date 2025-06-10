@@ -14,8 +14,6 @@ export default function SignUp() {
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [loading, setLoading] = useState(false)
-
-    const drizzleDb = useDrizzle();
     
     async function signUpWithEmail() {
         setLoading(true);
@@ -43,28 +41,28 @@ export default function SignUp() {
             setLoading(false);
             return;
         }
-
-        const checkEmail = await getDuplicateEmail(drizzleDb, email);
-
-        if (checkEmail) {
-            setLoading(false);
-            Alert.alert("User already registered");
-            return;
-        }
-
         const hashedPassword = sha256(password);
 
-        const signUpData = await drizzleDb.insert(user).values({
-            email: email.toLowerCase(),
-            password: hashedPassword,
-            username: username,
-            isLoggedIn: 1
-        }).run()
+        const response = await fetch(`http://<ESP32-IP>/users/createUser`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                email: email.toLowerCase(),
+                password: hashedPassword,
+                username: username,
+                isLoggedIn: 1
+            })
+        })
 
-
-        if (!signUpData) {
-            Alert.alert("Unable to sign up user");
-            setLoading(false);
+        if (!response.ok) {
+            // add a 409 status code whenever email already exists
+            if (response.status === 409) {
+                setLoading(false);
+                Alert.alert('User already registered')
+            } else {
+                Alert.alert("Unable to sign up user");
+                setLoading(false);
+            }
             return;
         }
 
@@ -72,6 +70,7 @@ export default function SignUp() {
         router.replace("/plant-type")   
         setLoading(false);            
     } 
+
     if (loading) {
         return(
             <CreateLayout>

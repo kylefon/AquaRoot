@@ -15,20 +15,20 @@ export default function Main() {
   const [ password, setPassword ] = useState('')
   const [ loading, setLoading ] = useState(false)
   const router = useRouter();
-  
-  const drizzleDb = useDrizzle();
-  useDrizzleStudio(db);
 
   useEffect(() => {
     const getLogin = async () => {
-      const checkLogin = await drizzleDb
-      .select()
-      .from(user)
-      .where(eq(user.isLoggedIn, 1))
-      .all();
-            
-      if (checkLogin.length > 0) {
-        router.replace('/my-home');
+      try {
+        // checks if isLoggedIn == 1 and returns that user
+        const response = await fetch(`http://<ESP32-IP>/users/getLoggedUser`);
+        if ( response.ok ) {
+          const user = await response.json();
+          if (user) {
+            router.replace('/my-home')
+          }
+        }
+      } catch (err) {
+        console.log("Login failed: ", err);
       }
     }
 
@@ -43,41 +43,37 @@ export default function Main() {
       setLoading(false);
       return;
     }
-    try {
-      const userTable = await drizzleDb
-        .select()
-        .from(user)
-        .where(eq(user.email, email.toLowerCase()));
 
-      if (userTable.length === 0) {
-        Alert.alert('Error', 'Email does not exist');
-        setLoading(false);
+    try {
+      const hashedInputPassword = sha256(password);
+
+      const response = await fetch(`http://<ESP32-IP>/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: email.toLowerCase(),
+          password: hashedInputPassword,
+        })
+      })
+
+      if (!response.ok) {
+        if (response.status === 404) {
+          Alert.alert('Error', 'Email does not exist');
+        } else if (response.status === 401) {
+          Alert.alert('Error', 'Incorrect password');
+        } else {
+          Alert.alert('Error', 'Login failed');
+        }
         return;
       }
 
-      const hashedInputPassword = sha256(password);
+      const user = await response.json();
+      Alert.alert('Success', 'Login successful');
 
-      const validUser = await drizzleDb
-        .select()
-        .from(user)
-        .where(and(eq(user.email, email.toLowerCase()), eq(user.password, hashedInputPassword)))
-        .limit(1)
-        .all();
-
-      if (validUser) {
-        await drizzleDb
-          .update(user)
-          .set({ isLoggedIn: 1 })
-          .where(eq(user.id, validUser[0].id)).run();
-
-        Alert.alert('Success', 'Login successful');
-        router.replace('/my-home');
-        setEmail('');
-        setPassword('');
-      } else {
-        Alert.alert('Error', 'Incorrect password');
-        setLoading(false);
-      }
+      router.replace('/my-home');
+      setEmail('');
+      setPassword('');
+      
     } catch (error) {
       Alert.alert("Error", "Unable during login");
       console.log("Error during login: ", error);

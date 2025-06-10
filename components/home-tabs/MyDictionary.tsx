@@ -20,9 +20,9 @@ export default function MyDictionary() {
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
-            const user = await getAuthenticatedUser(drizzleDb);
+            const user = await getAuthenticatedUser();
 
-            const allPlants = await getPlants(drizzleDb, user.id);
+            const allPlants = await getPlants(user.id);
 
             if (!allPlants) {
                 Alert.alert("Error", "No Plants Available")
@@ -41,9 +41,9 @@ export default function MyDictionary() {
     }, [modalVisible])
 
     const handleEditPlant = async (name: string, id: number) => {
-        const user = await getAuthenticatedUser(drizzleDb);
-        await editPlantName(drizzleDb, name, id);
-        const allPlants = await getPlants(drizzleDb, user.id);
+        const user = await getAuthenticatedUser();
+        await editPlantName(name, id);
+        const allPlants = await getPlants(user.id);
         if (!allPlants) {
             Alert.alert("Error", "No Plants Available")
         }
@@ -54,7 +54,7 @@ export default function MyDictionary() {
     }
 
     const handleDeletePlant = async (id: number) => {
-        const user = await getAuthenticatedUser(drizzleDb);
+        const user = await getAuthenticatedUser();
 
         Alert.alert(
           "Delete Plant",
@@ -68,8 +68,8 @@ export default function MyDictionary() {
               text: "Delete",
               style: "destructive",
               onPress:  async () => {
-                await deletePlant(drizzleDb, id);
-                const allPlants = await getPlants(drizzleDb, user.id);
+                await deletePlant(id);
+                const allPlants = await getPlants(user.id);
                 setPlants(allPlants); 
 
                 // Uncomment this if ESP connection is ready

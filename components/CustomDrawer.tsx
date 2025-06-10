@@ -18,7 +18,7 @@ export default function CustomDrawer(props: any) {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const user = await getAuthenticatedUser(drizzleDb);
+                const user = await getAuthenticatedUser();
                 setUserData(user);
             } catch (error) {
                 console.error("Error fetching user data:", error);
@@ -30,10 +30,17 @@ export default function CustomDrawer(props: any) {
     }, []);
 
     const signOutUser = async () => {
-        const userData = await getAuthenticatedUser(drizzleDb);
-        await drizzleDb.update(user).set({ isLoggedIn: 0 }).where(eq(user.id, userData.id)).run();
-        router.push('/')
-    }
+        const userData = await getAuthenticatedUser();
+
+        await fetch('http://<ESP32_IP>/api/signout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: userData.id })
+        });
+
+        router.push('/');
+    };
+
      
     return (
         <View style={{ flex: 1 }}>
