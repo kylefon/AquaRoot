@@ -10,7 +10,7 @@ export default function NotifESP() {
             try {
                 // change to esp32 ip add
                 //Should return { shouldNotify: boolean, potNumber: number, plantName: string }
-                const response = await fetch("http://<ESP32_IP_ADDRESS>/notify");
+                const response = await fetch("http://192.168.68.50/notify");
 
                 if (!response.ok) return;
 

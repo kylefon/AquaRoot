@@ -6,7 +6,7 @@ import { Alert } from "react-native";
 
 export async function getPlants(id: string) {
     try {
-        const response = await fetch(`http://<ESP32-IP>/plants/getUserPlants?userId=${id}`)
+        const response = await fetch(`http://192.168.68.50/plants/getUserPlants?userId=${id}`)
         if (!response.ok) {
             throw new Error('Failed to fetch plants');
         }
@@ -33,7 +33,7 @@ export async function getPlants(id: string) {
 
 export async function getAuthenticatedUser() {
     try { 
-        const response = await fetch(`http://<ESP32-IP>/users/getLoggedUser`)
+        const response = await fetch(`http://192.168.68.50/users/getLoggedUser`)
         if (!response.ok) {
             throw new Error("Failed to fetch logged-in user");
         }
@@ -50,7 +50,7 @@ export async function getAuthenticatedUser() {
 
 export async function editPlantName(name: string, id: number) {
     try {
-        const response = await fetch(`http://<ESP32-IP>/plants/editName`, {
+        const response = await fetch(`http://192.168.68.50/plants/editName`, {
             method: 'PUT',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id, name })
@@ -73,7 +73,7 @@ export async function editPlantName(name: string, id: number) {
 
 export async function deletePlant(id: number) {
     try {
-        const response = await fetch(`http://<ESP32-IP>/plants/delete?id=${id}`, {
+        const response = await fetch(`http://192.168.68.50/plants/delete?id=${id}`, {
             method: "DELETE"
         })
 
@@ -113,7 +113,7 @@ export async function deletePlant(id: number) {
 
 export async function editPotNumber(plantName: string, potNumber: number) {
     try {
-        const response = await fetch(`http://<ESP32-IP>/pots/editPotNumber`, {
+        const response = await fetch(`http://192.168.68.50/pots/editPotNumber`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"

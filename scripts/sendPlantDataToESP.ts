@@ -18,7 +18,7 @@ export async function sendPlantDataToESP() {
         if (!plantData) throw new Error("There are no plants for that user");
 
         // change to esp32 ip add
-        const response = await fetch("http://<ESP32_IP_ADDRESS>/plants", {
+        const response = await fetch("http://192.168.68.50/plants", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

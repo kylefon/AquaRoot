@@ -43,7 +43,7 @@ export default function SignUp() {
         }
         const hashedPassword = sha256(password);
 
-        const response = await fetch(`http://<ESP32-IP>/users/createUser`, {
+        const response = await fetch(`http://192.168.68.50/users/createUser`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify({

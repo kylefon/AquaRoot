@@ -66,7 +66,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
         
         try {
-            const res = await fetch(`http://<ESP32-IP>/plants/checkPot?userId=${user.id}`)
+            const res = await fetch(`http://192.168.68.50/plants/checkPot?userId=${user.id}`)
             const existingPots = await res.json();
             const potNumbers = existingPots.pots;
 
@@ -85,7 +85,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 image: image
             }
         
-            const response = await fetch(`http://<ESP32-IP>/plants/edit`, {
+            const response = await fetch(`http://192.168.68.50/plants/edit`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newData),
@@ -131,7 +131,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         };
 
         try {
-            const res = await fetch(`http://<ESP32-IP>/plants/checkPot?userId=${user.id}`)
+            const res = await fetch(`http://192.168.68.50/plants/checkPot?userId=${user.id}`)
             const existingPots = await res.json();
             const potNumbers = existingPots.pots;
 
@@ -150,7 +150,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 image: image
             }
 
-            const response = await fetch(`http://<ESP32-IP>/plants/insert`, {
+            const response = await fetch(`http://192.168.68.50/plants/insert`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'applciation/json' },
                 body: JSON.stringify(newData),

@@ -34,7 +34,7 @@ export default function PlantTypes() {
         const updatedDate = new Date(currDate.getTime()  + toAdd)
         const localISOString = new Date(updatedDate.getTime() - updatedDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
     
-        const response = await fetch(`http://<ESP32-IP>/plants/add`, {
+        const response = await fetch(`http://192.168.68.50/plants/add`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({

@@ -20,7 +20,7 @@ export default function Main() {
     const getLogin = async () => {
       try {
         // checks if isLoggedIn == 1 and returns that user
-        const response = await fetch(`http://<ESP32-IP>/users/getLoggedUser`);
+        const response = await fetch(`http://192.168.68.50/users/getLoggedUser`);
         if ( response.ok ) {
           const user = await response.json();
           if (user) {
@@ -47,7 +47,7 @@ export default function Main() {
     try {
       const hashedInputPassword = sha256(password);
 
-      const response = await fetch(`http://<ESP32-IP>/users/login`, {
+      const response = await fetch(`http://192.168.68.50/users/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
