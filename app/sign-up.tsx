@@ -1,7 +1,7 @@
 import CreateLayout from "@/components/CreateLayout";
 import { user } from "@/db/schema";
 import { useDrizzle } from "@/hooks/useDrizzle";
-import { getDuplicateEmail, isValidEmail } from "@/utils/actions";
+import { isValidEmail } from "@/utils/actions";
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { ActivityIndicator, Alert, Pressable, StyleSheet, Text, TextInput, View } from "react-native";

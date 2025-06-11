@@ -1,7 +1,7 @@
 import { plantType } from "@/db/schema";
 import { useDrizzle } from "@/hooks/useDrizzle";
 import { GetPlantData } from "@/types/models";
-import { addPlantData, editPlantType, getAuthenticatedUser } from "@/utils/actions";
+import { getAuthenticatedUser } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
@@ -28,8 +28,6 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
     const isEdit = data === null;
 
-    const drizzleDb = useDrizzle();
-
     useEffect(() => {
     if (modalVisible) {
         setPlantName(data?.plantName || "");
@@ -42,7 +40,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     }, [modalVisible]);
     
     const submitForm = async () => {
-        const user = await getAuthenticatedUser(drizzleDb);
+        const user = await getAuthenticatedUser();
 
         const missingFields = [];
 
@@ -61,45 +59,45 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
         const formattedDate = `${dateValue.split("T")[0]}T${timeValue}.000`
 
-        const potNumData = await drizzleDb
-            .select()
-            .from(plantType)
-            .where(eq(plantType.userId, user.id))
-
         if (Number(potNumber) < 1 || Number(potNumber) > 4) {
             Alert.alert("Pot number should be from 1-4");
             return;
         };
 
-        const potNumbers = potNumData?.map(item => item.potNumber);
-
-        if (potNumbers?.includes(Number(potNumber)) && data.potNumber !== Number(potNumber)) {
-            Alert.alert(`There is already a plant at pot ${potNumber}`);
-            return;
-        }
- 
-        const newData = {
-            ...data,
-            date: formattedDate,
-            plantName: plantName,
-            potNumber: Number(potNumber),
-            duration: Number(duration),
-            frequency: Number(frequency),
-            image: image
-        }
         
         try {
-            const { editPlantData, editPlantTypeData } = await editPlantType(drizzleDb, newData);
+            const res = await fetch(`http://<ESP32-IP>/plants/checkPot?userId=${user.id}`)
+            const existingPots = await res.json();
+            const potNumbers = existingPots.pots;
 
-            if ( !editPlantData || !editPlantTypeData ) {
+            if (potNumbers?.includes(Number(potNumber)) && data.potNumber !== Number(potNumber)) {
+                Alert.alert(`There is already a plant at pot ${potNumber}`);
+                return;
+            }
+
+            const newData = {
+                ...data,
+                date: formattedDate,
+                plantName: plantName,
+                potNumber: Number(potNumber),
+                duration: Number(duration),
+                frequency: Number(frequency),
+                image: image
+            }
+        
+            const response = await fetch(`http://<ESP32-IP>/plants/edit`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newData),
+            })
+
+            const result = await response.json();
+
+            if ( !result.success ) {
                 Alert.alert("Error", "Unable to edit plant. Please try again")
             } else {
                 Alert.alert("Successfully edited plant");
                 setModalVisible(false);
-
-                // Uncomment this if ESP connection is ready
-                // const success = await sendPlantDataToESP();
-                // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
                 onRefresh();
             }
         } catch (err) {
@@ -108,7 +106,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     }
     
     const addForm = async () => {
-        const user = await getAuthenticatedUser(drizzleDb);
+        const user = await getAuthenticatedUser();
         
         const missingFields = [];
 
@@ -127,48 +125,48 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
         const formattedDate = `${dateValue}T${timeValue}.000`
 
-        const potNumData = await drizzleDb
-            .select()
-            .from(plantType)
-            .where(eq(plantType.userId, user.id))
-
-        if (!potNumData) {
-            Alert.alert("Error getting pot numbers");
-        }
-
         if (Number(potNumber) < 1 || Number(potNumber) > 4) {
             Alert.alert("Pot number should be from 1-4");
             return;
         };
 
-        const potNumbers = potNumData?.map(item => item.potNumber);
-        if (potNumbers?.includes(Number(potNumber))) {
-            Alert.alert(`There is already a plant at pot ${potNumber}`);
-            return;
-        } 
-        
-        const newData= {
-            plantName: plantName,
-            potNumber: Number(potNumber),
-            frequency: Number(frequency),
-            duration: Number(duration),
-            userId: user?.id,
-            date: formattedDate,
-            image: image
-        }
-        
-        const { plantData, plantTypeData } = await addPlantData(drizzleDb, newData);
+        try {
+            const res = await fetch(`http://<ESP32-IP>/plants/checkPot?userId=${user.id}`)
+            const existingPots = await res.json();
+            const potNumbers = existingPots.pots;
 
-        if ( !plantData || !plantTypeData ) {
-            Alert.alert(`Error adding plant ${plantName} at pot ${potNumber}`)
-        } else {
-            Alert.alert("Successfully added plant");
-            setModalVisible(false);
+            if (potNumbers?.includes(Number(potNumber)) && data.potNumber !== Number(potNumber)) {
+                Alert.alert(`There is already a plant at pot ${potNumber}`);
+                return;
+            }
 
-            // Uncomment this if ESP connection is ready
-            // const success = await sendPlantDataToESP();
-            // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
-            onRefresh();
+            const newData= {
+                plantName: plantName,
+                potNumber: Number(potNumber),
+                frequency: Number(frequency),
+                duration: Number(duration),
+                userId: user?.id,
+                date: formattedDate,
+                image: image
+            }
+
+            const response = await fetch(`http://<ESP32-IP>/plants/insert`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'applciation/json' },
+                body: JSON.stringify(newData),
+            })
+
+            const result = await response.json()
+
+            if ( !result.success ) {
+                Alert.alert(`Error adding plant ${plantName} at pot ${potNumber}`)
+            } else {
+                Alert.alert("Successfully added plant");
+                setModalVisible(false);
+                onRefresh();
+            }
+        } catch (err) {
+            Alert.alert(`Unexpected Error: ${err}`);
         }
     }
   

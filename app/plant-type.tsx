@@ -24,52 +24,32 @@ export default function PlantTypes() {
     const drizzleDb = useDrizzle();
 
     async function addPlantType({ plant, index }: { plant: NewPlantType, index: number}) {
+        const user = await getAuthenticatedUser();
+        // input is based on the number of check per week
+        // there are 168 hours in a week 
+        const checks = 168/plant.checks;
 
-        const user = await getAuthenticatedUser(drizzleDb);
-            // input is based on the number of check per week
-            // there are 168 hours in a week 
-            const checks = 168/plant.checks;
+        const currDate = new Date();
+        const toAdd = checks * 60 * 60 * 1000;
+        const updatedDate = new Date(currDate.getTime()  + toAdd)
+        const localISOString = new Date(updatedDate.getTime() - updatedDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
     
-            const currDate = new Date();
-            const toAdd = checks * 60 * 60 * 1000;
-            const updatedDate = new Date(currDate.getTime()  + toAdd)
-            const localISOString = new Date(updatedDate.getTime() - updatedDate.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+        const response = await fetch(`http://<ESP32-IP>/plants/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                userId: user.id,
+                plant,
+                index
+            })
+        })
 
-            const insertPlant = await drizzleDb
-                .insert(plantTable)
-                .values({
-                    plantName: plant.name,
-                    image: plant.image
-                }).run()
+        const result = await response.json();
 
-            const data = await drizzleDb
-            .select()
-            .from(plantTable)
-            .where(eq(plantTable.id, insertPlant.lastInsertRowId))
-            .get();
- 
-            if ( !data ) {
-                Alert.alert("Error adding plant");
-                return;
-            }
-
-            const plantData = await drizzleDb
-                .insert(plantType)
-                .values({
-                    potNumber: Number(index + 1),
-                    frequency: Number(checks),
-                    duration: Number(plant.duration),
-                    plantId: data.id,
-                    userId: user.id,
-                    date: localISOString,
-                }).run()
-
-
-            if (!plantData) {
-                Alert.alert(`Error adding plant: ${plant.name}`);
-                return;            
-            }
-
+        if (!response.ok) {
+            Alert.alert("Error", `Error adding plant: ${plant.name}`)
+            return;
+        }
     }
 
     const handlePlants = () => {

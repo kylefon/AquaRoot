@@ -12,7 +12,7 @@ export default function UploadImage({ setImage }: { setImage: any }) {
     const drizzleDb = useDrizzle();
 
     const onSelectImage = async () => {
-        const user = await getAuthenticatedUser(drizzleDb);
+        const user = await getAuthenticatedUser();
 
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ['images'],

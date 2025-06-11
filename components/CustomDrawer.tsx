@@ -1,16 +1,12 @@
-import { user } from "@/db/schema";
-import { useDrizzle } from "@/hooks/useDrizzle";
 import { AuthenticatedUser } from "@/types/models";
 import { getAuthenticatedUser } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { DrawerContentScrollView, DrawerItem, DrawerItemList } from "@react-navigation/drawer";
-import { eq } from "drizzle-orm";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
 export default function CustomDrawer(props: any) {
-    const drizzleDb = useDrizzle();
     const router = useRouter();
 
     const [ userData, setUserData ] = useState<AuthenticatedUser>();
@@ -31,14 +27,22 @@ export default function CustomDrawer(props: any) {
 
     const signOutUser = async () => {
         const userData = await getAuthenticatedUser();
+        try {
+            const response = await fetch('http://<ESP32_IP>/api/signout', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: userData.id })
+            });
 
-        await fetch('http://<ESP32_IP>/api/signout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: userData.id })
-        });
-
-        router.push('/');
+            if (response.ok) {
+                router.push('/');
+            } else {
+                Alert.alert("Unable to signout")
+            }
+        } catch (err) {
+            Alert.alert("Unexpected error on signout");
+            console.error(err);
+        }
     };
 
      

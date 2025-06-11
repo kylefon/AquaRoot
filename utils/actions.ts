@@ -73,7 +73,7 @@ export async function editPlantName(name: string, id: number) {
 
 export async function deletePlant(id: number) {
     try {
-        const response = await fetch(`http://<ESP32-IP>/plants/delete?=id=${id}`, {
+        const response = await fetch(`http://<ESP32-IP>/plants/delete?id=${id}`, {
             method: "DELETE"
         })
 
@@ -90,27 +90,26 @@ export async function deletePlant(id: number) {
         console.error("Error deleting plant:", err);
         Alert.alert("Error", "Could not delete plant");
     }
-    
 }
 
-export async function editPlantType(drizzleDb: any, data: GetPlantData){
-    const editPlantData = await drizzleDb
-        .update(plant)
-        .set({
-            plantName: data.plantName,
-            image: data.image
-        }).where(eq(plant.id, data.plantId)).run()
+// export async function editPlantType(drizzleDb: any, data: GetPlantData){
+//     const editPlantData = await drizzleDb
+//         .update(plant)
+//         .set({
+//             plantName: data.plantName,
+//             image: data.image
+//         }).where(eq(plant.id, data.plantId)).run()
 
-    const editPlantTypeData = await drizzleDb
-        .update(plantType)
-        .set({
-            potNumber: data.potNumber,
-            duration: data.duration,
-            frequency: data.frequency,
-            date: data.date,
-        }).where(eq(plantType.plantId, data.plantId)).run() 
-    return { editPlantData, editPlantTypeData };
-}
+//     const editPlantTypeData = await drizzleDb
+//         .update(plantType)
+//         .set({
+//             potNumber: data.potNumber,
+//             duration: data.duration,
+//             frequency: data.frequency,
+//             date: data.date,
+//         }).where(eq(plantType.plantId, data.plantId)).run() 
+//     return { editPlantData, editPlantTypeData };
+// }
 
 export async function editPotNumber(plantName: string, potNumber: number) {
     try {
@@ -133,63 +132,63 @@ export async function editPotNumber(plantName: string, potNumber: number) {
     }
 }
 
-export async function addPlantData(drizzleDb: any, data: NewPlantData) {
-    const plantData = await drizzleDb
-        .insert(plant)
-        .values({
-            plantName: data.plantName, 
-            image: data.image
-        }).run()
+// export async function addPlantData(drizzleDb: any, data: NewPlantData) {
+//     const plantData = await drizzleDb
+//         .insert(plant)
+//         .values({
+//             plantName: data.plantName, 
+//             image: data.image
+//         }).run()
 
-    const plantTypeData = await drizzleDb
-        .insert(plantType)
-        .values({
-            potNumber: data.potNumber,
-            frequency: data.frequency,
-            duration: data.duration,
-            plantId: plantData.lastInsertRowId,
-            userId: data.userId,
-            date: data.date,
-        }).run()
+//     const plantTypeData = await drizzleDb
+//         .insert(plantType)
+//         .values({
+//             potNumber: data.potNumber,
+//             frequency: data.frequency,
+//             duration: data.duration,
+//             plantId: plantData.lastInsertRowId,
+//             userId: data.userId,
+//             date: data.date,
+//         }).run()
     
-    return { plantData, plantTypeData }
-}
+//     return { plantData, plantTypeData }
+// }
 
-export async function getDuplicateEmail(drizzleDb: any, email: string) {
+// export async function getDuplicateEmail(drizzleDb: any, email: string) {
     
-    const data = await drizzleDb
-        .select()
-        .from(user)
-        .where(eq(user.email, email))
-        .limit(1)
-        .all();
+//     const data = await drizzleDb
+//         .select()
+//         .from(user)
+//         .where(eq(user.email, email))
+//         .limit(1)
+//         .all();
 
-    return data.length > 0
-}
+//     return data.length > 0
+// }
 
 export function isValidEmail(email: string): boolean {
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
     return regex.test(email);
 }
 
-export function dateWithFrequency(date: string, frequency: number) {
-    const toAdd = frequency * 60 * 60 * 1000;
-    const localDate = new Date(date);
-    const updatedTime = new Date(localDate.getTime() + toAdd);
-    const localISOString = new Date(updatedTime.getTime() - updatedTime.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
+// export function dateWithFrequency(date: string, frequency: number) {
+//     const toAdd = frequency * 60 * 60 * 1000;
+//     const localDate = new Date(date);
+//     const updatedTime = new Date(localDate.getTime() + toAdd);
+//     const localISOString = new Date(updatedTime.getTime() - updatedTime.getTimezoneOffset() * 60000).toISOString().slice(0, -1);
 
-    return localISOString;
-}
+//     return localISOString;
+// }
 
-export async function editDate(drizzleDb: any, date: string, plantId: number) {
-    const result = await drizzleDb
-        .update(plantType)
-        .set({
-            date: date
-        })
-        .where(eq(plantType.plantId, plantId)).run();
-    return result;
-}
+// export async function editDate(drizzleDb: any, date: string, plantId: number) {
+//     const result = await drizzleDb
+//         .update(plantType)
+//         .set({
+//             date: date
+//         })
+//         .where(eq(plantType.plantId, plantId)).run();
+//     return result;
+// }
 
 export function convertUTCStringToLocalDate(utcString: string): Date {
   const utcDate = new Date(utcString);
@@ -197,12 +196,12 @@ export function convertUTCStringToLocalDate(utcString: string): Date {
   return new Date(localTimeMillis);
 }
 
-export async function addWaterUsage(drizzleDb: any, newWaterUsage: number, plantId: number) {
-    const getUsage = await drizzleDb.set({
-        waterUsage: newWaterUsage
-    }).where(eq( plantType.plantId, plantId )).run();
+// export async function addWaterUsage(drizzleDb: any, newWaterUsage: number, plantId: number) {
+//     const getUsage = await drizzleDb.set({
+//         waterUsage: newWaterUsage
+//     }).where(eq( plantType.plantId, plantId )).run();
 
-    if (!getUsage) {
-        Alert.alert("Failed to update water usage");
-    }
-}
+//     if (!getUsage) {
+//         Alert.alert("Failed to update water usage");
+//     }
+// }

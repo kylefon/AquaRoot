@@ -71,11 +71,7 @@ export default function MyDictionary() {
                 await deletePlant(id);
                 const allPlants = await getPlants(user.id);
                 setPlants(allPlants); 
-
-                // Uncomment this if ESP connection is ready
-                // const success = await sendPlantDataToESP();
-                // if (!success) Alert.alert("Warning", "Failed to sync plant with ESP32")
-              },
+                },
             },
           ]
         );
