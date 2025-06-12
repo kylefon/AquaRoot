@@ -73,7 +73,7 @@ export async function editPlantName(name: string, id: number) {
 
 export async function deletePlant(id: number) {
     try {
-        const response = await fetch(`http://192.168.68.50/plants/delete?id=${id}`, {
+        const response = await fetch(`http://192.168.68.50/plants/delete?plantID=${id}`, {
             method: "DELETE"
         })
 
