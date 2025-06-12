@@ -152,7 +152,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
             const response = await fetch(`http://192.168.68.50/plants/insert`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'applciation/json' },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(newData),
             })
 
