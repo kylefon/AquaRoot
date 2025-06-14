@@ -31,7 +31,7 @@ export default function CustomDrawer(props: any) {
             const response = await fetch('http://192.168.68.50/users/signout', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id: userData.id })
+                body: JSON.stringify({ id: userData.userId })
             });
 
             if (response.ok) {

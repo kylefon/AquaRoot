@@ -18,7 +18,7 @@ export default function WaterMonitoring() {
         const getPlant = async () => {
             setLoading(true);
             const user = await getAuthenticatedUser();
-            const allPlants = await getPlants(user.id);
+            const allPlants = await getPlants(user.userId);
             if (!allPlants) {
                 Alert.alert("Error", "No Plants Available")
                 setLoading(false);

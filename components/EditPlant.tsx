@@ -66,7 +66,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
 
         
         try {
-            const res = await fetch(`http://192.168.68.50/plants/checkPot?userId=${user.id}`)
+            const res = await fetch(`http://192.168.68.50/plants/checkPot?userId=${user.userId}`)
             const existingPots = await res.json();
             const potNumbers = existingPots.pots;
 
@@ -131,7 +131,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         };
 
         try {
-            const res = await fetch(`http://192.168.68.50/plants/checkPot?userId=${user.id}`)
+            const res = await fetch(`http://192.168.68.50/plants/checkPot?userId=${user.userId}`)
             const existingPots = await res.json();
             const potNumbers = existingPots.pots;
 
@@ -145,7 +145,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 potNumber: Number(potNumber),
                 frequency: Number(frequency),
                 duration: Number(duration),
-                userId: user?.id,
+                userId: user?.userId,
                 date: formattedDate,
                 image: image
             }

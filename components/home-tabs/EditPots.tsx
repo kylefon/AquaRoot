@@ -16,7 +16,7 @@ export default function EditPots() {
         const user = await getAuthenticatedUser();
 
         setLoading(true);
-        const allPlants = await getPlants(user.id) || [];
+        const allPlants = await getPlants(user.userId) || [];
 
         const emptyPlants = Array(4).fill(null);
         allPlants.forEach((plant: { potNumber: number; }) => {

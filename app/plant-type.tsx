@@ -38,7 +38,7 @@ export default function PlantTypes() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                userId: user.id,
+                userId: user.userId,
                 plant,
                 index
             })

@@ -14,15 +14,12 @@ export default function MyDictionary() {
     const [ plantName, setPlantName ] = useState('');
     const [ toEditId, setToEditId ] = useState<number | null>(null);
 
-    const drizzleDb = useDrizzle()
-
-
     useEffect(() => {
         const getPlant = async () => {
             setLoading(true);
             const user = await getAuthenticatedUser();
 
-            const allPlants = await getPlants(user.id);
+            const allPlants = await getPlants(user.userId);
 
             if (!allPlants) {
                 Alert.alert("Error", "No Plants Available")
@@ -43,7 +40,7 @@ export default function MyDictionary() {
     const handleEditPlant = async (name: string, id: number) => {
         const user = await getAuthenticatedUser();
         await editPlantName(name, id);
-        const allPlants = await getPlants(user.id);
+        const allPlants = await getPlants(user.userId);
         if (!allPlants) {
             Alert.alert("Error", "No Plants Available")
         }
@@ -69,7 +66,7 @@ export default function MyDictionary() {
               style: "destructive",
               onPress:  async () => {
                 await deletePlant(id);
-                const allPlants = await getPlants(user.id);
+                const allPlants = await getPlants(user.userId);
                 setPlants(allPlants); 
                 },
             },
@@ -131,23 +128,23 @@ export default function MyDictionary() {
                                             )}
                                             <View style={styles.plantView}>
                                                 <View style={styles.plantHeader} >
-                                                    {toEditId === data.id ? (
+                                                    {toEditId === data.plantId ? (
                                                         <TextInput style={styles.input} value={plantName} maxLength={25} placeholder={data.plantName} onChangeText={(text) => {setPlantName(text)}} />
                                                     ):(
                                                         <Text style={styles.plantName}>{data.plantName}</Text>
                                                     )}
                                                     <View style={styles.icons}>
                                                         <Pressable onPress={() => {
-                                                            if (toEditId === data.id) {
+                                                            if (toEditId === data.plantId) {
                                                                 setToEditId(null);
                                                             } else {
-                                                                setToEditId(data.id);
+                                                                setToEditId(data.plantId);
                                                                 setPlantName(data.plantName);
                                                             }
                                                         }}>
                                                                 <MaterialIcons name="edit" color="#557153" size={25}/>
                                                         </Pressable>
-                                                        {toEditId === data.id ? (
+                                                        {toEditId === data.plantId ? (
                                                             <Pressable onPress={() => {
                                                                 setToEditId(null);
                                                                 handleEditPlant(plantName, data.plantId)

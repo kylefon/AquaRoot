@@ -22,7 +22,7 @@ export default function UploadImage({ setImage }: { setImage: any }) {
         if (!result.canceled) {
             const img = result.assets[0];
             const extension = img.uri.split('.').pop() || 'jpg';
-            const userFolder = `${user!.id}`;
+            const userFolder = `${user!.userId}`;
             const destDir = FileSystem.documentDirectory + `images/${userFolder}`;
             const filePath = `${Date.now()}.${extension}`;
             const newPath = destDir + filePath;
