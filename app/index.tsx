@@ -7,6 +7,7 @@ import * as SQLite from "expo-sqlite"
 import { useEffect, useState } from 'react'
 import { Alert, Image, ImageBackground, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
 import { sha256 } from 'js-sha256';
+import { getAuthenticatedUser } from '@/utils/actions'
 
 const db = SQLite.openDatabaseSync('user');
 
@@ -19,13 +20,9 @@ export default function Main() {
   useEffect(() => {
     const getLogin = async () => {
       try {
-        // checks if isLoggedIn == 1 and returns that user
-        const response = await fetch(`http://192.168.68.50/users/getLoggedUser`);
-        if ( response.ok ) {
-          const user = await response.json();
-          if (user) {
-            router.replace('/my-home')
-          }
+        const response = await getAuthenticatedUser();
+        if (response) {
+          router.replace('/my-home')
         }
       } catch (err) {
         console.log("Login failed: ", err);
@@ -55,7 +52,7 @@ export default function Main() {
           password: hashedInputPassword,
         })
       })
-
+      
       if (!response.ok) {
         if (response.status === 404) {
           Alert.alert('Error', 'Email does not exist');
