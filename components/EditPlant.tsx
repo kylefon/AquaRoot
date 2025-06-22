@@ -5,7 +5,7 @@ import { getAuthenticatedUser } from "@/utils/actions";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
-import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Pressable, ScrollView, StyleSheet, Switch, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
@@ -24,6 +24,7 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
     const [potNumber, setPotNumber] = useState<string>(data?.potNumber.toString() || "");
     const [duration, setDuration] = useState<string>(data?.duration.toString() || "");
     const [frequency, setFrequency] = useState<string>(data?.frequency.toString() || "");
+    const [ switchButton, setSwitchButton ] = useState<boolean>(false);
     const [ image, setImage ] = useState(data?.image || "");
 
     const isEdit = data === null;
@@ -38,6 +39,8 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
         setImage(data?.image || "");
     }
     }, [modalVisible]);
+
+    const toggleSwitch = () => setSwitchButton(previousState => !previousState)
     
     const submitForm = async () => {
         const user = await getAuthenticatedUser();
@@ -82,7 +85,8 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 potNumber: Number(potNumber),
                 duration: Number(duration),
                 frequency: Number(frequency),
-                image: image
+                image: image,
+                switch: switchButton
             }
         
             const response = await fetch(`http://192.168.68.50/plants/edit`, {
@@ -147,7 +151,8 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                 duration: Number(duration),
                 userId: user?.userId,
                 date: formattedDate,
-                image: image
+                image: image,
+                switch: switchButton
             }
 
             const response = await fetch(`http://192.168.68.50/plants/insert`, {
@@ -232,6 +237,12 @@ export default function EditPlant({ data, onRefresh }: EditPlantProps) {
                                                     <Text style={styles.plantName}>Frequency</Text>
                                                     <View style={styles.inputWrapper}>
                                                         <TextInput placeholder={`Every ${ Number.isInteger(data?.frequency) ? data?.frequency : parseFloat(data?.frequency.toFixed(2)) || "x"} hours` || "Frequency"} placeholderTextColor="gray" style={styles.input} keyboardType="numeric" maxLength={10} value={frequency} onChangeText={(text) => setFrequency(text)}/>
+                                                    </View>
+                                                </View>
+                                                <View style={styles.plantHeader}>
+                                                    <Text style={styles.plantName}>Float Switch</Text>
+                                                    <View style={styles.inputWrapper}>
+                                                        <Switch onValueChange={toggleSwitch} value={switchButton}/>
                                                     </View>
                                                 </View>
                                                 <View style={styles.plantHeader}>

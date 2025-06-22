@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { LinearGradient } from 'expo-linear-gradient';
 
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import NotifESP from "@/scripts/NotifESP";
 
 export default function MyHome() {
     const navigation = useNavigation();
@@ -30,6 +31,7 @@ export default function MyHome() {
                             <View>
                                 <Text style={styles.header}>My Home</Text>
                                 <HomeTabs />
+                                <NotifESP />
                             </View>
                             <View style={{ alignItems: "center", flex: 1, justifyContent: "center" }}>
                                 <EditPots/>
